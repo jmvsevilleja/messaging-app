@@ -1,7 +1,7 @@
 import React from 'react'
 import './chat.css';
 import {useNavigate} from "react-router-dom";
-import {useState, useEffect} from "react";
+//import {useState, useEffect} from "react";
 
 function eraseCookie(name) {
     document.cookie = name + "=; Max-Age=-99999999;";
@@ -22,14 +22,14 @@ const Chat = () => {
         navigate(`/`);
     };
 
-    useEffect(() => {
+    // useEffect(() => {
 
-    }, []);
+    // }, []);
 
     return (
         <>
             <div >
-                CHAT HERE
+                <h1 class="text-3xl font-bold underline">MESSENGER</h1>
             </div>
             <div>
                 <button onClick={__handleLogout}>Logout</button>

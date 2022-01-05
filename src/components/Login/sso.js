@@ -66,7 +66,7 @@ const SSO = (props) => {
                 window.location.href = REDIRECT_LOGIN_URL + returnurl;
             }, 1500);
         }
-        // react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
