@@ -6,11 +6,11 @@ const Login = () => {
     return (
         <>
             <div >
-                <h1 class="text-3xl font-bold underline">LOGO HERE</h1>
+                <h1 className="text-3xl font-bold underline">LOGO HERE</h1>
             </div>
 
             <div >
-                <Link to="/login"><button class="bg-sky-600 hover:bg-sky-700 ...">Login</button></Link>
+                <Link to="/login"><button>Login</button></Link>
             </div>
         </>
     )
