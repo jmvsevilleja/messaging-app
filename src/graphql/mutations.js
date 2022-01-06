@@ -8,8 +8,9 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       id
+      userId
       name
-      imageUri
+      image
       status
       createdAt
       updatedAt
@@ -23,8 +24,9 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
+      userId
       name
-      imageUri
+      image
       status
       createdAt
       updatedAt
@@ -38,8 +40,9 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       id
+      userId
       name
-      imageUri
+      image
       status
       createdAt
       updatedAt
@@ -53,6 +56,7 @@ export const createMessage = /* GraphQL */ `
   ) {
     createMessage(input: $input, condition: $condition) {
       id
+      userId
       owner
       message
       createdAt
@@ -67,6 +71,7 @@ export const updateMessage = /* GraphQL */ `
   ) {
     updateMessage(input: $input, condition: $condition) {
       id
+      userId
       owner
       message
       createdAt
@@ -81,6 +86,7 @@ export const deleteMessage = /* GraphQL */ `
   ) {
     deleteMessage(input: $input, condition: $condition) {
       id
+      userId
       owner
       message
       createdAt

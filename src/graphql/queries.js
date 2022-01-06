@@ -5,8 +5,9 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
+      userId
       name
-      imageUri
+      image
       status
       createdAt
       updatedAt
@@ -22,8 +23,9 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        userId
         name
-        imageUri
+        image
         status
         createdAt
         updatedAt
@@ -36,6 +38,7 @@ export const getMessage = /* GraphQL */ `
   query GetMessage($id: ID!) {
     getMessage(id: $id) {
       id
+      userId
       owner
       message
       createdAt
@@ -52,6 +55,7 @@ export const listMessages = /* GraphQL */ `
     listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        userId
         owner
         message
         createdAt

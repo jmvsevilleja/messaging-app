@@ -5,13 +5,15 @@ input AMPLIFY {
 } # FOR TESTING ONLY!
 type User @model {
     id: ID!
+    userId: String!
     name: String!
-    imageUri: String
+    image: String
     status: String
 }
 
 type Message @model {
     id: ID!
+    userId: String!
     owner: String!
     message: String!
 }
