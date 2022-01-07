@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 
 const REDIRECT_LOGIN_URL = "https://www.clinica-sso.com.au/login/?redirect=";
 const RETURN_URL = "https://develop.dtx7zjrnqqy6a.amplifyapp.com/login/?";
+const RETURN_URL_PROD = "https://master.dtx7zjrnqqy6a.amplifyapp.com/login/?";
 
 const SSO = (props) => {
     const [headerMessage, setHeaderMessage] = useState(null);
@@ -42,11 +43,13 @@ const SSO = (props) => {
                 })
         }
 
-        let returnurl = RETURN_URL;
+        let returnurl = RETURN_URL_PROD;
         if (window.location.hostname === "localhost") {
             returnurl = "http://localhost:3000/login?";
         }
-
+        if (window.location.hostname === 'develop.dtx7zjrnqqy6a.amplifyapp.com') {
+            returnurl = RETURN_URL;
+        }
         let query = window.location.search;
 
         let c = query.replace("?", "");
