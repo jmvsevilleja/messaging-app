@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from 'aws-amplify'
-import {userByUserID, listMessages} from '../graphql/queries'
+import {userByUserID, listMessages, listUsers} from '../graphql/queries'
 import {createMessage, createUser} from "../graphql/mutations";
 import {onCreateMessage, onCreateUser} from "../graphql/subscriptions";
+import {Dialog} from '@headlessui/react'
 
 import Message from "./message";
+import User from "./user";
 import axios from "axios";
 import "./index.css";
 
@@ -14,10 +16,11 @@ function eraseCookie(name) {
 }
 
 const Chat = () => {
-    const [stateMessages, setStateMessages] = useState([]);
-    const [stateUsers, setStateUsers] = useState([]);
+    const [messageList, setMessageList] = useState([]);
+    const [userList, setUserList] = useState([]);
     const [messageText, setMessageText] = useState("");
     const [user, setUser] = useState(null);
+    const [isOpen, setIsOpen] = useState(false)
     //const [accounts, setAccounts] = useState({});
 
     let navigate = useNavigate();
@@ -58,21 +61,26 @@ const Chat = () => {
         }
     };
 
+    const handleChat = async (item) => {
+        console.log('handleChat', item);
+    };
+
     useEffect(() => {
         const user_id = localStorage.getItem('user_id');
         const auth_token = localStorage.getItem("auth_token");
         const refresh_token = localStorage.getItem("refresh_token");
 
-        fetchUser(user_id).then((user) => {
+        fetchUser(user_id).then((user_list) => {
             if (user_id && auth_token && refresh_token) {
                 // check if logged user is in  users table. create if not found and query user details.
-                if (!user) {
-                    console.log('user not found create to users table');
-                    fetchUserDetails(user_id, auth_token, refresh_token).then((user_details) => {
-                        const name = user_details.first_name + ' ' + user_details.last_name
-                        addUser(user_id, name).then(() => {
-                            console.log('user created');
+                if (!user_list) {
+                    //console.log('user not found create to users table');
+                    fetchUserDetails(user_id, auth_token, refresh_token).then((user_detail) => {
+                        const name = user_detail.first_name + ' ' + user_detail.last_name
+                        addUser(user_id, name).then((result) => {
+                            //console.log('user created', result);
                             setUser({
+                                id: result.id,
                                 userID: user_id,
                                 name: name
                             });
@@ -85,6 +93,7 @@ const Chat = () => {
                 navigate(`/`);
             }
             fetchMessages();
+            fetchUsers();
         });
 
         // Subscribe to creation of message
@@ -92,24 +101,27 @@ const Chat = () => {
             graphqlOperation(onCreateMessage)
         ).subscribe({
             next: ({provider, value}) => {
-                setStateMessages((stateMessages) => [
-                    ...stateMessages,
+                setMessageList((list) => [
+                    ...list,
                     value.data.onCreateMessage,
                 ]);
             },
             error: (error) => console.warn(error),
         });
 
+
         // Subscribe to creation of user
         API.graphql(
             graphqlOperation(onCreateUser)
         ).subscribe({
             next: ({provider, value}) => {
-                console.log(value.data.onCreateUser);
-                // setStateUsers((stateUsers) => [
-                //     ...stateUsers,
-                //     value.data.onCreateUser,
-                // ]);
+                // const found = userList.find(o => o.id === value.data.onCreateUser.id);
+                // console.log(found);
+                // if(!found)
+                setUserList((list) => [
+                    ...list,
+                    value.data.onCreateUser,
+                ]);
             },
             error: (error) => console.warn(error),
         });
@@ -117,6 +129,7 @@ const Chat = () => {
     }, []);
 
     const fetchUserDetails = async (user_id, auth_token, refresh_token) => {
+        if (!user_id || !auth_token || !refresh_token) return;
         try {
             return await axios({
                 url: `https://n0mkkv2gg1.execute-api.ap-southeast-2.amazonaws.com/api/user-account`,
@@ -136,35 +149,44 @@ const Chat = () => {
             console.error(error);
         }
     }
-
     const fetchMessages = async () => {
         try {
             const messagesReq = await API.graphql({
                 query: listMessages,
             });
-            setStateMessages([...messagesReq.data.listMessages.items]);
+            setMessageList([...messagesReq.data.listMessages.items]);
         } catch (error) {
             console.error(error);
         }
     }
-
     const fetchUser = async (user_id) => {
+        if (!user_id) return;
         try {
             // get logged user from User Table to get status.
-            const user = await API.graphql(graphqlOperation(userByUserID, {userID: user_id}));
-            if (user.data.userByUserID.items) {
-                setUser(user.data.userByUserID.items[0]);
-                return user.data.userByUserID.items[0];
+            const item = await API.graphql(graphqlOperation(userByUserID, {userID: user_id}));
+            if (item.data.userByUserID.items) {
+                setUser(item.data.userByUserID.items[0]);
+                return item.data.userByUserID.items[0];
             }
         } catch (e) {
             console.log(e);
         }
     }
-
+    const fetchUsers = async () => {
+        //console.log('fetching users');
+        try {
+            const messagesReq = await API.graphql({
+                query: listUsers,
+            });
+            setUserList([...messagesReq.data.listUsers.items]);
+        } catch (error) {
+            console.error(error);
+        }
+    }
     const addUser = async (user_id, name) => {
         if (!user_id || !name) return;
         try {
-            await API.graphql({
+            const item = await API.graphql({
                 query: createUser,
                 variables: {
                     input: {
@@ -174,15 +196,51 @@ const Chat = () => {
                     },
                 },
             });
+            return item.data.createUser;
         } catch (err) {
             console.error(err);
         }
 
     }
-
+    //console.log('Rendering index.js');
     return (
         <>
-            <div className="min-h-screen flex flex-col text-center">
+            <Dialog
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
+                className="fixed z-10 inset-0 overflow-y-auto"
+            >
+                <div className="flex items-center justify-center min-h-screen">
+                    <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+
+                    <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                        <Dialog.Title
+                            as="h3"
+                            className="text-lg font-medium leading-6 text-gray-900"
+                        >
+                            Payment successful
+                        </Dialog.Title>
+                        <div className="mt-2">
+                            <p className="text-sm text-gray-500">
+                                Your payment has been successfully submitted. We’ve sent you
+                                an email with all of the details of your order.
+                            </p>
+                        </div>
+
+                        <div className="mt-4">
+                            <button
+                                type="button"
+                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                                onClick={() => setIsOpen(false)}
+
+                            >
+                                Got it, thanks!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </Dialog>
+            <div className="min-h-screen flex flex-col">
                 <div className="bg-cyan-600 flex-1">
                     {/* Header */}
                 </div>
@@ -202,44 +260,20 @@ const Chat = () => {
 
                                 <ul className="overflow-auto">
                                     <h2 className="ml-2 mb-2 text-gray-600 text-lg my-2">Chats</h2>
-                                    <li>
-                                        <a className="hover:bg-gray-100  px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" href="/#">
-                                            <img className="h-10 w-10 rounded-full object-cover"
-                                                src="https://images.pexels.com/photos/837358/pexels-photo-837358.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"
-                                                alt="username" />
-                                            <div className="w-full pb-2">
-                                                <div className="flex justify-between">
-                                                    <span className="block ml-2 font-semibold text-base text-gray-600 ">Mark</span>
-                                                    <span className="block ml-2 text-sm text-gray-600">5 minutes</span>
-                                                </div>
-                                                <span className="block ml-2 text-sm text-gray-600">Hello world!!</span>
-                                            </div>
-                                        </a>
-                                        <a className="bg-gray-100 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" href="/#">
-                                            <img className="h-10 w-10 rounded-full object-cover"
-                                                src="https://images.pexels.com/photos/3777931/pexels-photo-3777931.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"
-                                                alt="username" />
-                                            <div className="w-full pb-2">
-                                                <div className="flex justify-between">
-                                                    <span className="block ml-2 font-semibold text-base text-gray-600 ">Jess</span>
-                                                    <span className="block ml-2 text-sm text-gray-600">15 minutes</span>
-                                                </div>
-                                                <span className="block ml-2 text-sm text-gray-600">I am fine</span>
-                                            </div>
-                                        </a>
-                                        <a className="hover:bg-gray-100 px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" href="/#" >
-                                            <img className="h-10 w-10 rounded-full object-cover"
-                                                src="https://images.pexels.com/photos/6238133/pexels-photo-6238133.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"
-                                                alt="username" />
-                                            <div className="w-full pb-2">
-                                                <div className="flex justify-between">
-                                                    <span className="block ml-2 font-semibold text-base text-gray-600 ">Celia</span>
-                                                    <span className="block ml-2 text-sm text-gray-600">1 hour</span>
-                                                </div>
-                                                <span className="block ml-2 text-sm text-gray-600">Last message</span>
-                                            </div>
-                                        </a>
-                                    </li>
+
+                                    {user && userList
+                                        .filter(item => {
+                                            return item.id != user.id
+                                        })
+                                        // sort user by name
+                                        .sort((a, b) => a.name.localeCompare(b.name))
+                                        .map((item) => (
+                                            <User
+                                                user={item}
+                                                handleChat={handleChat}
+                                                key={item.id}
+                                            />
+                                        ))}
                                 </ul>
                             </div>
                             <div className="col-span-2 bg-white">
@@ -264,7 +298,7 @@ const Chat = () => {
                                     </div>
 
                                     <div id="chat" className="w-full overflow-y-auto p-10 relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100 max-h-96" >
-                                        {stateMessages
+                                        {messageList
                                             // sort messages oldest to newest client-side
                                             .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
                                             .map((message) => (
