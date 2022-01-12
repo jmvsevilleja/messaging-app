@@ -9,8 +9,120 @@ export const createMessage = /* GraphQL */ `
     createMessage(input: $input, condition: $condition) {
       id
       content
-      userID
-      chatroomID
+      user {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      chatRoom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
+        }
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
+      }
       image
       audio
       status
@@ -22,7 +134,7 @@ export const createMessage = /* GraphQL */ `
       _deleted
       _lastChangedAt
       chatRoomMessagesId
-      userMessagesId
+      userMessageId
     }
   }
 `;
@@ -34,8 +146,120 @@ export const updateMessage = /* GraphQL */ `
     updateMessage(input: $input, condition: $condition) {
       id
       content
-      userID
-      chatroomID
+      user {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      chatRoom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
+        }
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
+      }
       image
       audio
       status
@@ -47,7 +271,7 @@ export const updateMessage = /* GraphQL */ `
       _deleted
       _lastChangedAt
       chatRoomMessagesId
-      userMessagesId
+      userMessageId
     }
   }
 `;
@@ -59,8 +283,120 @@ export const deleteMessage = /* GraphQL */ `
     deleteMessage(input: $input, condition: $condition) {
       id
       content
-      userID
-      chatroomID
+      user {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      chatRoom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
+        }
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
+      }
       image
       audio
       status
@@ -72,7 +408,7 @@ export const deleteMessage = /* GraphQL */ `
       _deleted
       _lastChangedAt
       chatRoomMessagesId
-      userMessagesId
+      userMessageId
     }
   }
 `;
@@ -84,11 +420,39 @@ export const createChatRoom = /* GraphQL */ `
     createChatRoom(input: $input, condition: $condition) {
       id
       newMessages
-      LastMessage {
+      lastMessage {
         id
         content
-        userID
-        chatroomID
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
         image
         audio
         status
@@ -100,14 +464,12 @@ export const createChatRoom = /* GraphQL */ `
         _deleted
         _lastChangedAt
         chatRoomMessagesId
-        userMessagesId
+        userMessageId
       }
-      Messages {
+      messages {
         items {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -119,46 +481,111 @@ export const createChatRoom = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
         nextToken
         startedAt
       }
-      ChatRoomUsers {
+      chatRoomUsers {
         items {
           id
-          chatroomID
-          userID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          chatRoomUserUserId
           chatRoomChatRoomUsersId
-          userChatroomsId
         }
         nextToken
       }
-      Admin {
+      user {
         id
-        userID
+        clinicaID
         name
         imageUri
         status
-        Messages {
+        message {
           nextToken
           startedAt
         }
-        chatrooms {
-          nextToken
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
         }
         lastOnlineAt
+        online
         publicKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      admin {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
       }
       name
       imageUri
@@ -167,6 +594,8 @@ export const createChatRoom = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      chatRoomUserId
+      chatRoomAdminId
     }
   }
 `;
@@ -178,11 +607,39 @@ export const updateChatRoom = /* GraphQL */ `
     updateChatRoom(input: $input, condition: $condition) {
       id
       newMessages
-      LastMessage {
+      lastMessage {
         id
         content
-        userID
-        chatroomID
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
         image
         audio
         status
@@ -194,14 +651,12 @@ export const updateChatRoom = /* GraphQL */ `
         _deleted
         _lastChangedAt
         chatRoomMessagesId
-        userMessagesId
+        userMessageId
       }
-      Messages {
+      messages {
         items {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -213,46 +668,111 @@ export const updateChatRoom = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
         nextToken
         startedAt
       }
-      ChatRoomUsers {
+      chatRoomUsers {
         items {
           id
-          chatroomID
-          userID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          chatRoomUserUserId
           chatRoomChatRoomUsersId
-          userChatroomsId
         }
         nextToken
       }
-      Admin {
+      user {
         id
-        userID
+        clinicaID
         name
         imageUri
         status
-        Messages {
+        message {
           nextToken
           startedAt
         }
-        chatrooms {
-          nextToken
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
         }
         lastOnlineAt
+        online
         publicKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      admin {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
       }
       name
       imageUri
@@ -261,6 +781,8 @@ export const updateChatRoom = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      chatRoomUserId
+      chatRoomAdminId
     }
   }
 `;
@@ -272,11 +794,39 @@ export const deleteChatRoom = /* GraphQL */ `
     deleteChatRoom(input: $input, condition: $condition) {
       id
       newMessages
-      LastMessage {
+      lastMessage {
         id
         content
-        userID
-        chatroomID
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
         image
         audio
         status
@@ -288,14 +838,12 @@ export const deleteChatRoom = /* GraphQL */ `
         _deleted
         _lastChangedAt
         chatRoomMessagesId
-        userMessagesId
+        userMessageId
       }
-      Messages {
+      messages {
         items {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -307,46 +855,111 @@ export const deleteChatRoom = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
         nextToken
         startedAt
       }
-      ChatRoomUsers {
+      chatRoomUsers {
         items {
           id
-          chatroomID
-          userID
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          chatRoomUserUserId
           chatRoomChatRoomUsersId
-          userChatroomsId
         }
         nextToken
       }
-      Admin {
+      user {
         id
-        userID
+        clinicaID
         name
         imageUri
         status
-        Messages {
+        message {
           nextToken
           startedAt
         }
-        chatrooms {
-          nextToken
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
         }
         lastOnlineAt
+        online
         publicKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      admin {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
       }
       name
       imageUri
@@ -355,6 +968,8 @@ export const deleteChatRoom = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      chatRoomUserId
+      chatRoomAdminId
     }
   }
 `;
@@ -365,16 +980,14 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       id
-      userID
+      clinicaID
       name
       imageUri
       status
-      Messages {
+      message {
         items {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -386,33 +999,131 @@ export const createUser = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
         nextToken
         startedAt
       }
-      chatrooms {
-        items {
+      chatRoomUser {
+        id
+        chatroom {
           id
-          chatroomID
-          userID
+          newMessages
+          name
+          imageUri
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          chatRoomChatRoomUsersId
-          userChatroomsId
+          chatRoomUserId
+          chatRoomAdminId
         }
-        nextToken
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserUserId
+        chatRoomChatRoomUsersId
+      }
+      chatRoom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
+        }
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
       }
       lastOnlineAt
+      online
       publicKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      userChatRoomId
+      userChatRoomUserId
     }
   }
 `;
@@ -423,16 +1134,14 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
-      userID
+      clinicaID
       name
       imageUri
       status
-      Messages {
+      message {
         items {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -444,33 +1153,131 @@ export const updateUser = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
         nextToken
         startedAt
       }
-      chatrooms {
-        items {
+      chatRoomUser {
+        id
+        chatroom {
           id
-          chatroomID
-          userID
+          newMessages
+          name
+          imageUri
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          chatRoomChatRoomUsersId
-          userChatroomsId
+          chatRoomUserId
+          chatRoomAdminId
         }
-        nextToken
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserUserId
+        chatRoomChatRoomUsersId
+      }
+      chatRoom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
+        }
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
       }
       lastOnlineAt
+      online
       publicKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      userChatRoomId
+      userChatRoomUserId
     }
   }
 `;
@@ -481,16 +1288,14 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       id
-      userID
+      clinicaID
       name
       imageUri
       status
-      Messages {
+      message {
         items {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -502,33 +1307,131 @@ export const deleteUser = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
         nextToken
         startedAt
       }
-      chatrooms {
-        items {
+      chatRoomUser {
+        id
+        chatroom {
           id
-          chatroomID
-          userID
+          newMessages
+          name
+          imageUri
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
-          chatRoomChatRoomUsersId
-          userChatroomsId
+          chatRoomUserId
+          chatRoomAdminId
         }
-        nextToken
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserUserId
+        chatRoomChatRoomUsersId
+      }
+      chatRoom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
+        }
+        user {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
       }
       lastOnlineAt
+      online
       publicKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      userChatRoomId
+      userChatRoomUserId
     }
   }
 `;
@@ -539,16 +1442,12 @@ export const createChatRoomUser = /* GraphQL */ `
   ) {
     createChatRoomUser(input: $input, condition: $condition) {
       id
-      chatroomID
-      userID
       chatroom {
         id
         newMessages
-        LastMessage {
+        lastMessage {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -560,28 +1459,48 @@ export const createChatRoomUser = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
-        Messages {
+        messages {
           nextToken
           startedAt
         }
-        ChatRoomUsers {
+        chatRoomUsers {
           nextToken
         }
-        Admin {
+        user {
           id
-          userID
+          clinicaID
           name
           imageUri
           status
           lastOnlineAt
+          online
           publicKey
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
         }
         name
         imageUri
@@ -590,35 +1509,60 @@ export const createChatRoomUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
       }
       user {
         id
-        userID
+        clinicaID
         name
         imageUri
         status
-        Messages {
+        message {
           nextToken
           startedAt
         }
-        chatrooms {
-          nextToken
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
         }
         lastOnlineAt
+        online
         publicKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      chatRoomUserUserId
       chatRoomChatRoomUsersId
-      userChatroomsId
     }
   }
 `;
@@ -629,16 +1573,12 @@ export const updateChatRoomUser = /* GraphQL */ `
   ) {
     updateChatRoomUser(input: $input, condition: $condition) {
       id
-      chatroomID
-      userID
       chatroom {
         id
         newMessages
-        LastMessage {
+        lastMessage {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -650,28 +1590,48 @@ export const updateChatRoomUser = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
-        Messages {
+        messages {
           nextToken
           startedAt
         }
-        ChatRoomUsers {
+        chatRoomUsers {
           nextToken
         }
-        Admin {
+        user {
           id
-          userID
+          clinicaID
           name
           imageUri
           status
           lastOnlineAt
+          online
           publicKey
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
         }
         name
         imageUri
@@ -680,35 +1640,60 @@ export const updateChatRoomUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
       }
       user {
         id
-        userID
+        clinicaID
         name
         imageUri
         status
-        Messages {
+        message {
           nextToken
           startedAt
         }
-        chatrooms {
-          nextToken
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
         }
         lastOnlineAt
+        online
         publicKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      chatRoomUserUserId
       chatRoomChatRoomUsersId
-      userChatroomsId
     }
   }
 `;
@@ -719,16 +1704,12 @@ export const deleteChatRoomUser = /* GraphQL */ `
   ) {
     deleteChatRoomUser(input: $input, condition: $condition) {
       id
-      chatroomID
-      userID
       chatroom {
         id
         newMessages
-        LastMessage {
+        lastMessage {
           id
           content
-          userID
-          chatroomID
           image
           audio
           status
@@ -740,28 +1721,48 @@ export const deleteChatRoomUser = /* GraphQL */ `
           _deleted
           _lastChangedAt
           chatRoomMessagesId
-          userMessagesId
+          userMessageId
         }
-        Messages {
+        messages {
           nextToken
           startedAt
         }
-        ChatRoomUsers {
+        chatRoomUsers {
           nextToken
         }
-        Admin {
+        user {
           id
-          userID
+          clinicaID
           name
           imageUri
           status
           lastOnlineAt
+          online
           publicKey
           createdAt
           updatedAt
           _version
           _deleted
           _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
         }
         name
         imageUri
@@ -770,35 +1771,60 @@ export const deleteChatRoomUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        chatRoomUserId
+        chatRoomAdminId
       }
       user {
         id
-        userID
+        clinicaID
         name
         imageUri
         status
-        Messages {
+        message {
           nextToken
           startedAt
         }
-        chatrooms {
-          nextToken
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserId
+          chatRoomAdminId
         }
         lastOnlineAt
+        online
         publicKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      chatRoomUserUserId
       chatRoomChatRoomUsersId
-      userChatroomsId
     }
   }
 `;

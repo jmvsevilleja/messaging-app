@@ -342,10 +342,10 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "userByUserID",
+          "name" : "userByClinicaID",
           "description" : null,
           "args" : [ {
-            "name" : "userID",
+            "name" : "clinicaID",
             "description" : null,
             "type" : {
               "kind" : "SCALAR",
@@ -507,23 +507,23 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "userID",
+          "name" : "user",
           "description" : null,
           "args" : [ ],
           "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
+            "kind" : "OBJECT",
+            "name" : "User",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "chatroomID",
+          "name" : "chatRoom",
           "description" : null,
           "args" : [ ],
           "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
+            "kind" : "OBJECT",
+            "name" : "ChatRoom",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -666,7 +666,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "userMessagesId",
+          "name" : "userMessageId",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -700,63 +700,274 @@
         "enumValues" : null,
         "possibleTypes" : null
       }, {
-        "kind" : "ENUM",
-        "name" : "MessageStatus",
+        "kind" : "OBJECT",
+        "name" : "User",
         "description" : null,
-        "fields" : null,
-        "inputFields" : null,
-        "interfaces" : null,
-        "enumValues" : [ {
-          "name" : "SENT",
+        "fields" : [ {
+          "name" : "id",
           "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "ID",
+              "ofType" : null
+            }
+          },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "DELIVERED",
+          "name" : "clinicaID",
           "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "String",
+              "ofType" : null
+            }
+          },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "READ",
+          "name" : "name",
           "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "String",
+              "ofType" : null
+            }
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "imageUri",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "status",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "message",
+          "description" : null,
+          "args" : [ {
+            "name" : "filter",
+            "description" : null,
+            "type" : {
+              "kind" : "INPUT_OBJECT",
+              "name" : "ModelMessageFilterInput",
+              "ofType" : null
+            },
+            "defaultValue" : null
+          }, {
+            "name" : "sortDirection",
+            "description" : null,
+            "type" : {
+              "kind" : "ENUM",
+              "name" : "ModelSortDirection",
+              "ofType" : null
+            },
+            "defaultValue" : null
+          }, {
+            "name" : "limit",
+            "description" : null,
+            "type" : {
+              "kind" : "SCALAR",
+              "name" : "Int",
+              "ofType" : null
+            },
+            "defaultValue" : null
+          }, {
+            "name" : "nextToken",
+            "description" : null,
+            "type" : {
+              "kind" : "SCALAR",
+              "name" : "String",
+              "ofType" : null
+            },
+            "defaultValue" : null
+          } ],
+          "type" : {
+            "kind" : "OBJECT",
+            "name" : "ModelMessageConnection",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "chatRoomUser",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "OBJECT",
+            "name" : "ChatRoomUser",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "chatRoom",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "OBJECT",
+            "name" : "ChatRoom",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "lastOnlineAt",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "AWSTimestamp",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "online",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "publicKey",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "createdAt",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "AWSDateTime",
+              "ofType" : null
+            }
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "updatedAt",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "AWSDateTime",
+              "ofType" : null
+            }
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "_version",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "Int",
+              "ofType" : null
+            }
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "_deleted",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "_lastChangedAt",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "AWSTimestamp",
+              "ofType" : null
+            }
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "userChatRoomId",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "userChatRoomUserId",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
           "isDeprecated" : false,
           "deprecationReason" : null
         } ],
-        "possibleTypes" : null
-      }, {
-        "kind" : "SCALAR",
-        "name" : "AWSDateTime",
-        "description" : "The `AWSDateTime` scalar type provided by AWS AppSync, represents a valid ***extended*** [ISO 8601 DateTime](https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations) string. In other words, this scalar type accepts datetime strings of the form `YYYY-MM-DDThh:mm:ss.SSSZ`.  The scalar can also accept \"negative years\" of the form `-YYYY` which correspond to years before `0000`. For example, \"**-2017-01-01T00:00Z**\" and \"**-9999-01-01T00:00Z**\" are both valid datetime strings.  The field after the two digit seconds field is a nanoseconds field. It can accept between 1 and 9 digits. So, for example, \"**1970-01-01T12:00:00.2Z**\", \"**1970-01-01T12:00:00.277Z**\" and \"**1970-01-01T12:00:00.123456789Z**\" are all valid datetime strings.  The seconds and nanoseconds fields are optional (the seconds field must be specified if the nanoseconds field is to be used).  The [time zone offset](https://en.wikipedia.org/wiki/ISO_8601#Time_zone_designators) is compulsory for this scalar. The time zone offset must either be `Z` (representing the UTC time zone) or be in the format `±hh:mm:ss`. The seconds field in the timezone offset will be considered valid even though it is not part of the ISO 8601 standard.",
-        "fields" : null,
         "inputFields" : null,
-        "interfaces" : null,
-        "enumValues" : null,
-        "possibleTypes" : null
-      }, {
-        "kind" : "SCALAR",
-        "name" : "Int",
-        "description" : "Built-in Int",
-        "fields" : null,
-        "inputFields" : null,
-        "interfaces" : null,
-        "enumValues" : null,
-        "possibleTypes" : null
-      }, {
-        "kind" : "SCALAR",
-        "name" : "Boolean",
-        "description" : "Built-in Boolean",
-        "fields" : null,
-        "inputFields" : null,
-        "interfaces" : null,
-        "enumValues" : null,
-        "possibleTypes" : null
-      }, {
-        "kind" : "SCALAR",
-        "name" : "AWSTimestamp",
-        "description" : "The `AWSTimestamp` scalar type provided by AWS AppSync, represents the number of seconds that have elapsed since `1970-01-01T00:00Z`. Negative values are also accepted and these represent the number of seconds till `1970-01-01T00:00Z`.  Timestamps are serialized and deserialized as integers. The minimum supported timestamp value is **`-31557014167219200`** which corresponds to `-1000000000-01-01T00:00Z`. The maximum supported timestamp value is **`31556889864403199`** which corresponds to `1000000000-12-31T23:59:59.999999999Z`.",
-        "fields" : null,
-        "inputFields" : null,
-        "interfaces" : null,
+        "interfaces" : [ ],
         "enumValues" : null,
         "possibleTypes" : null
       }, {
@@ -810,6 +1021,15 @@
         "enumValues" : null,
         "possibleTypes" : null
       }, {
+        "kind" : "SCALAR",
+        "name" : "AWSTimestamp",
+        "description" : "The `AWSTimestamp` scalar type provided by AWS AppSync, represents the number of seconds that have elapsed since `1970-01-01T00:00Z`. Negative values are also accepted and these represent the number of seconds till `1970-01-01T00:00Z`.  Timestamps are serialized and deserialized as integers. The minimum supported timestamp value is **`-31557014167219200`** which corresponds to `-1000000000-01-01T00:00Z`. The maximum supported timestamp value is **`31556889864403199`** which corresponds to `1000000000-12-31T23:59:59.999999999Z`.",
+        "fields" : null,
+        "inputFields" : null,
+        "interfaces" : null,
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
         "kind" : "INPUT_OBJECT",
         "name" : "ModelMessageFilterInput",
         "description" : null,
@@ -829,24 +1049,6 @@
           "type" : {
             "kind" : "INPUT_OBJECT",
             "name" : "ModelStringInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "userID",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "chatroomID",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -940,7 +1142,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userMessagesId",
+          "name" : "userMessageId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -1083,6 +1285,15 @@
         "enumValues" : null,
         "possibleTypes" : null
       }, {
+        "kind" : "SCALAR",
+        "name" : "Boolean",
+        "description" : "Built-in Boolean",
+        "fields" : null,
+        "inputFields" : null,
+        "interfaces" : null,
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
         "kind" : "ENUM",
         "name" : "ModelAttributeTypes",
         "description" : null,
@@ -1214,6 +1425,15 @@
           },
           "defaultValue" : null
         } ],
+        "interfaces" : null,
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
+        "kind" : "SCALAR",
+        "name" : "Int",
+        "description" : "Built-in Int",
+        "fields" : null,
+        "inputFields" : null,
         "interfaces" : null,
         "enumValues" : null,
         "possibleTypes" : null
@@ -1375,248 +1595,28 @@
         "enumValues" : null,
         "possibleTypes" : null
       }, {
-        "kind" : "OBJECT",
-        "name" : "ChatRoom",
+        "kind" : "ENUM",
+        "name" : "MessageStatus",
         "description" : null,
-        "fields" : [ {
-          "name" : "id",
+        "fields" : null,
+        "inputFields" : null,
+        "interfaces" : null,
+        "enumValues" : [ {
+          "name" : "SENT",
           "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "ID",
-              "ofType" : null
-            }
-          },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "newMessages",
+          "name" : "DELIVERED",
           "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "LastMessage",
+          "name" : "READ",
           "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "OBJECT",
-            "name" : "Message",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "Messages",
-          "description" : null,
-          "args" : [ {
-            "name" : "filter",
-            "description" : null,
-            "type" : {
-              "kind" : "INPUT_OBJECT",
-              "name" : "ModelMessageFilterInput",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          }, {
-            "name" : "sortDirection",
-            "description" : null,
-            "type" : {
-              "kind" : "ENUM",
-              "name" : "ModelSortDirection",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          }, {
-            "name" : "limit",
-            "description" : null,
-            "type" : {
-              "kind" : "SCALAR",
-              "name" : "Int",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          }, {
-            "name" : "nextToken",
-            "description" : null,
-            "type" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          } ],
-          "type" : {
-            "kind" : "OBJECT",
-            "name" : "ModelMessageConnection",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "ChatRoomUsers",
-          "description" : null,
-          "args" : [ {
-            "name" : "filter",
-            "description" : null,
-            "type" : {
-              "kind" : "INPUT_OBJECT",
-              "name" : "ModelChatRoomUserFilterInput",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          }, {
-            "name" : "sortDirection",
-            "description" : null,
-            "type" : {
-              "kind" : "ENUM",
-              "name" : "ModelSortDirection",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          }, {
-            "name" : "limit",
-            "description" : null,
-            "type" : {
-              "kind" : "SCALAR",
-              "name" : "Int",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          }, {
-            "name" : "nextToken",
-            "description" : null,
-            "type" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          } ],
-          "type" : {
-            "kind" : "OBJECT",
-            "name" : "ModelChatRoomUserConnection",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "Admin",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "OBJECT",
-            "name" : "User",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "name",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "imageUri",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "createdAt",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "AWSDateTime",
-              "ofType" : null
-            }
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "updatedAt",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "AWSDateTime",
-              "ofType" : null
-            }
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "_version",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "Int",
-              "ofType" : null
-            }
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "_deleted",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Boolean",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "_lastChangedAt",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "AWSTimestamp",
-              "ofType" : null
-            }
-          },
           "isDeprecated" : false,
           "deprecationReason" : null
         } ],
-        "inputFields" : null,
-        "interfaces" : [ ],
-        "enumValues" : null,
         "possibleTypes" : null
       }, {
         "kind" : "ENUM",
@@ -1639,79 +1639,10 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "ModelChatRoomUserConnection",
-        "description" : null,
-        "fields" : [ {
-          "name" : "items",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "LIST",
-              "name" : null,
-              "ofType" : {
-                "kind" : "OBJECT",
-                "name" : "ChatRoomUser",
-                "ofType" : null
-              }
-            }
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "nextToken",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        } ],
-        "inputFields" : null,
-        "interfaces" : [ ],
-        "enumValues" : null,
-        "possibleTypes" : null
-      }, {
-        "kind" : "OBJECT",
         "name" : "ChatRoomUser",
         "description" : null,
         "fields" : [ {
           "name" : "id",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "ID",
-              "ofType" : null
-            }
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "chatroomID",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "ID",
-              "ofType" : null
-            }
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "userID",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -1827,18 +1758,22 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "chatRoomChatRoomUsersId",
+          "name" : "chatRoomUserUserId",
           "description" : null,
           "args" : [ ],
           "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
-            "ofType" : null
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "ID",
+              "ofType" : null
+            }
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "userChatroomsId",
+          "name" : "chatRoomChatRoomUsersId",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -1855,7 +1790,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "User",
+        "name" : "ChatRoom",
         "description" : null,
         "fields" : [ {
           "name" : "id",
@@ -1873,59 +1808,29 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "userID",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
-            }
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "name",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
-            }
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "imageUri",
+          "name" : "newMessages",
           "description" : null,
           "args" : [ ],
           "type" : {
             "kind" : "SCALAR",
-            "name" : "String",
+            "name" : "Int",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "status",
+          "name" : "lastMessage",
           "description" : null,
           "args" : [ ],
           "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
+            "kind" : "OBJECT",
+            "name" : "Message",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "Messages",
+          "name" : "messages",
           "description" : null,
           "args" : [ {
             "name" : "filter",
@@ -1972,7 +1877,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "chatrooms",
+          "name" : "chatRoomUsers",
           "description" : null,
           "args" : [ {
             "name" : "filter",
@@ -2019,18 +1924,44 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "lastOnlineAt",
+          "name" : "user",
           "description" : null,
           "args" : [ ],
           "type" : {
-            "kind" : "SCALAR",
-            "name" : "AWSTimestamp",
+            "kind" : "OBJECT",
+            "name" : "User",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "publicKey",
+          "name" : "admin",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "OBJECT",
+              "name" : "User",
+              "ofType" : null
+            }
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "name",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "imageUri",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -2111,6 +2042,71 @@
           },
           "isDeprecated" : false,
           "deprecationReason" : null
+        }, {
+          "name" : "chatRoomUserId",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "chatRoomAdminId",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "ID",
+              "ofType" : null
+            }
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        } ],
+        "inputFields" : null,
+        "interfaces" : [ ],
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
+        "kind" : "OBJECT",
+        "name" : "ModelChatRoomUserConnection",
+        "description" : null,
+        "fields" : [ {
+          "name" : "items",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "LIST",
+              "name" : null,
+              "ofType" : {
+                "kind" : "OBJECT",
+                "name" : "ChatRoomUser",
+                "ofType" : null
+              }
+            }
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "nextToken",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
         } ],
         "inputFields" : null,
         "interfaces" : [ ],
@@ -2123,24 +2119,6 @@
         "fields" : null,
         "inputFields" : [ {
           "name" : "id",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "chatroomID",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "userID",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -2183,16 +2161,16 @@
             "ofType" : null
           },
           "defaultValue" : null
-        }, {
-          "name" : "userChatroomsId",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
         } ],
+        "interfaces" : null,
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
+        "kind" : "SCALAR",
+        "name" : "AWSDateTime",
+        "description" : "The `AWSDateTime` scalar type provided by AWS AppSync, represents a valid ***extended*** [ISO 8601 DateTime](https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations) string. In other words, this scalar type accepts datetime strings of the form `YYYY-MM-DDThh:mm:ss.SSSZ`.  The scalar can also accept \"negative years\" of the form `-YYYY` which correspond to years before `0000`. For example, \"**-2017-01-01T00:00Z**\" and \"**-9999-01-01T00:00Z**\" are both valid datetime strings.  The field after the two digit seconds field is a nanoseconds field. It can accept between 1 and 9 digits. So, for example, \"**1970-01-01T12:00:00.2Z**\", \"**1970-01-01T12:00:00.277Z**\" and \"**1970-01-01T12:00:00.123456789Z**\" are all valid datetime strings.  The seconds and nanoseconds fields are optional (the seconds field must be specified if the nanoseconds field is to be used).  The [time zone offset](https://en.wikipedia.org/wiki/ISO_8601#Time_zone_designators) is compulsory for this scalar. The time zone offset must either be `Z` (representing the UTC time zone) or be in the format `±hh:mm:ss`. The seconds field in the timezone offset will be considered valid even though it is not part of the ISO 8601 standard.",
+        "fields" : null,
+        "inputFields" : null,
         "interfaces" : null,
         "enumValues" : null,
         "possibleTypes" : null
@@ -2319,6 +2297,24 @@
           "type" : {
             "kind" : "INPUT_OBJECT",
             "name" : "ModelChatRoomFilterInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "chatRoomUserId",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelIDInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "chatRoomAdminId",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelIDInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -2485,7 +2481,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userID",
+          "name" : "clinicaID",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -2530,6 +2526,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "online",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelBooleanInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "publicKey",
           "description" : null,
           "type" : {
@@ -2570,6 +2575,69 @@
           "type" : {
             "kind" : "INPUT_OBJECT",
             "name" : "ModelUserFilterInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "userChatRoomId",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelIDInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "userChatRoomUserId",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelIDInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        } ],
+        "interfaces" : null,
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
+        "kind" : "INPUT_OBJECT",
+        "name" : "ModelBooleanInput",
+        "description" : null,
+        "fields" : null,
+        "inputFields" : [ {
+          "name" : "ne",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "eq",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "attributeExists",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "attributeType",
+          "description" : null,
+          "type" : {
+            "kind" : "ENUM",
+            "name" : "ModelAttributeTypes",
             "ofType" : null
           },
           "defaultValue" : null
@@ -3082,24 +3150,6 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userID",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "chatroomID",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
           "name" : "image",
           "description" : null,
           "type" : {
@@ -3163,7 +3213,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userMessagesId",
+          "name" : "userMessageId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -3186,24 +3236,6 @@
           "type" : {
             "kind" : "INPUT_OBJECT",
             "name" : "ModelStringInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "userID",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "chatroomID",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -3297,7 +3329,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userMessagesId",
+          "name" : "userMessageId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -3333,24 +3365,6 @@
           "type" : {
             "kind" : "SCALAR",
             "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "userID",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "chatroomID",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
             "ofType" : null
           },
           "defaultValue" : null
@@ -3418,7 +3432,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userMessagesId",
+          "name" : "userMessageId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -3511,6 +3525,28 @@
             "ofType" : null
           },
           "defaultValue" : null
+        }, {
+          "name" : "chatRoomUserId",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "chatRoomAdminId",
+          "description" : null,
+          "type" : {
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "ID",
+              "ofType" : null
+            }
+          },
+          "defaultValue" : null
         } ],
         "interfaces" : null,
         "enumValues" : null,
@@ -3582,6 +3618,24 @@
             "ofType" : null
           },
           "defaultValue" : null
+        }, {
+          "name" : "chatRoomUserId",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelIDInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "chatRoomAdminId",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelIDInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
         } ],
         "interfaces" : null,
         "enumValues" : null,
@@ -3640,6 +3694,24 @@
             "ofType" : null
           },
           "defaultValue" : null
+        }, {
+          "name" : "chatRoomUserId",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "chatRoomAdminId",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
+          "defaultValue" : null
         } ],
         "interfaces" : null,
         "enumValues" : null,
@@ -3690,7 +3762,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userID",
+          "name" : "clinicaID",
           "description" : null,
           "type" : {
             "kind" : "NON_NULL",
@@ -3743,6 +3815,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "online",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "publicKey",
           "description" : null,
           "type" : {
@@ -3760,6 +3841,24 @@
             "ofType" : null
           },
           "defaultValue" : null
+        }, {
+          "name" : "userChatRoomId",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "userChatRoomUserId",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
+          "defaultValue" : null
         } ],
         "interfaces" : null,
         "enumValues" : null,
@@ -3770,7 +3869,7 @@
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
-          "name" : "userID",
+          "name" : "clinicaID",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -3811,6 +3910,15 @@
           "type" : {
             "kind" : "INPUT_OBJECT",
             "name" : "ModelIntInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "online",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelBooleanInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -3858,6 +3966,24 @@
             "ofType" : null
           },
           "defaultValue" : null
+        }, {
+          "name" : "userChatRoomId",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelIDInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "userChatRoomUserId",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelIDInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
         } ],
         "interfaces" : null,
         "enumValues" : null,
@@ -3881,7 +4007,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userID",
+          "name" : "clinicaID",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -3926,6 +4052,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "online",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "publicKey",
           "description" : null,
           "type" : {
@@ -3940,6 +4075,24 @@
           "type" : {
             "kind" : "SCALAR",
             "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "userChatRoomId",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "userChatRoomUserId",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "ID",
             "ofType" : null
           },
           "defaultValue" : null
@@ -3993,32 +4146,6 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "chatroomID",
-          "description" : null,
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "ID",
-              "ofType" : null
-            }
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "userID",
-          "description" : null,
-          "type" : {
-            "kind" : "NON_NULL",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "ID",
-              "ofType" : null
-            }
-          },
-          "defaultValue" : null
-        }, {
           "name" : "_version",
           "description" : null,
           "type" : {
@@ -4028,16 +4155,20 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "chatRoomChatRoomUsersId",
+          "name" : "chatRoomUserUserId",
           "description" : null,
           "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
-            "ofType" : null
+            "kind" : "NON_NULL",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "ID",
+              "ofType" : null
+            }
           },
           "defaultValue" : null
         }, {
-          "name" : "userChatroomsId",
+          "name" : "chatRoomChatRoomUsersId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -4055,24 +4186,6 @@
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
-          "name" : "chatroomID",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "userID",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "ModelIDInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
           "name" : "and",
           "description" : null,
           "type" : {
@@ -4108,7 +4221,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "chatRoomChatRoomUsersId",
+          "name" : "chatRoomUserUserId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -4117,7 +4230,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userChatroomsId",
+          "name" : "chatRoomChatRoomUsersId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -4148,24 +4261,6 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "chatroomID",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "userID",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "ID",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
           "name" : "_version",
           "description" : null,
           "type" : {
@@ -4175,7 +4270,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "chatRoomChatRoomUsersId",
+          "name" : "chatRoomUserUserId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -4184,7 +4279,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "userChatroomsId",
+          "name" : "chatRoomChatRoomUsersId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -4366,51 +4461,6 @@
         } ],
         "inputFields" : null,
         "interfaces" : [ ],
-        "enumValues" : null,
-        "possibleTypes" : null
-      }, {
-        "kind" : "INPUT_OBJECT",
-        "name" : "ModelBooleanInput",
-        "description" : null,
-        "fields" : null,
-        "inputFields" : [ {
-          "name" : "ne",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Boolean",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "eq",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Boolean",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "attributeExists",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Boolean",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "attributeType",
-          "description" : null,
-          "type" : {
-            "kind" : "ENUM",
-            "name" : "ModelAttributeTypes",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        } ],
-        "interfaces" : null,
         "enumValues" : null,
         "possibleTypes" : null
       }, {
@@ -5300,27 +5350,6 @@
         "onFragment" : false,
         "onField" : true
       }, {
-        "name" : "aws_cognito_user_pools",
-        "description" : "Tells the service this field/object has access authorized by a Cognito User Pools token.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ {
-          "name" : "cognito_groups",
-          "description" : "List of cognito user pool groups which have access on this field",
-          "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
-            }
-          },
-          "defaultValue" : null
-        } ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
         "name" : "aws_oidc",
         "description" : "Tells the service this field/object has access authorized by an OIDC token.",
         "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
@@ -5329,45 +5358,12 @@
         "onFragment" : false,
         "onField" : false
       }, {
-        "name" : "deprecated",
-        "description" : null,
-        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
-        "args" : [ {
-          "name" : "reason",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : "\"No longer supported\""
-        } ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
-        "name" : "aws_lambda",
-        "description" : "Tells the service this field/object has access authorized by a Lambda Authorizer.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
-        "name" : "aws_api_key",
-        "description" : "Tells the service this field/object has access authorized by an API key.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
-        "name" : "aws_auth",
-        "description" : "Directs the schema to enforce authorization on a field",
+        "name" : "aws_publish",
+        "description" : "Tells the service which subscriptions will be published to when this mutation is called. This directive is deprecated use @aws_susbscribe directive instead.",
         "locations" : [ "FIELD_DEFINITION" ],
         "args" : [ {
-          "name" : "cognito_groups",
-          "description" : "List of cognito user pool groups which have access on this field",
+          "name" : "subscriptions",
+          "description" : "List of subscriptions which will be published to when this mutation is called.",
           "type" : {
             "kind" : "LIST",
             "name" : null,
@@ -5404,6 +5400,22 @@
         "onFragment" : false,
         "onField" : false
       }, {
+        "name" : "aws_lambda",
+        "description" : "Tells the service this field/object has access authorized by a Lambda Authorizer.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_api_key",
+        "description" : "Tells the service this field/object has access authorized by an API key.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
         "name" : "aws_iam",
         "description" : "Tells the service this field/object has access authorized by sigv4 signing.",
         "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
@@ -5412,12 +5424,50 @@
         "onFragment" : false,
         "onField" : false
       }, {
-        "name" : "aws_publish",
-        "description" : "Tells the service which subscriptions will be published to when this mutation is called. This directive is deprecated use @aws_susbscribe directive instead.",
+        "name" : "deprecated",
+        "description" : null,
+        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
+        "args" : [ {
+          "name" : "reason",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : "\"No longer supported\""
+        } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_cognito_user_pools",
+        "description" : "Tells the service this field/object has access authorized by a Cognito User Pools token.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ {
+          "name" : "cognito_groups",
+          "description" : "List of cognito user pool groups which have access on this field",
+          "type" : {
+            "kind" : "LIST",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "String",
+              "ofType" : null
+            }
+          },
+          "defaultValue" : null
+        } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_auth",
+        "description" : "Directs the schema to enforce authorization on a field",
         "locations" : [ "FIELD_DEFINITION" ],
         "args" : [ {
-          "name" : "subscriptions",
-          "description" : "List of subscriptions which will be published to when this mutation is called.",
+          "name" : "cognito_groups",
+          "description" : "List of cognito user pool groups which have access on this field",
           "type" : {
             "kind" : "LIST",
             "name" : null,

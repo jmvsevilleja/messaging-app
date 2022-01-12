@@ -17,19 +17,31 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "userID": {
-                    "name": "userID",
+                "user": {
+                    "name": "user",
                     "isArray": false,
-                    "type": "ID",
+                    "type": {
+                        "model": "User"
+                    },
                     "isRequired": false,
-                    "attributes": []
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetName": "userMessageId"
+                    }
                 },
-                "chatroomID": {
-                    "name": "chatroomID",
+                "chatRoom": {
+                    "name": "chatRoom",
                     "isArray": false,
-                    "type": "ID",
+                    "type": {
+                        "model": "ChatRoom"
+                    },
                     "isRequired": false,
-                    "attributes": []
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetName": "chatRoomMessagesId"
+                    }
                 },
                 "image": {
                     "name": "image",
@@ -84,15 +96,15 @@ export const schema = {
                     "attributes": [],
                     "isReadOnly": true
                 },
-                "chatRoomMessagesId": {
-                    "name": "chatRoomMessagesId",
+                "userMessageId": {
+                    "name": "userMessageId",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": false,
                     "attributes": []
                 },
-                "userMessagesId": {
-                    "name": "userMessagesId",
+                "chatRoomMessagesId": {
+                    "name": "chatRoomMessagesId",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": false,
@@ -105,6 +117,251 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "User": {
+            "name": "User",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "clinicaID": {
+                    "name": "clinicaID",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "imageUri": {
+                    "name": "imageUri",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "status": {
+                    "name": "status",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "message": {
+                    "name": "message",
+                    "isArray": true,
+                    "type": {
+                        "model": "Message"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": "userMessageId"
+                    }
+                },
+                "chatRoomUser": {
+                    "name": "chatRoomUser",
+                    "isArray": false,
+                    "type": {
+                        "model": "ChatRoomUser"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": "id",
+                        "targetName": "userChatRoomUserId"
+                    }
+                },
+                "lastOnlineAt": {
+                    "name": "lastOnlineAt",
+                    "isArray": false,
+                    "type": "AWSTimestamp",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "online": {
+                    "name": "online",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "publicKey": {
+                    "name": "publicKey",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "userChatRoomUserId": {
+                    "name": "userChatRoomUserId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "Users",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byClinicaID",
+                        "queryField": "userByClinicaID",
+                        "fields": [
+                            "clinicaID",
+                            "id"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byName",
+                        "queryField": "userByName",
+                        "fields": [
+                            "name",
+                            "id"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "ChatRoomUser": {
+            "name": "ChatRoomUser",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "chatroom": {
+                    "name": "chatroom",
+                    "isArray": false,
+                    "type": {
+                        "model": "ChatRoom"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetName": "chatRoomChatRoomUsersId"
+                    }
+                },
+                "user": {
+                    "name": "user",
+                    "isArray": false,
+                    "type": {
+                        "model": "User"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetName": "chatRoomUserUserId"
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "chatRoomChatRoomUsersId": {
+                    "name": "chatRoomChatRoomUsersId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "ChatRoomUsers",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {
+                        "queries": null
+                    }
                 },
                 {
                     "type": "auth",
@@ -141,8 +398,8 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "Messages": {
-                    "name": "Messages",
+                "messages": {
+                    "name": "messages",
                     "isArray": true,
                     "type": {
                         "model": "Message"
@@ -155,8 +412,8 @@ export const schema = {
                         "associatedWith": "chatRoomMessagesId"
                     }
                 },
-                "ChatRoomUsers": {
-                    "name": "ChatRoomUsers",
+                "chatRoomUsers": {
+                    "name": "chatRoomUsers",
                     "isArray": true,
                     "type": {
                         "model": "ChatRoomUser"
@@ -169,99 +426,6 @@ export const schema = {
                         "associatedWith": "chatRoomChatRoomUsersId"
                     }
                 },
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "imageUri": {
-                    "name": "imageUri",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "ChatRooms",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "ChatRoomUser": {
-            "name": "ChatRoomUser",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "chatroomID": {
-                    "name": "chatroomID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "userID": {
-                    "name": "userID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "chatroom": {
-                    "name": "chatroom",
-                    "isArray": false,
-                    "type": {
-                        "model": "ChatRoom"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetName": "chatRoomChatRoomUsersId"
-                    }
-                },
                 "user": {
                     "name": "user",
                     "isArray": false,
@@ -271,83 +435,16 @@ export const schema = {
                     "isRequired": true,
                     "attributes": [],
                     "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetName": "userChatroomsId"
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": "id",
+                        "targetName": "chatRoomUserId"
                     }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "userChatroomsId": {
-                    "name": "userChatroomsId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                }
-            },
-            "syncable": true,
-            "pluralName": "ChatRoomUsers",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {
-                        "queries": null
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "User": {
-            "name": "User",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "userID": {
-                    "name": "userID",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
                 },
                 "name": {
                     "name": "name",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "imageUri": {
@@ -357,55 +454,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "status": {
-                    "name": "status",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "Messages": {
-                    "name": "Messages",
-                    "isArray": true,
-                    "type": {
-                        "model": "Message"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "userMessagesId"
-                    }
-                },
-                "chatrooms": {
-                    "name": "chatrooms",
-                    "isArray": true,
-                    "type": {
-                        "model": "ChatRoomUser"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "userChatroomsId"
-                    }
-                },
-                "lastOnlineAt": {
-                    "name": "lastOnlineAt",
-                    "isArray": false,
-                    "type": "AWSTimestamp",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "publicKey": {
-                    "name": "publicKey",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -421,36 +469,21 @@ export const schema = {
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
+                },
+                "chatRoomUserId": {
+                    "name": "chatRoomUserId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
                 }
             },
             "syncable": true,
-            "pluralName": "Users",
+            "pluralName": "ChatRooms",
             "attributes": [
                 {
                     "type": "model",
                     "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byUserID",
-                        "queryField": "userByUserID",
-                        "fields": [
-                            "userID",
-                            "id"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byName",
-                        "queryField": "userByName",
-                        "fields": [
-                            "name",
-                            "id"
-                        ]
-                    }
                 },
                 {
                     "type": "auth",
@@ -482,5 +515,5 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "version": "448ff792ad634bcfedc9f803148d8481"
+    "version": "23dbfcddb20b73f3d8fc9bbce3305190"
 };

@@ -12,7 +12,7 @@ type MessageMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-type ChatRoomMetaData = {
+type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
@@ -20,15 +20,15 @@ type ChatRoomUserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-type UserMetaData = {
+type ChatRoomMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
 export declare class Message {
   readonly id: string;
   readonly content?: string;
-  readonly userID?: string;
-  readonly chatroomID?: string;
+  readonly user?: User;
+  readonly chatRoom?: ChatRoom;
   readonly image?: string;
   readonly audio?: string;
   readonly status?: MessageStatus | keyof typeof MessageStatus;
@@ -36,50 +36,52 @@ export declare class Message {
   readonly forUserId?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
+  readonly userMessageId?: string;
   readonly chatRoomMessagesId?: string;
-  readonly userMessagesId?: string;
   constructor(init: ModelInit<Message, MessageMetaData>);
   static copyOf(source: Message, mutator: (draft: MutableModel<Message, MessageMetaData>) => MutableModel<Message, MessageMetaData> | void): Message;
+}
+
+export declare class User {
+  readonly id: string;
+  readonly clinicaID: string;
+  readonly name: string;
+  readonly imageUri?: string;
+  readonly status?: string;
+  readonly message?: (Message | null)[];
+  readonly chatRoomUser?: ChatRoomUser;
+  readonly lastOnlineAt?: number;
+  readonly online?: boolean;
+  readonly publicKey?: string;
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
+  readonly userChatRoomUserId?: string;
+  constructor(init: ModelInit<User, UserMetaData>);
+  static copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
+}
+
+export declare class ChatRoomUser {
+  readonly id: string;
+  readonly chatroom: ChatRoom;
+  readonly user: User;
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
+  readonly chatRoomChatRoomUsersId?: string;
+  constructor(init: ModelInit<ChatRoomUser, ChatRoomUserMetaData>);
+  static copyOf(source: ChatRoomUser, mutator: (draft: MutableModel<ChatRoomUser, ChatRoomUserMetaData>) => MutableModel<ChatRoomUser, ChatRoomUserMetaData> | void): ChatRoomUser;
 }
 
 export declare class ChatRoom {
   readonly id: string;
   readonly newMessages?: number;
-  readonly Messages?: (Message | null)[];
-  readonly ChatRoomUsers?: (ChatRoomUser | null)[];
+  readonly messages?: (Message | null)[];
+  readonly chatRoomUsers?: (ChatRoomUser | null)[];
+  readonly user: User;
   readonly name?: string;
   readonly imageUri?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
+  readonly chatRoomUserId: string;
   constructor(init: ModelInit<ChatRoom, ChatRoomMetaData>);
   static copyOf(source: ChatRoom, mutator: (draft: MutableModel<ChatRoom, ChatRoomMetaData>) => MutableModel<ChatRoom, ChatRoomMetaData> | void): ChatRoom;
-}
-
-export declare class ChatRoomUser {
-  readonly id: string;
-  readonly chatroomID: string;
-  readonly userID: string;
-  readonly chatroom: ChatRoom;
-  readonly user: User;
-  readonly createdAt?: string;
-  readonly updatedAt?: string;
-  readonly userChatroomsId?: string;
-  constructor(init: ModelInit<ChatRoomUser, ChatRoomUserMetaData>);
-  static copyOf(source: ChatRoomUser, mutator: (draft: MutableModel<ChatRoomUser, ChatRoomUserMetaData>) => MutableModel<ChatRoomUser, ChatRoomUserMetaData> | void): ChatRoomUser;
-}
-
-export declare class User {
-  readonly id: string;
-  readonly userID: string;
-  readonly name: string;
-  readonly imageUri?: string;
-  readonly status?: string;
-  readonly Messages?: (Message | null)[];
-  readonly chatrooms?: (ChatRoomUser | null)[];
-  readonly lastOnlineAt?: number;
-  readonly publicKey?: string;
-  readonly createdAt?: string;
-  readonly updatedAt?: string;
-  constructor(init: ModelInit<User, UserMetaData>);
-  static copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
 }
