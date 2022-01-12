@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from 'aws-amplify'
-import {userByUserID, listMessages, listUsers} from '../graphql/queries'
-import {createMessage, createUser} from "../graphql/mutations";
+import {userByClinicaID, listMessages, listUsers, listChatRooms} from '../graphql/queries'
+import {createMessage, createUser, createChatRoom, createChatRoomUser} from "../graphql/mutations";
 import {onCreateMessage, onCreateUser} from "../graphql/subscriptions";
 import {Dialog} from '@headlessui/react'
 
@@ -10,6 +10,7 @@ import Message from "./message";
 import User from "./user";
 import axios from "axios";
 import "./index.css";
+import Avatar from 'react-avatar';
 
 function eraseCookie(name) {
     document.cookie = name + "=; Max-Age=-99999999;";
@@ -20,7 +21,9 @@ const Chat = () => {
     const [userList, setUserList] = useState([]);
     const [messageText, setMessageText] = useState("");
     const [user, setUser] = useState(null);
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
+    const [conversation, setConversation] = useState(false);
+    const [chat, setChat] = useState({});
     //const [accounts, setAccounts] = useState({});
 
     let navigate = useNavigate();
@@ -62,7 +65,80 @@ const Chat = () => {
     };
 
     const handleChat = async (item) => {
-        console.log('handleChat', item);
+        setConversation(true);
+        setChat({
+            id: item.id,
+            name: item.name
+        });
+        // TODO: Create Conversation assigning users
+        //       console.log(user);
+        //console.log(user);
+        // const conv = await API.graphql({
+        //     query: createChatRoom,
+        //     variables: {
+        //         input: {
+        //             newMessages: 0,
+        //             //LastMessage: '',
+        //             Admin: {...user},
+        //             //  ChatRoomUsers: [item],
+        //             name: item.name,
+        //             imageUri: '',
+        //         },
+        //     },
+        // });
+        // console.log(conv);
+
+        // try {
+        //const auser = await API.graphql(graphqlOperation(getUser, {id: user.id}));
+        //console.log('user', auser);
+
+        console.log(user.id, item.id);
+        //listChatRooms
+        // const customChatRooms = /* GraphQL */ `
+        // query ListChatRooms($filter: ModelChatRoomFilterInput $limit: Int) {
+        //   listChatRooms(filter: $filter, limit: $limit) {items {id name}}}`;
+
+        const chatrooms = await API.graphql({
+            // query: customChatRooms,
+            query: listChatRooms,
+            variables: {
+                filter: {chatRoomAdminId: {eq: user.id}, chatRoomUserId: {eq: item.id}},
+            }
+        });
+
+        if (chatrooms.data.listChatRooms.items.length) {
+            console.log('Chatroom ID:', chatrooms.data.listChatRooms.items[0].id);
+        } else {
+            // Creating Chat Room
+            const chatroom = await API.graphql(graphqlOperation(createChatRoom, {
+                input: {
+                    name: item.name,
+                    chatRoomAdminId: user.id, // Creator of the Chatroom
+                    chatRoomUserId: item.id //  Conversation with
+                }
+            }))
+            console.log(chatroom, chatroom.data.createChatRoom.id);
+
+            // Creating Chat Room User
+            // const chatroomuser = await API.graphql(graphqlOperation(createChatRoomUser, {
+            //     input: {
+            //         chatRoomUserUserId: item.id, // Conversation with
+            //         chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
+            //     }
+            // }))
+            console.log('Chatroom ID:', chatroom.data.createChatRoom.id);
+        }
+
+        // const {data: {createChatRoom: {id: chatroomLinkConversationId}}} = conversation
+        // const relation1 = {chatroomLinkUserId: username, chatroomLinkConversationId}
+        // const relation2 = {chatroomLinkUserId: otherUserName, chatroomLinkConversationId}
+        // await API.graphql(graphqlOperation(createChatRoomUser, relation1))
+        // await API.graphql(graphqlOperation(createChatRoomUser, relation2))
+        // } catch (err) {
+        //     console.log('error creating conversation...', err)
+        // }
+
+
     };
 
     useEffect(() => {
@@ -74,14 +150,14 @@ const Chat = () => {
             if (user_id && auth_token && refresh_token) {
                 // check if logged user is in  users table. create if not found and query user details.
                 if (!user_list) {
-                    //console.log('user not found create to users table');
                     fetchUserDetails(user_id, auth_token, refresh_token).then((user_detail) => {
-                        const name = user_detail.first_name + ' ' + user_detail.last_name
+                        const name = user_detail.first_name + ' ' + user_detail.last_name;
+                        console.log('user not found create to users table', user_id, name);
                         addUser(user_id, name).then((result) => {
                             //console.log('user created', result);
                             setUser({
                                 id: result.id,
-                                userID: user_id,
+                                clinicaID: user_id,
                                 name: name
                             });
                         });
@@ -91,6 +167,7 @@ const Chat = () => {
             } else {
                 // 'auth not found goto login'
                 navigate(`/`);
+                return;
             }
             fetchMessages();
             fetchUsers();
@@ -163,10 +240,10 @@ const Chat = () => {
         if (!user_id) return;
         try {
             // get logged user from User Table to get status.
-            const item = await API.graphql(graphqlOperation(userByUserID, {userID: user_id}));
-            if (item.data.userByUserID.items) {
-                setUser(item.data.userByUserID.items[0]);
-                return item.data.userByUserID.items[0];
+            const item = await API.graphql(graphqlOperation(userByClinicaID, {clinicaID: user_id}));
+            if (item.data.userByClinicaID.items) {
+                setUser(item.data.userByClinicaID.items[0]);
+                return item.data.userByClinicaID.items[0];
             }
         } catch (e) {
             console.log(e);
@@ -190,7 +267,7 @@ const Chat = () => {
                 query: createUser,
                 variables: {
                     input: {
-                        userID: user_id,
+                        clinicaID: user_id,
                         name: name,
                         status: 'Hi there! I\'m using Clinica Messenger'
                     },
@@ -232,7 +309,6 @@ const Chat = () => {
                                 type="button"
                                 className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
                                 onClick={() => setIsOpen(false)}
-
                             >
                                 Got it, thanks!
                             </button>
@@ -245,10 +321,26 @@ const Chat = () => {
                     {/* Header */}
                 </div>
                 <div className="bg-cyan-600 flex-1">
-                    <div className="p-10 self-center">
-                        <div className="grid grid-cols-3 min-w-full border rounded">
-                            <div className="col-span-1 bg-white border-r border-gray-300 ">
+                    <div className="p-10 h-screen">
+                        <div className="flex border rounded shadow-lg h-full">
+                            <div className="w-1/3 flex flex-col bg-white border-r border-gray-300">
                                 <div className="my-3 mx-3 ">
+                                    <div className="flex justify-between item-center p-3 pl-0">
+                                        <span className="flex items-center">
+                                            {user && <Avatar size="40" round={true} name={user.name} />}
+                                            <span className="block ml-2 font-bold text-base text-gray-600"> {user && user.name}</span>
+                                            <span className="connected text-green-500 ml-2" >
+                                                <svg width="6" height="6">
+                                                    <circle cx="3" cy="3" r="3" fill="currentColor"></circle>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                        <span>
+                                            <button onClick={handleLogout} title="Logout" className="outline-none focus:outline-none self-end">
+                                                <svg className="h-8 w-8 text-gray-500" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />  <path d="M7 12h14l-3 -3m0 6l3 -3" /></svg>
+                                            </button>
+                                        </span>
+                                    </div>
                                     <div className="relative text-gray-600 focus-within:text-gray-400">
                                         <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                                             <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-6 h-6 text-gray-500"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -259,11 +351,11 @@ const Chat = () => {
                                 </div>
 
                                 <ul className="overflow-auto">
-                                    <h2 className="ml-2 mb-2 text-gray-600 text-lg my-2">Chats</h2>
+                                    <h2 className="ml-3 mb-2 text-gray-600 text-lg my-2">Chat</h2>
 
                                     {user && userList
                                         .filter(item => {
-                                            return item.id != user.id
+                                            return item.id !== user.id
                                         })
                                         // sort user by name
                                         .sort((a, b) => a.name.localeCompare(b.name))
@@ -276,80 +368,80 @@ const Chat = () => {
                                         ))}
                                 </ul>
                             </div>
-                            <div className="col-span-2 bg-white">
-                                <div className="w-full ">
-                                    <div className="flex justify-between item-center border-b border-gray-300 p-3">
-                                        <span className="flex items-center">
-                                            <img className="h-10 w-10 rounded-full object-cover"
-                                                src="https://images.pexels.com/photos/3777931/pexels-photo-3777931.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"
-                                                alt="username" />
-                                            <span className="block ml-2 font-bold text-base text-gray-600"> {user && user.name}</span>
-                                            <span className="connected text-green-500 ml-2" >
-                                                <svg width="6" height="6">
-                                                    <circle cx="3" cy="3" r="3" fill="currentColor"></circle>
-                                                </svg>
+                            <div className="w-2/3 flex flex-col bg-white">
+
+                                {!conversation &&
+                                    <div className="h-screen w-full flex flex flex-col justify-center items-center">
+                                        <div className=""><img
+                                            className="h-80 w-80"
+                                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/597px-WhatsApp.svg.png"
+                                            alt=""
+                                        /></div>
+                                    </div>
+                                }
+                                {conversation &&
+                                    <div className="w-full h-full flex flex-col">
+                                        <div className="justify-between item-center border-b border-gray-300 p-3">
+                                            <span className="flex items-center">
+                                                {chat && <Avatar size="40" round={true} name={chat.name} />}
+                                                <span className="block ml-2 font-bold text-base text-gray-600"> {chat && chat.name}</span>
+                                                <span className="connected text-green-500 ml-2" >
+                                                    <svg width="6" height="6">
+                                                        <circle cx="3" cy="3" r="3" fill="currentColor"></circle>
+                                                    </svg>
+                                                </span>
                                             </span>
-                                        </span>
-                                        <span>
-                                            <button onClick={handleLogout} className="outline-none focus:outline-none self-end">
-                                                <svg className="h-8 w-8 text-gray-500" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />  <path d="M7 12h14l-3 -3m0 6l3 -3" /></svg>
+                                        </div>
+                                        <div id="chat" className="h-full overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100" >
+                                            {messageList
+                                                // sort messages oldest to newest client-side
+                                                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+                                                .map((message) => (
+                                                    // map each message into the message component with message as props
+                                                    <Message
+                                                        message={message}
+                                                        user={user}
+                                                        isMe={user.userId === message.userId}
+                                                        key={message.id}
+                                                    />
+                                                ))}
+                                        </div>
+                                        <form onSubmit={handleSubmit} className="w-full flex py-3 px-3 items-center justify-between border-t border-gray-300">
+                                            <button className="outline-none focus:outline-none">
+                                                <svg className="text-gray-400 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
                                             </button>
-                                        </span>
-                                    </div>
+                                            <button className="outline-none focus:outline-none ml-1">
+                                                <svg className="text-gray-400 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                                </svg>
+                                            </button>
 
-                                    <div id="chat" className="w-full overflow-y-auto p-10 relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100 max-h-96" >
-                                        {messageList
-                                            // sort messages oldest to newest client-side
-                                            .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-                                            .map((message) => (
-                                                // map each message into the message component with message as props
-                                                <Message
-                                                    message={message}
-                                                    user={user}
-                                                    isMe={user.userId === message.userId}
-                                                    key={message.id}
-                                                />
-                                            ))}
-                                    </div>
-                                    <form onSubmit={handleSubmit} className="w-full py-3 px-3 flex items-center justify-between border-t border-gray-300">
+                                            <input
+                                                value={messageText}
+                                                onChange={(e) => setMessageText(e.target.value)}
+                                                aria-placeholder="Write message..."
+                                                placeholder="Write message..."
+                                                className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700"
+                                                type="text"
+                                                id="message"
+                                                name="message"
+                                                autoFocus
+                                                required
+                                                autoComplete="off"
+                                            ></input>
 
-                                        <button className="outline-none focus:outline-none">
-                                            <svg className="text-gray-400 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <button className="outline-none focus:outline-none ml-1">
-                                            <svg className="text-gray-400 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                                            </svg>
-                                        </button>
-
-                                        <input
-                                            value={messageText}
-                                            onChange={(e) => setMessageText(e.target.value)}
-                                            aria-placeholder="Write message..."
-                                            placeholder="Write message..."
-                                            className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700"
-                                            type="text"
-                                            id="message"
-                                            name="message"
-                                            autoFocus
-                                            required
-                                            autoComplete="off"
-                                        ></input>
-
-                                        <button className="outline-none focus:outline-none" type="submit">
-                                            <svg className="text-gray-400 h-7 w-7 origin-center transform rotate-90" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                                            </svg>
-                                        </button>
-                                    </form>
-
-                                </div>
+                                            <button className="outline-none focus:outline-none" type="submit" title="Submit">
+                                                <svg className="text-gray-400 h-7 w-7 origin-center transform rotate-90" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>}
                             </div>
                         </div>
                     </div >
-
                 </div>
                 <div className="bg-cyan-600 flex-1">
                     {/* Footer */}
