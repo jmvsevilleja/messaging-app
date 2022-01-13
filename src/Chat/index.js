@@ -4,7 +4,7 @@ import {API, graphqlOperation} from 'aws-amplify'
 import {userByClinicaID, listUsers} from '../graphql/queries'
 import {getChatRoom, listChatRooms} from '../graphql/custom-queries'
 import {createMessage, createUser, createChatRoom, createChatRoomUser} from "../graphql/mutations";
-import {onCreateUser, onCreateChatRoom, onCreateMessageByChatRoomMessagesId} from "../graphql/custom-subscriptions";
+import {onCreateUser, onCreateChatRoomUserByChatRoomUserUserId, onCreateMessageByChatRoomMessagesId} from "../graphql/custom-subscriptions";
 import {Dialog} from '@headlessui/react'
 
 import Message from "./message";
@@ -69,8 +69,7 @@ const Chat = () => {
     };
 
     const handleChat = async (item) => {
-        // TODO: Create Conversation assigning users
-        //       console.log(user);
+        // TODO: Check selected user if included in the chat room. HandleChatRoom or CreateChatRoom.
         //console.log(user);
         // const conv = await API.graphql({
         //     query: createChatRoom,
@@ -124,7 +123,6 @@ const Chat = () => {
             const chatroomadmin = await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
                     chatRoomUserUserId: user.id,
-                    userID: user.id,
                     chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
                 }
             }))
@@ -132,7 +130,6 @@ const Chat = () => {
             const chatroomuser = await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
                     chatRoomUserUserId: item.id,
-                    userID: item.id,
                     chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
                 }
             }))
@@ -240,23 +237,7 @@ const Chat = () => {
             },
             error: (error) => console.warn(error),
         });
-        // Subscribe to creation of user
-        API.graphql(
-            graphqlOperation(onCreateChatRoom)
-        ).subscribe({
-            next: ({provider, value}) => {
-                console.log('onCreateChatRoom', value.data.onCreateChatRoom);
-                // setUserList((list) => [
-                //     ...list,
-                //     value.data.onCreateUser,
-                // ]);
-                // filterChatRoom([
-                //     ...chatRoomList,
-                //     value.data.onCreateChatRoom,
-                // ])
-            },
-            error: (error) => console.warn(error),
-        });
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -264,6 +245,18 @@ const Chat = () => {
         if (user) {
             fetchUsers();
             fetchChatRoom();
+
+            console.log('Subscribe to onCreateChatRoomUserByChatRoomUserUserId');
+            subscription = API.graphql(
+                graphqlOperation(onCreateChatRoomUserByChatRoomUserUserId, {chatRoomUserUserId: user.id})
+            ).subscribe({
+                next: ({provider, value}) => {
+                    console.log('onCreateChatRoomUserByChatRoomUserUserId', value);
+                    fetchChatRoom();
+                },
+                error: (error) => console.warn(error),
+            });
+
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
