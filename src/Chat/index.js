@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from 'aws-amplify'
-import {userByClinicaID, listMessages, listUsers, listChatRooms} from '../graphql/queries'
+import {userByClinicaID, listUsers} from '../graphql/queries'
+import {getChatRoom, listChatRooms} from '../graphql/custom-queries'
 import {createMessage, createUser, createChatRoom, createChatRoomUser} from "../graphql/mutations";
-import {onCreateMessage, onCreateUser} from "../graphql/subscriptions";
+import {onCreateUser, onCreateChatRoom, onCreateMessageByChatRoomMessagesId} from "../graphql/custom-subscriptions";
 import {Dialog} from '@headlessui/react'
 
 import Message from "./message";
 import User from "./user";
+import ChatRoom from "./chatroom";
 import axios from "axios";
 import "./index.css";
 import Avatar from 'react-avatar';
@@ -16,14 +18,18 @@ function eraseCookie(name) {
     document.cookie = name + "=; Max-Age=-99999999;";
 }
 
+let subscription;
+
 const Chat = () => {
     const [messageList, setMessageList] = useState([]);
     const [userList, setUserList] = useState([]);
+    const [chatRoomList, setChatRoomList] = useState([]);
     const [messageText, setMessageText] = useState("");
     const [user, setUser] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [conversation, setConversation] = useState(false);
-    const [chat, setChat] = useState({});
+    const [chatRoom, setChatRoom] = useState({});
+
     //const [accounts, setAccounts] = useState({});
 
     let navigate = useNavigate();
@@ -42,14 +48,12 @@ const Chat = () => {
     const handleSubmit = async (event) => {
         // Prevent the page from reloading
         event.preventDefault();
-
-        // clear the textbox
         setMessageText("");
         const input = {
             // id is auto populated by AWS Amplify
-            message: messageText, // the message content the user submitted (from state)
-            owner: user.name,
-            userId: user.id, // this is the username of the current user
+            content: messageText, // the message content the user submitted (from state)
+            chatRoomMessagesId: chatRoom.id,
+            userMessageId: user.id, // this is the id of the current user
         };
         // Try make the mutation to graphql API
         try {
@@ -65,11 +69,6 @@ const Chat = () => {
     };
 
     const handleChat = async (item) => {
-        setConversation(true);
-        setChat({
-            id: item.id,
-            name: item.name
-        });
         // TODO: Create Conversation assigning users
         //       console.log(user);
         //console.log(user);
@@ -92,54 +91,112 @@ const Chat = () => {
         //const auser = await API.graphql(graphqlOperation(getUser, {id: user.id}));
         //console.log('user', auser);
 
-        console.log(user.id, item.id);
+        console.log('handleChat', user.id, item.id);
         //listChatRooms
         // const customChatRooms = /* GraphQL */ `
         // query ListChatRooms($filter: ModelChatRoomFilterInput $limit: Int) {
         //   listChatRooms(filter: $filter, limit: $limit) {items {id name}}}`;
 
-        const chatrooms = await API.graphql({
-            // query: customChatRooms,
-            query: listChatRooms,
-            variables: {
-                filter: {chatRoomAdminId: {eq: user.id}, chatRoomUserId: {eq: item.id}},
-            }
-        });
+        // const chatrooms = await API.graphql({
+        //     // query: customChatRooms,
+        //     query: listChatRooms,
+        //     variables: {
+        //         filter: {chatRoomAdminId: {eq: user.id}},
+        //     }
+        // });
+        // console.log(chatrooms);
+        // if (chatrooms.data.listChatRooms.items.length) {
+        //     //console.log('Chatroom ID:', chatrooms.data.listChatRooms.items[0]);
+        //     handleChatRoom(chatrooms.data.listChatRooms.items[0]);
 
-        if (chatrooms.data.listChatRooms.items.length) {
-            console.log('Chatroom ID:', chatrooms.data.listChatRooms.items[0].id);
-        } else {
+        // }
+        //  else {
+        if (true) {
             // Creating Chat Room
             const chatroom = await API.graphql(graphqlOperation(createChatRoom, {
                 input: {
-                    name: item.name,
+                    name: user.name + ' - ' + item.name,
                     chatRoomAdminId: user.id, // Creator of the Chatroom
-                    chatRoomUserId: item.id //  Conversation with
                 }
             }))
-            console.log(chatroom, chatroom.data.createChatRoom.id);
-
-            // Creating Chat Room User
-            // const chatroomuser = await API.graphql(graphqlOperation(createChatRoomUser, {
-            //     input: {
-            //         chatRoomUserUserId: item.id, // Conversation with
-            //         chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
-            //     }
-            // }))
-            console.log('Chatroom ID:', chatroom.data.createChatRoom.id);
+            console.log('createChatRoom', chatroom, chatroom.data.createChatRoom.id);
+            //Creating Chat Room User
+            const chatroomadmin = await API.graphql(graphqlOperation(createChatRoomUser, {
+                input: {
+                    chatRoomUserUserId: user.id,
+                    userID: user.id,
+                    chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
+                }
+            }))
+            console.log('createChatRoomUser', chatroomadmin.data.createChatRoomUser.id);
+            const chatroomuser = await API.graphql(graphqlOperation(createChatRoomUser, {
+                input: {
+                    chatRoomUserUserId: item.id,
+                    userID: item.id,
+                    chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
+                }
+            }))
+            console.log('createChatRoomUser', chatroomuser.data.createChatRoomUser.id);
+            // }
         }
 
-        // const {data: {createChatRoom: {id: chatroomLinkConversationId}}} = conversation
-        // const relation1 = {chatroomLinkUserId: username, chatroomLinkConversationId}
-        // const relation2 = {chatroomLinkUserId: otherUserName, chatroomLinkConversationId}
-        // await API.graphql(graphqlOperation(createChatRoomUser, relation1))
-        // await API.graphql(graphqlOperation(createChatRoomUser, relation2))
-        // } catch (err) {
-        //     console.log('error creating conversation...', err)
-        // }
-
-
     };
+
+    const handleChatRoom = async (chatroom) => {
+        setConversation(true);
+        setMessageList([]);
+        //console.log(chatroom);
+
+        if (subscription) {
+            console.log('Subscription unsubsribe', subscription);
+            // Stop receiving data updates from the subscription
+            subscription.unsubscribe();
+        }
+
+        console.log('Subscribe to onCreateMessageByChatRoomMessagesId');
+        subscription = API.graphql(
+            graphqlOperation(onCreateMessageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id})
+        ).subscribe({
+            next: ({provider, value}) => {
+                console.log('onCreateMessageByChatRoomMessagesId', value)
+                setMessageList((list) => [
+                    ...list,
+                    value.data.onCreateMessageByChatRoomMessagesId,
+                ]);
+            },
+            error: (error) => console.warn(error),
+        });
+
+
+        const result = await API.graphql(graphqlOperation(getChatRoom, {id: chatroom.id}));
+        //console.log('getChatRoom', result.data.getChatRoom);
+        //fetchMessages(chatroom.id);
+        setMessageList(result.data.getChatRoom.messages.items);
+        setChatRoom({
+            id: result.data.getChatRoom.id,
+            name: chatroom.name,
+            users: result.data.getChatRoom.chatRoomUsers.items,
+        });
+    };
+
+    const filterChatRoom = async (chatroom) => {
+        // filter chatroom belong to user
+        const filteredchatrooms = chatroom.filter((i) =>
+            (i.chatRoomUsers.items.find(j => j.user.id === user.id)));
+
+        const filtereduserchatrooms = filteredchatrooms.map(i => {
+            if (i.chatRoomUsers.items.length === 2) {
+                // Change name to the one you are chatting with
+                const modifiedname = (i.chatRoomUsers.items.find(j => {
+                    return j.user.id !== user.id ? j.user.name : '';
+                }));
+                i.name = modifiedname.user.name;
+            }
+            return i;
+        });
+        //console.log('filtereduserchatrooms', filtereduserchatrooms);
+        setChatRoomList([...filtereduserchatrooms]);
+    }
 
     useEffect(() => {
         const user_id = localStorage.getItem('user_id');
@@ -169,32 +226,13 @@ const Chat = () => {
                 navigate(`/`);
                 return;
             }
-            fetchMessages();
-            fetchUsers();
         });
-
-        // Subscribe to creation of message
-        API.graphql(
-            graphqlOperation(onCreateMessage)
-        ).subscribe({
-            next: ({provider, value}) => {
-                setMessageList((list) => [
-                    ...list,
-                    value.data.onCreateMessage,
-                ]);
-            },
-            error: (error) => console.warn(error),
-        });
-
 
         // Subscribe to creation of user
         API.graphql(
             graphqlOperation(onCreateUser)
         ).subscribe({
             next: ({provider, value}) => {
-                // const found = userList.find(o => o.id === value.data.onCreateUser.id);
-                // console.log(found);
-                // if(!found)
                 setUserList((list) => [
                     ...list,
                     value.data.onCreateUser,
@@ -202,8 +240,34 @@ const Chat = () => {
             },
             error: (error) => console.warn(error),
         });
+        // Subscribe to creation of user
+        API.graphql(
+            graphqlOperation(onCreateChatRoom)
+        ).subscribe({
+            next: ({provider, value}) => {
+                console.log('onCreateChatRoom', value.data.onCreateChatRoom);
+                // setUserList((list) => [
+                //     ...list,
+                //     value.data.onCreateUser,
+                // ]);
+                // filterChatRoom([
+                //     ...chatRoomList,
+                //     value.data.onCreateChatRoom,
+                // ])
+            },
+            error: (error) => console.warn(error),
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            fetchUsers();
+            fetchChatRoom();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
+
 
     const fetchUserDetails = async (user_id, auth_token, refresh_token) => {
         if (!user_id || !auth_token || !refresh_token) return;
@@ -226,16 +290,16 @@ const Chat = () => {
             console.error(error);
         }
     }
-    const fetchMessages = async () => {
-        try {
-            const messagesReq = await API.graphql({
-                query: listMessages,
-            });
-            setMessageList([...messagesReq.data.listMessages.items]);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    // const fetchMessages = async (chatroom_id) => {
+    //     try {
+    //         const request = await API.graphql({
+    //             query: listMessages,
+    //         });
+    //         setMessageList([...request.data.listMessages.items]);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
     const fetchUser = async (user_id) => {
         if (!user_id) return;
         try {
@@ -249,13 +313,26 @@ const Chat = () => {
             console.log(e);
         }
     }
+    const fetchChatRoom = async () => {
+        if (!user) return;
+        //console.log('fetching users');
+        try {
+            const result = await API.graphql({
+                query: listChatRooms,
+            });
+            //console.log('fetchChatRoom', result.data.listChatRooms.items, user.id);
+            filterChatRoom(result.data.listChatRooms.items);
+        } catch (error) {
+            console.error(error);
+        }
+    }
     const fetchUsers = async () => {
         //console.log('fetching users');
         try {
-            const messagesReq = await API.graphql({
+            const result = await API.graphql({
                 query: listUsers,
             });
-            setUserList([...messagesReq.data.listUsers.items]);
+            setUserList([...result.data.listUsers.items]);
         } catch (error) {
             console.error(error);
         }
@@ -351,7 +428,25 @@ const Chat = () => {
                                 </div>
 
                                 <ul className="overflow-auto">
-                                    <h2 className="ml-3 mb-2 text-gray-600 text-lg my-2">Chat</h2>
+                                    {Boolean(chatRoomList.length) && <h2 className="ml-3 mb-2 text-gray-600 text-lg my-2">Chat Room</h2>}
+
+                                    {user && chatRoomList
+                                        .filter(item => {
+                                            return item.id !== user.id
+                                        })
+                                        // sort user by name
+                                        .sort((a, b) => a.name.localeCompare(b.name))
+                                        .map((item) => (
+                                            <ChatRoom
+                                                user={item}
+                                                handleChatRoom={handleChatRoom}
+                                                key={item.id}
+                                            />
+                                        ))}
+                                </ul>
+
+                                <ul className="overflow-auto">
+                                    <h2 className="ml-3 mb-2 text-gray-600 text-lg my-2">Users</h2>
 
                                     {user && userList
                                         .filter(item => {
@@ -383,8 +478,9 @@ const Chat = () => {
                                     <div className="w-full h-full flex flex-col">
                                         <div className="justify-between item-center border-b border-gray-300 p-3">
                                             <span className="flex items-center">
-                                                {chat && <Avatar size="40" round={true} name={chat.name} />}
-                                                <span className="block ml-2 font-bold text-base text-gray-600"> {chat && chat.name}</span>
+                                                {chatRoom && <Avatar size="40" round={true} name={chatRoom.name} />}
+                                                <span className="block ml-2 font-bold text-base text-gray-600"> {chatRoom && chatRoom.name}</span>
+
                                                 <span className="connected text-green-500 ml-2" >
                                                     <svg width="6" height="6">
                                                         <circle cx="3" cy="3" r="3" fill="currentColor"></circle>
@@ -392,7 +488,7 @@ const Chat = () => {
                                                 </span>
                                             </span>
                                         </div>
-                                        <div id="chat" className="h-full overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100" >
+                                        <div id="chat" className="h-full p-5 overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100" >
                                             {messageList
                                                 // sort messages oldest to newest client-side
                                                 .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
@@ -400,8 +496,8 @@ const Chat = () => {
                                                     // map each message into the message component with message as props
                                                     <Message
                                                         message={message}
-                                                        user={user}
-                                                        isMe={user.userId === message.userId}
+                                                        chatroom={chatRoom}
+                                                        user_id={user.id}
                                                         key={message.id}
                                                     />
                                                 ))}
