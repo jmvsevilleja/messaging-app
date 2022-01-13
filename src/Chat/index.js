@@ -19,6 +19,7 @@ function eraseCookie(name) {
 }
 
 let subscription;
+let chatRoomID;
 
 const Chat = () => {
     const [messageList, setMessageList] = useState([]);
@@ -126,14 +127,16 @@ const Chat = () => {
                     chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
                 }
             }))
-            console.log('createChatRoomUser', chatroomadmin.data.createChatRoomUser.id);
+            //console.log('createChatRoomUser', chatroomadmin.data.createChatRoomUser.id);
             const chatroomuser = await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
                     chatRoomUserUserId: item.id,
                     chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
                 }
             }))
-            console.log('createChatRoomUser', chatroomuser.data.createChatRoomUser.id);
+            //console.log('createChatRoomUser', chatroomuser.data.createChatRoomUser.id);
+            // Open ChatRoom with this Id
+            chatRoomID = chatroom.data.createChatRoom.id;
             // }
         }
 
@@ -142,7 +145,7 @@ const Chat = () => {
     const handleChatRoom = async (chatroom) => {
         setConversation(true);
         setMessageList([]);
-        //console.log(chatroom);
+        console.log('handleChatRoom', chatroom);
 
         if (subscription) {
             console.log('Subscription unsubsribe', subscription);
@@ -150,7 +153,7 @@ const Chat = () => {
             subscription.unsubscribe();
         }
 
-        console.log('Subscribe to onCreateMessageByChatRoomMessagesId');
+        //console.log('Subscribe to onCreateMessageByChatRoomMessagesId');
         subscription = API.graphql(
             graphqlOperation(onCreateMessageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id})
         ).subscribe({
@@ -241,13 +244,14 @@ const Chat = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // fetch Users and Chatroom once user is loaded
     useEffect(() => {
         if (user) {
             fetchUsers();
             fetchChatRoom();
 
             console.log('Subscribe to onCreateChatRoomUserByChatRoomUserUserId');
-            subscription = API.graphql(
+            API.graphql(
                 graphqlOperation(onCreateChatRoomUserByChatRoomUserUserId, {chatRoomUserUserId: user.id})
             ).subscribe({
                 next: ({provider, value}) => {
@@ -260,6 +264,19 @@ const Chat = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
+
+    // open room when chatroom is loaded
+    useEffect(() => {
+        if (chatRoomList.length) {
+            console.log('chatRoomList Loaded', chatRoomList, chatRoomID);
+            if (chatRoomID) {
+                const openchatroom = chatRoomList.find(i => i.id === chatRoomID);
+                handleChatRoom(openchatroom);
+                chatRoomID = null;
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatRoomList]);
 
 
     const fetchUserDetails = async (user_id, auth_token, refresh_token) => {
