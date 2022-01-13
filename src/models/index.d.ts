@@ -50,6 +50,7 @@ export declare class User {
   readonly status?: string;
   readonly message?: (Message | null)[];
   readonly chatRoomUser?: ChatRoomUser;
+  readonly chatRoom?: ChatRoom;
   readonly lastOnlineAt?: number;
   readonly online?: boolean;
   readonly publicKey?: string;
@@ -62,6 +63,7 @@ export declare class User {
 
 export declare class ChatRoomUser {
   readonly id: string;
+  readonly userID: string;
   readonly chatroom: ChatRoom;
   readonly user: User;
   readonly createdAt?: string;
@@ -76,12 +78,12 @@ export declare class ChatRoom {
   readonly newMessages?: number;
   readonly messages?: (Message | null)[];
   readonly chatRoomUsers?: (ChatRoomUser | null)[];
-  readonly user: User;
+  readonly admin: User;
   readonly name?: string;
   readonly imageUri?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;
-  readonly chatRoomUserId: string;
+  readonly chatRoomAdminId: string;
   constructor(init: ModelInit<ChatRoom, ChatRoomMetaData>);
   static copyOf(source: ChatRoom, mutator: (draft: MutableModel<ChatRoom, ChatRoomMetaData>) => MutableModel<ChatRoom, ChatRoomMetaData> | void): ChatRoom;
 }

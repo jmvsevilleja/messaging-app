@@ -25,7 +25,6 @@ type ChatRoom @model @auth(rules: [{ allow: public }]) {
     lastMessage: Message
     messages: [Message] @hasMany
     chatRoomUsers: [ChatRoomUser] @hasMany
-    user: User @hasOne
     admin: User! @hasOne
     name: String
     imageUri: String
@@ -35,12 +34,16 @@ type User @model @auth(rules: [{ allow: public }]) {
     id: ID!
     clinicaID: String!
         @index(
-            name: "byClinicaID"
+            name: "byUserClinicaID"
             queryField: "userByClinicaID"
             sortKeyFields: ["id"]
         )
     name: String!
-        @index(name: "byName", queryField: "userByName", sortKeyFields: ["id"])
+        @index(
+            name: "byUserName"
+            queryField: "userByName"
+            sortKeyFields: ["id"]
+        )
     imageUri: String
     status: String
     message: [Message] @hasMany
@@ -53,6 +56,15 @@ type User @model @auth(rules: [{ allow: public }]) {
 
 type ChatRoomUser @model(queries: null) @auth(rules: [{ allow: public }]) {
     id: ID!
+    userID: ID!
     chatroom: ChatRoom! @belongsTo
     user: User! @belongsTo
+}
+
+type Subscription {
+    onCreateMessageByChatRoomMessagesId(chatRoomMessagesId: ID): Message
+        @aws_subscribe(mutations: ["createMessage"])
+
+    onCreateChatRoomUserByUserID(userID: ID): ChatRoomUser
+        @aws_subscribe(mutations: ["createChatRoomUser"])
 }

@@ -1,9 +1,11 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateMessage = /* GraphQL */ `
-  subscription OnCreateMessage {
-    onCreateMessage {
+export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
+  subscription OnCreateMessageByChatRoomMessagesId($chatRoomMessagesId: ID) {
+    onCreateMessageByChatRoomMessagesId(
+      chatRoomMessagesId: $chatRoomMessagesId
+    ) {
       id
       content
       user {
@@ -18,6 +20,7 @@ export const onCreateMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -36,7 +39,6 @@ export const onCreateMessage = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -76,7 +78,7 @@ export const onCreateMessage = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
+        admin {
           id
           clinicaID
           name
@@ -92,6 +94,61 @@ export const onCreateMessage = /* GraphQL */ `
           _lastChangedAt
           userChatRoomId
           userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomAdminId
+      }
+      image
+      audio
+      status
+      replyToMessageID
+      forUserId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      chatRoomMessagesId
+      userMessageId
+    }
+  }
+`;
+export const onCreateChatRoomUserByUserID = /* GraphQL */ `
+  subscription OnCreateChatRoomUserByUserID($userID: ID) {
+    onCreateChatRoomUserByUserID(userID: $userID) {
+      id
+      userID
+      chatroom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
         }
         admin {
           id
@@ -117,7 +174,161 @@ export const onCreateMessage = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
+        chatRoomAdminId
+      }
+      user {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          userID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      chatRoomUserUserId
+      chatRoomChatRoomUsersId
+    }
+  }
+`;
+export const onCreateMessage = /* GraphQL */ `
+  subscription OnCreateMessage {
+    onCreateMessage {
+      id
+      content
+      user {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          userID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      chatRoom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
         chatRoomAdminId
       }
       image
@@ -152,6 +363,7 @@ export const onUpdateMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -170,7 +382,6 @@ export const onUpdateMessage = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -210,23 +421,6 @@ export const onUpdateMessage = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -251,7 +445,6 @@ export const onUpdateMessage = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       image
@@ -286,6 +479,7 @@ export const onDeleteMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -304,7 +498,6 @@ export const onDeleteMessage = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -344,23 +537,6 @@ export const onDeleteMessage = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -385,7 +561,6 @@ export const onDeleteMessage = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       image
@@ -438,7 +613,6 @@ export const onCreateChatRoom = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         image
@@ -477,6 +651,7 @@ export const onCreateChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -486,50 +661,6 @@ export const onCreateChatRoom = /* GraphQL */ `
           chatRoomChatRoomUsersId
         }
         nextToken
-      }
-      user {
-        id
-        clinicaID
-        name
-        imageUri
-        status
-        message {
-          nextToken
-          startedAt
-        }
-        chatRoomUser {
-          id
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomUserUserId
-          chatRoomChatRoomUsersId
-        }
-        chatRoom {
-          id
-          newMessages
-          name
-          imageUri
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomUserId
-          chatRoomAdminId
-        }
-        lastOnlineAt
-        online
-        publicKey
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        userChatRoomId
-        userChatRoomUserId
       }
       admin {
         id
@@ -543,6 +674,7 @@ export const onCreateChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -561,7 +693,6 @@ export const onCreateChatRoom = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -582,7 +713,6 @@ export const onCreateChatRoom = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
-      chatRoomUserId
       chatRoomAdminId
     }
   }
@@ -622,7 +752,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         image
@@ -661,6 +790,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -670,50 +800,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
           chatRoomChatRoomUsersId
         }
         nextToken
-      }
-      user {
-        id
-        clinicaID
-        name
-        imageUri
-        status
-        message {
-          nextToken
-          startedAt
-        }
-        chatRoomUser {
-          id
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomUserUserId
-          chatRoomChatRoomUsersId
-        }
-        chatRoom {
-          id
-          newMessages
-          name
-          imageUri
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomUserId
-          chatRoomAdminId
-        }
-        lastOnlineAt
-        online
-        publicKey
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        userChatRoomId
-        userChatRoomUserId
       }
       admin {
         id
@@ -727,6 +813,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -745,7 +832,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -766,7 +852,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
-      chatRoomUserId
       chatRoomAdminId
     }
   }
@@ -806,7 +891,6 @@ export const onDeleteChatRoom = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         image
@@ -845,6 +929,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -854,50 +939,6 @@ export const onDeleteChatRoom = /* GraphQL */ `
           chatRoomChatRoomUsersId
         }
         nextToken
-      }
-      user {
-        id
-        clinicaID
-        name
-        imageUri
-        status
-        message {
-          nextToken
-          startedAt
-        }
-        chatRoomUser {
-          id
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomUserUserId
-          chatRoomChatRoomUsersId
-        }
-        chatRoom {
-          id
-          newMessages
-          name
-          imageUri
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomUserId
-          chatRoomAdminId
-        }
-        lastOnlineAt
-        online
-        publicKey
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        userChatRoomId
-        userChatRoomUserId
       }
       admin {
         id
@@ -911,6 +952,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -929,7 +971,6 @@ export const onDeleteChatRoom = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -950,7 +991,6 @@ export const onDeleteChatRoom = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
-      chatRoomUserId
       chatRoomAdminId
     }
   }
@@ -985,6 +1025,7 @@ export const onCreateUser = /* GraphQL */ `
       }
       chatRoomUser {
         id
+        userID
         chatroom {
           id
           newMessages
@@ -995,7 +1036,6 @@ export const onCreateUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         user {
@@ -1049,23 +1089,6 @@ export const onCreateUser = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -1090,7 +1113,6 @@ export const onCreateUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       lastOnlineAt
@@ -1136,6 +1158,7 @@ export const onUpdateUser = /* GraphQL */ `
       }
       chatRoomUser {
         id
+        userID
         chatroom {
           id
           newMessages
@@ -1146,7 +1169,6 @@ export const onUpdateUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         user {
@@ -1200,23 +1222,6 @@ export const onUpdateUser = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -1241,7 +1246,6 @@ export const onUpdateUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       lastOnlineAt
@@ -1287,6 +1291,7 @@ export const onDeleteUser = /* GraphQL */ `
       }
       chatRoomUser {
         id
+        userID
         chatroom {
           id
           newMessages
@@ -1297,7 +1302,6 @@ export const onDeleteUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         user {
@@ -1351,23 +1355,6 @@ export const onDeleteUser = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -1392,7 +1379,6 @@ export const onDeleteUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       lastOnlineAt
@@ -1412,6 +1398,7 @@ export const onCreateChatRoomUser = /* GraphQL */ `
   subscription OnCreateChatRoomUser {
     onCreateChatRoomUser {
       id
+      userID
       chatroom {
         id
         newMessages
@@ -1438,23 +1425,6 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -1479,7 +1449,6 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       user {
@@ -1494,6 +1463,7 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -1512,7 +1482,6 @@ export const onCreateChatRoomUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -1540,6 +1509,7 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
   subscription OnUpdateChatRoomUser {
     onUpdateChatRoomUser {
       id
+      userID
       chatroom {
         id
         newMessages
@@ -1566,23 +1536,6 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -1607,7 +1560,6 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       user {
@@ -1622,6 +1574,7 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -1640,7 +1593,6 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -1668,6 +1620,7 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
   subscription OnDeleteChatRoomUser {
     onDeleteChatRoomUser {
       id
+      userID
       chatroom {
         id
         newMessages
@@ -1694,23 +1647,6 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -1735,7 +1671,6 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       user {
@@ -1750,6 +1685,7 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -1768,7 +1704,6 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt

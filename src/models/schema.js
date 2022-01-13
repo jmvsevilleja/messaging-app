@@ -202,6 +202,19 @@ export const schema = {
                         "targetName": "userChatRoomUserId"
                     }
                 },
+                "chatRoom": {
+                    "name": "chatRoom",
+                    "isArray": false,
+                    "type": {
+                        "model": "ChatRoom"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetName": "userChatRoomId"
+                    }
+                },
                 "lastOnlineAt": {
                     "name": "lastOnlineAt",
                     "isArray": false,
@@ -257,7 +270,7 @@ export const schema = {
                 {
                     "type": "key",
                     "properties": {
-                        "name": "byClinicaID",
+                        "name": "byUserClinicaID",
                         "queryField": "userByClinicaID",
                         "fields": [
                             "clinicaID",
@@ -268,7 +281,7 @@ export const schema = {
                 {
                     "type": "key",
                     "properties": {
-                        "name": "byName",
+                        "name": "byUserName",
                         "queryField": "userByName",
                         "fields": [
                             "name",
@@ -299,6 +312,13 @@ export const schema = {
             "fields": {
                 "id": {
                     "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "userID": {
+                    "name": "userID",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
@@ -426,8 +446,8 @@ export const schema = {
                         "associatedWith": "chatRoomChatRoomUsersId"
                     }
                 },
-                "user": {
-                    "name": "user",
+                "admin": {
+                    "name": "admin",
                     "isArray": false,
                     "type": {
                         "model": "User"
@@ -437,7 +457,7 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_ONE",
                         "associatedWith": "id",
-                        "targetName": "chatRoomUserId"
+                        "targetName": "chatRoomAdminId"
                     }
                 },
                 "name": {
@@ -470,8 +490,8 @@ export const schema = {
                     "attributes": [],
                     "isReadOnly": true
                 },
-                "chatRoomUserId": {
-                    "name": "chatRoomUserId",
+                "chatRoomAdminId": {
+                    "name": "chatRoomAdminId",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
@@ -515,5 +535,5 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "version": "23dbfcddb20b73f3d8fc9bbce3305190"
+    "version": "44b6eb686ec13aec3e3a7a28d52f7d4d"
 };

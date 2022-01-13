@@ -18,6 +18,7 @@ export const getMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -36,7 +37,6 @@ export const getMessage = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -76,23 +76,6 @@ export const getMessage = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -117,7 +100,6 @@ export const getMessage = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       image
@@ -172,7 +154,6 @@ export const listMessages = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         image
@@ -236,7 +217,6 @@ export const syncMessages = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         image
@@ -292,7 +272,6 @@ export const getChatRoom = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         image
@@ -331,6 +310,7 @@ export const getChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -340,50 +320,6 @@ export const getChatRoom = /* GraphQL */ `
           chatRoomChatRoomUsersId
         }
         nextToken
-      }
-      user {
-        id
-        clinicaID
-        name
-        imageUri
-        status
-        message {
-          nextToken
-          startedAt
-        }
-        chatRoomUser {
-          id
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomUserUserId
-          chatRoomChatRoomUsersId
-        }
-        chatRoom {
-          id
-          newMessages
-          name
-          imageUri
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomUserId
-          chatRoomAdminId
-        }
-        lastOnlineAt
-        online
-        publicKey
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        userChatRoomId
-        userChatRoomUserId
       }
       admin {
         id
@@ -397,6 +333,7 @@ export const getChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -415,7 +352,6 @@ export const getChatRoom = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -436,7 +372,6 @@ export const getChatRoom = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
-      chatRoomUserId
       chatRoomAdminId
     }
   }
@@ -474,23 +409,6 @@ export const listChatRooms = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -515,7 +433,6 @@ export const listChatRooms = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       nextToken
@@ -562,23 +479,6 @@ export const syncChatRooms = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -603,7 +503,6 @@ export const syncChatRooms = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       nextToken
@@ -641,6 +540,7 @@ export const getUser = /* GraphQL */ `
       }
       chatRoomUser {
         id
+        userID
         chatroom {
           id
           newMessages
@@ -651,7 +551,6 @@ export const getUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         user {
@@ -705,23 +604,6 @@ export const getUser = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
         admin {
           id
           clinicaID
@@ -746,7 +628,6 @@ export const getUser = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
-        chatRoomUserId
         chatRoomAdminId
       }
       lastOnlineAt
@@ -781,6 +662,7 @@ export const listUsers = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -799,7 +681,6 @@ export const listUsers = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -843,6 +724,7 @@ export const syncUsers = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -861,7 +743,6 @@ export const syncUsers = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -909,6 +790,7 @@ export const userByClinicaID = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -927,7 +809,6 @@ export const userByClinicaID = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
@@ -975,6 +856,7 @@ export const userByName = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          userID
           createdAt
           updatedAt
           _version
@@ -993,7 +875,6 @@ export const userByName = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
-          chatRoomUserId
           chatRoomAdminId
         }
         lastOnlineAt
