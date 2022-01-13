@@ -18,7 +18,6 @@ export const getMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -310,7 +309,6 @@ export const getChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -333,7 +331,6 @@ export const getChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -540,7 +537,6 @@ export const getUser = /* GraphQL */ `
       }
       chatRoomUser {
         id
-        userID
         chatroom {
           id
           newMessages
@@ -662,7 +658,6 @@ export const listUsers = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -724,7 +719,6 @@ export const syncUsers = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -790,7 +784,6 @@ export const userByClinicaID = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -856,7 +849,6 @@ export const userByName = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version

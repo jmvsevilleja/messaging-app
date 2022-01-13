@@ -44,3 +44,11 @@ export const onCreateChatRoom = /* GraphQL */ `
     }
   }
 `;
+export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
+  subscription onCreateChatRoomUserByChatRoomUserUserId($chatRoomUserUserId: ID) {
+    onCreateChatRoomUserByChatRoomUserUserId(chatRoomUserUserId: $chatRoomUserUserId) {
+      chatRoomUserUserId
+      chatRoomChatRoomUsersId
+    }
+  }
+`;

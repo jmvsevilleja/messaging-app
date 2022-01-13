@@ -20,7 +20,6 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -119,11 +118,14 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
     }
   }
 `;
-export const onCreateChatRoomUserByUserID = /* GraphQL */ `
-  subscription OnCreateChatRoomUserByUserID($userID: ID) {
-    onCreateChatRoomUserByUserID(userID: $userID) {
+export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
+  subscription OnCreateChatRoomUserByChatRoomUserUserId(
+    $chatRoomUserUserId: ID
+  ) {
+    onCreateChatRoomUserByChatRoomUserUserId(
+      chatRoomUserUserId: $chatRoomUserUserId
+    ) {
       id
-      userID
       chatroom {
         id
         newMessages
@@ -188,7 +190,6 @@ export const onCreateChatRoomUserByUserID = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -247,7 +248,6 @@ export const onCreateMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -363,7 +363,6 @@ export const onUpdateMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -479,7 +478,6 @@ export const onDeleteMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -651,7 +649,6 @@ export const onCreateChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -674,7 +671,6 @@ export const onCreateChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -790,7 +786,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -813,7 +808,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -929,7 +923,6 @@ export const onDeleteChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -952,7 +945,6 @@ export const onDeleteChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -1025,7 +1017,6 @@ export const onCreateUser = /* GraphQL */ `
       }
       chatRoomUser {
         id
-        userID
         chatroom {
           id
           newMessages
@@ -1158,7 +1149,6 @@ export const onUpdateUser = /* GraphQL */ `
       }
       chatRoomUser {
         id
-        userID
         chatroom {
           id
           newMessages
@@ -1291,7 +1281,6 @@ export const onDeleteUser = /* GraphQL */ `
       }
       chatRoomUser {
         id
-        userID
         chatroom {
           id
           newMessages
@@ -1398,7 +1387,6 @@ export const onCreateChatRoomUser = /* GraphQL */ `
   subscription OnCreateChatRoomUser {
     onCreateChatRoomUser {
       id
-      userID
       chatroom {
         id
         newMessages
@@ -1463,7 +1451,6 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -1509,7 +1496,6 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
   subscription OnUpdateChatRoomUser {
     onUpdateChatRoomUser {
       id
-      userID
       chatroom {
         id
         newMessages
@@ -1574,7 +1560,6 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version
@@ -1620,7 +1605,6 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
   subscription OnDeleteChatRoomUser {
     onDeleteChatRoomUser {
       id
-      userID
       chatroom {
         id
         newMessages
@@ -1685,7 +1669,6 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
-          userID
           createdAt
           updatedAt
           _version

@@ -317,13 +317,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "userID": {
-                    "name": "userID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "chatroom": {
                     "name": "chatroom",
                     "isArray": false,
@@ -535,5 +528,5 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "version": "44b6eb686ec13aec3e3a7a28d52f7d4d"
+    "version": "293ca00786801cab0504966f8e859bb4"
 };

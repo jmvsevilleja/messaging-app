@@ -63,7 +63,6 @@ export declare class User {
 
 export declare class ChatRoomUser {
   readonly id: string;
-  readonly userID: string;
   readonly chatroom: ChatRoom;
   readonly user: User;
   readonly createdAt?: string;

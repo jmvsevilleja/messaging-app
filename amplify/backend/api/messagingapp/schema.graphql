@@ -56,7 +56,6 @@ type User @model @auth(rules: [{ allow: public }]) {
 
 type ChatRoomUser @model(queries: null) @auth(rules: [{ allow: public }]) {
     id: ID!
-    userID: ID!
     chatroom: ChatRoom! @belongsTo
     user: User! @belongsTo
 }
@@ -65,6 +64,7 @@ type Subscription {
     onCreateMessageByChatRoomMessagesId(chatRoomMessagesId: ID): Message
         @aws_subscribe(mutations: ["createMessage"])
 
-    onCreateChatRoomUserByUserID(userID: ID): ChatRoomUser
-        @aws_subscribe(mutations: ["createChatRoomUser"])
+    onCreateChatRoomUserByChatRoomUserUserId(
+        chatRoomUserUserId: ID
+    ): ChatRoomUser @aws_subscribe(mutations: ["createChatRoomUser"])
 }
