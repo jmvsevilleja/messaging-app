@@ -64,6 +64,9 @@ type Subscription {
     onCreateMessageByChatRoomMessagesId(chatRoomMessagesId: ID): Message
         @aws_subscribe(mutations: ["createMessage"])
 
+    onUpdateMessageByChatRoomMessagesId(chatRoomMessagesId: ID): Message
+        @aws_subscribe(mutations: ["updateMessage"])
+
     onCreateChatRoomUserByChatRoomUserUserId(
         chatRoomUserUserId: ID
     ): ChatRoomUser @aws_subscribe(mutations: ["createChatRoomUser"])

@@ -7,6 +7,7 @@ export const getChatRoom = /* GraphQL */ `
             items {
                 id
                 content
+                status
                 userMessageId
                 createdAt
             }

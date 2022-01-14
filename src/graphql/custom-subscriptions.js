@@ -16,6 +16,20 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
     }
   }
 `;
+export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
+  subscription OnUpdateMessageByChatRoomMessagesId($chatRoomMessagesId: ID) {
+    onUpdateMessageByChatRoomMessagesId(
+      chatRoomMessagesId: $chatRoomMessagesId
+    ) {
+      id
+      content
+      status
+      userMessageId
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateUser = /* GraphQL */ `
   subscription OnCreateUser {
     onCreateUser {

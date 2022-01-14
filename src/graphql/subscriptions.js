@@ -118,6 +118,123 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
     }
   }
 `;
+export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
+  subscription OnUpdateMessageByChatRoomMessagesId($chatRoomMessagesId: ID) {
+    onUpdateMessageByChatRoomMessagesId(
+      chatRoomMessagesId: $chatRoomMessagesId
+    ) {
+      id
+      content
+      user {
+        id
+        clinicaID
+        name
+        imageUri
+        status
+        message {
+          nextToken
+          startedAt
+        }
+        chatRoomUser {
+          id
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomUserUserId
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          name
+          imageUri
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        publicKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      chatRoom {
+        id
+        newMessages
+        lastMessage {
+          id
+          content
+          image
+          audio
+          status
+          replyToMessageID
+          forUserId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          chatRoomMessagesId
+          userMessageId
+        }
+        messages {
+          nextToken
+          startedAt
+        }
+        chatRoomUsers {
+          nextToken
+        }
+        admin {
+          id
+          clinicaID
+          name
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        name
+        imageUri
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatRoomAdminId
+      }
+      image
+      audio
+      status
+      replyToMessageID
+      forUserId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      chatRoomMessagesId
+      userMessageId
+    }
+  }
+`;
 export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
   subscription OnCreateChatRoomUserByChatRoomUserUserId(
     $chatRoomUserUserId: ID
