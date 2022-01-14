@@ -3,8 +3,13 @@ import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from 'aws-amplify'
 import {userByClinicaID, listUsers} from '../graphql/queries'
 import {getChatRoom, listChatRooms} from '../graphql/custom-queries'
-import {createMessage, createUser, createChatRoom, createChatRoomUser} from "../graphql/mutations";
-import {onCreateUser, onCreateChatRoomUserByChatRoomUserUserId, onCreateMessageByChatRoomMessagesId} from "../graphql/custom-subscriptions";
+import {createMessage, createUser, createChatRoom, createChatRoomUser, updateMessage} from "../graphql/mutations";
+import {
+    onCreateUser,
+    onCreateChatRoomUserByChatRoomUserUserId,
+    onCreateMessageByChatRoomMessagesId,
+    onUpdateMessageByChatRoomMessagesId
+} from "../graphql/custom-subscriptions";
 import {Dialog} from '@headlessui/react'
 
 import Message from "./message";
@@ -18,7 +23,10 @@ function eraseCookie(name) {
     document.cookie = name + "=; Max-Age=-99999999;";
 }
 
-let subscription;
+let subCreateChatRoomUser;
+let subCreateUser;
+let subCreateMessage;
+let subUpdateMessage;
 let chatRoomID;
 
 const Chat = () => {
@@ -43,10 +51,25 @@ const Chat = () => {
         localStorage.removeItem("access_token");
         eraseCookie("auth_login");
         eraseCookie("token");
+
+        // unsubscribe on logout
+        if (subCreateMessage) {
+            subCreateMessage.unsubscribe();
+        }
+        if (subUpdateMessage) {
+            subUpdateMessage.unsubscribe();
+        }
+        if (subCreateChatRoomUser) {
+            subCreateChatRoomUser.unsubscribe();
+        }
+        if (subCreateUser) {
+            subCreateUser.unsubscribe();
+        }
+
         navigate(`/`);
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmitMessage = async (event) => {
         // Prevent the page from reloading
         event.preventDefault();
         setMessageText("");
@@ -55,6 +78,7 @@ const Chat = () => {
             content: messageText, // the message content the user submitted (from state)
             chatRoomMessagesId: chatRoom.id,
             userMessageId: user.id, // this is the id of the current user
+            status: 'SENT'
         };
         // Try make the mutation to graphql API
         try {
@@ -71,26 +95,6 @@ const Chat = () => {
 
     const handleChat = async (item) => {
         // TODO: Check selected user if included in the chat room. HandleChatRoom or CreateChatRoom.
-        //console.log(user);
-        // const conv = await API.graphql({
-        //     query: createChatRoom,
-        //     variables: {
-        //         input: {
-        //             newMessages: 0,
-        //             //LastMessage: '',
-        //             Admin: {...user},
-        //             //  ChatRoomUsers: [item],
-        //             name: item.name,
-        //             imageUri: '',
-        //         },
-        //     },
-        // });
-        // console.log(conv);
-
-        // try {
-        //const auser = await API.graphql(graphqlOperation(getUser, {id: user.id}));
-        //console.log('user', auser);
-
         console.log('handleChat', user.id, item.id);
         //listChatRooms
         // const customChatRooms = /* GraphQL */ `
@@ -121,14 +125,14 @@ const Chat = () => {
             }))
             console.log('createChatRoom', chatroom, chatroom.data.createChatRoom.id);
             //Creating Chat Room User
-            const chatroomadmin = await API.graphql(graphqlOperation(createChatRoomUser, {
+            await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
                     chatRoomUserUserId: user.id,
                     chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
                 }
             }))
             //console.log('createChatRoomUser', chatroomadmin.data.createChatRoomUser.id);
-            const chatroomuser = await API.graphql(graphqlOperation(createChatRoomUser, {
+            await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
                     chatRoomUserUserId: item.id,
                     chatRoomChatRoomUsersId: chatroom.data.createChatRoom.id, // Relationship of Chatroom
@@ -143,18 +147,18 @@ const Chat = () => {
     };
 
     const handleChatRoom = async (chatroom) => {
+        console.log('handleChatRoom', chatroom);
         setConversation(true);
         setMessageList([]);
-        console.log('handleChatRoom', chatroom);
 
-        if (subscription) {
-            console.log('Subscription unsubsribe', subscription);
-            // Stop receiving data updates from the subscription
-            subscription.unsubscribe();
+        if (subCreateMessage) {
+            subCreateMessage.unsubscribe();
         }
-
+        if (subUpdateMessage) {
+            subUpdateMessage.unsubscribe();
+        }
         //console.log('Subscribe to onCreateMessageByChatRoomMessagesId');
-        subscription = API.graphql(
+        subCreateMessage = API.graphql(
             graphqlOperation(onCreateMessageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id})
         ).subscribe({
             next: ({provider, value}) => {
@@ -163,10 +167,32 @@ const Chat = () => {
                     ...list,
                     value.data.onCreateMessageByChatRoomMessagesId,
                 ]);
+
+                // TODO: set Read if your not the owner
+                if (user && user.id !== value.data.onCreateMessageByChatRoomMessagesId.userMessageId) {
+                    handleReadMessage(value.data.onCreateMessageByChatRoomMessagesId.id);
+                }
             },
             error: (error) => console.warn(error),
         });
 
+        //console.log('Subscribe to onUpdateMessageByChatRoomMessagesId');
+        subUpdateMessage = API.graphql(
+            graphqlOperation(onUpdateMessageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id})
+        ).subscribe({
+            next: ({provider, value}) => {
+                console.log('onUpdateMessageByChatRoomMessagesId', value)
+                // setMessageList((list) => [
+                //     ...list,
+                //     value.data.onUpdateMessageByChatRoomMessagesId,
+                // ]);
+                handleMessageStatusUpdates(
+                    value.data.onUpdateMessageByChatRoomMessagesId.id,
+                    value.data.onUpdateMessageByChatRoomMessagesId.status,
+                );
+            },
+            error: (error) => console.warn(error),
+        });
 
         const result = await API.graphql(graphqlOperation(getChatRoom, {id: chatroom.id}));
         //console.log('getChatRoom', result.data.getChatRoom);
@@ -177,9 +203,51 @@ const Chat = () => {
             name: chatroom.name,
             users: result.data.getChatRoom.chatRoomUsers.items,
         });
+
+        // Set All message to READ
+        result.data.getChatRoom.messages.items.forEach((item) => {
+            if (item.userMessageId !== user.id && item.status !== 'READ') {
+                //console.log('handleUnreadMessage', item);
+                handleUnreadMessage(item.id);
+            }
+        })
+    };
+
+    const handleReadMessage = async (message_id) => {
+        console.log('handleReadMessage', message_id);
+        await API.graphql(graphqlOperation(updateMessage, {
+            input: {
+                id: message_id,
+                status: 'READ',
+                _version: 1,
+            }
+        }));
+    };
+
+    const handleUnreadMessage = async (message_id) => {
+        console.log('handleUnreadMessage', message_id);
+        await API.graphql(graphqlOperation(updateMessage, {
+            input: {
+                id: message_id,
+                status: 'READ',
+                _version: 1,
+            }
+        }));
+    };
+
+    const handleMessageStatusUpdates = async (message_id, message_status) => {
+        console.log('handleMessageStatusUpdates', message_id);
+        //const new_message_list = [...messageList];
+        // console.log('Message List', messageList);
+        setMessageList((list) => list.map(item =>
+            item.id === message_id
+                ? {...item, status: message_status}
+                : item
+        ));
     };
 
     const filterChatRoom = async (chatroom) => {
+        // TODO: filter chatroom by graphQL
         // filter chatroom belong to user
         const filteredchatrooms = chatroom.filter((i) =>
             (i.chatRoomUsers.items.find(j => j.user.id === user.id)));
@@ -229,7 +297,7 @@ const Chat = () => {
         });
 
         // Subscribe to creation of user
-        API.graphql(
+        subCreateUser = API.graphql(
             graphqlOperation(onCreateUser)
         ).subscribe({
             next: ({provider, value}) => {
@@ -247,11 +315,12 @@ const Chat = () => {
     // fetch Users and Chatroom once user is loaded
     useEffect(() => {
         if (user) {
+            console.log('USER: ', user.id);
             fetchUsers();
             fetchChatRoom();
 
             console.log('Subscribe to onCreateChatRoomUserByChatRoomUserUserId');
-            API.graphql(
+            subCreateChatRoomUser = API.graphql(
                 graphqlOperation(onCreateChatRoomUserByChatRoomUserUserId, {chatRoomUserUserId: user.id})
             ).subscribe({
                 next: ({provider, value}) => {
@@ -451,6 +520,7 @@ const Chat = () => {
                                                 user={item}
                                                 handleChatRoom={handleChatRoom}
                                                 key={item.id}
+                                            // unread={12}
                                             />
                                         ))}
                                 </ul>
@@ -512,7 +582,7 @@ const Chat = () => {
                                                     />
                                                 ))}
                                         </div>
-                                        <form onSubmit={handleSubmit} className="w-full flex py-3 px-3 items-center justify-between border-t border-gray-300">
+                                        <form onSubmit={handleSubmitMessage} className="w-full flex py-3 px-3 items-center justify-between border-t border-gray-300">
                                             <button className="outline-none focus:outline-none">
                                                 <svg className="text-gray-400 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />

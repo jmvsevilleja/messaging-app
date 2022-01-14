@@ -22,6 +22,7 @@ export default function Message({user_id, message, chatroom}) {
             <div className={isme ? 'sentMessage' : 'receivedMessage'}>
                 <p>{message.content}</p>
             </div>
+            {isme && <p className={'senderText'}>{message.status}</p>}
         </div>
     );
 }
