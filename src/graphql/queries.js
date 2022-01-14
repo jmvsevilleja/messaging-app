@@ -29,6 +29,7 @@ export const getMessage = /* GraphQL */ `
         chatRoom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt
@@ -52,22 +53,7 @@ export const getMessage = /* GraphQL */ `
       chatRoom {
         id
         newMessages
-        lastMessage {
-          id
-          content
-          image
-          audio
-          status
-          replyToMessageID
-          forUserId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomMessagesId
-          userMessageId
-        }
+        lastMessage
         messages {
           nextToken
           startedAt
@@ -146,6 +132,7 @@ export const listMessages = /* GraphQL */ `
         chatRoom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt
@@ -209,6 +196,7 @@ export const syncMessages = /* GraphQL */ `
         chatRoom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt
@@ -241,51 +229,7 @@ export const getChatRoom = /* GraphQL */ `
     getChatRoom(id: $id) {
       id
       newMessages
-      lastMessage {
-        id
-        content
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
-        chatRoom {
-          id
-          newMessages
-          name
-          imageUri
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomAdminId
-        }
-        image
-        audio
-        status
-        replyToMessageID
-        forUserId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        chatRoomMessagesId
-        userMessageId
-      }
+      lastMessage
       messages {
         items {
           id
@@ -342,6 +286,7 @@ export const getChatRoom = /* GraphQL */ `
         chatRoom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt
@@ -383,22 +328,7 @@ export const listChatRooms = /* GraphQL */ `
       items {
         id
         newMessages
-        lastMessage {
-          id
-          content
-          image
-          audio
-          status
-          replyToMessageID
-          forUserId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomMessagesId
-          userMessageId
-        }
+        lastMessage
         messages {
           nextToken
           startedAt
@@ -453,22 +383,7 @@ export const syncChatRooms = /* GraphQL */ `
       items {
         id
         newMessages
-        lastMessage {
-          id
-          content
-          image
-          audio
-          status
-          replyToMessageID
-          forUserId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomMessagesId
-          userMessageId
-        }
+        lastMessage
         messages {
           nextToken
           startedAt
@@ -540,6 +455,7 @@ export const getUser = /* GraphQL */ `
         chatroom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt
@@ -577,22 +493,7 @@ export const getUser = /* GraphQL */ `
       chatRoom {
         id
         newMessages
-        lastMessage {
-          id
-          content
-          image
-          audio
-          status
-          replyToMessageID
-          forUserId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomMessagesId
-          userMessageId
-        }
+        lastMessage
         messages {
           nextToken
           startedAt
@@ -669,6 +570,7 @@ export const listUsers = /* GraphQL */ `
         chatRoom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt
@@ -730,6 +632,7 @@ export const syncUsers = /* GraphQL */ `
         chatRoom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt
@@ -795,6 +698,7 @@ export const userByClinicaID = /* GraphQL */ `
         chatRoom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt
@@ -860,6 +764,7 @@ export const userByName = /* GraphQL */ `
         chatRoom {
           id
           newMessages
+          lastMessage
           name
           imageUri
           createdAt

@@ -411,6 +411,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "lastMessage": {
+                    "name": "lastMessage",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "messages": {
                     "name": "messages",
                     "isArray": true,
@@ -528,5 +535,5 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "version": "293ca00786801cab0504966f8e859bb4"
+    "version": "04304ab9710be4c5076ae299e62d96c7"
 };

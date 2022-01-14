@@ -1823,8 +1823,8 @@
           "description" : null,
           "args" : [ ],
           "type" : {
-            "kind" : "OBJECT",
-            "name" : "Message",
+            "kind" : "SCALAR",
+            "name" : "String",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -2222,6 +2222,15 @@
           "type" : {
             "kind" : "INPUT_OBJECT",
             "name" : "ModelIntInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "lastMessage",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelStringInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -3468,6 +3477,15 @@
           },
           "defaultValue" : null
         }, {
+          "name" : "lastMessage",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
           "name" : "name",
           "description" : null,
           "type" : {
@@ -3522,6 +3540,15 @@
           "type" : {
             "kind" : "INPUT_OBJECT",
             "name" : "ModelIntInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "lastMessage",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "ModelStringInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -3615,6 +3642,15 @@
           "type" : {
             "kind" : "SCALAR",
             "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "lastMessage",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
             "ofType" : null
           },
           "defaultValue" : null

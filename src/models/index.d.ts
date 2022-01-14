@@ -75,6 +75,7 @@ export declare class ChatRoomUser {
 export declare class ChatRoom {
   readonly id: string;
   readonly newMessages?: number;
+  readonly lastMessage?: string;
   readonly messages?: (Message | null)[];
   readonly chatRoomUsers?: (ChatRoomUser | null)[];
   readonly admin: User;
