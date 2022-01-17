@@ -67,9 +67,9 @@ function ChatBody({user, conversation, chatRoom, messageList, handleSubmitMessag
                             ))}
                     </div>
                     <form
-                        onSubmit={() => {
+                        onSubmit={(e) => {
                             setMessageText("");
-                            handleSubmitMessage(messageText);
+                            handleSubmitMessage(e, messageText);
                         }}
                         className="w-full flex py-3 px-3 items-center justify-between border-t border-gray-300"
                     >

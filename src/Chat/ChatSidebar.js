@@ -3,12 +3,13 @@ import Avatar from "react-avatar";
 
 import User from "./user";
 import ChatRoom from "./chatroom";
+import CreateRoom from "./CreateRoom";
 
 function ChatSidebar({user, userList, chatRoomList, handleLogout, handleChatRoom, handleChat}) {
     return (
         <>
             <div className="my-3 mx-3 ">
-                <div className="flex justify-between item-center p-3 pl-0">
+                <div className="flex justify-between item-center p-3 px-0">
                     <span className="flex items-center">
                         {user && (
                             <Avatar
@@ -32,28 +33,14 @@ function ChatSidebar({user, userList, chatRoomList, handleLogout, handleChatRoom
                             </svg>
                         </span>
                     </span>
-                    <span>
+                    <span class="flex items-center">
                         <button
                             onClick={handleLogout}
                             title="Logout"
-                            className="outline-none focus:outline-none self-end"
+                            className="outline-none focus:outline-none"
                         >
-                            <svg
-                                className="h-8 w-8 text-gray-500"
-                                viewBox="0 0 24 24"
-                                strokeWidth="2"
-                                stroke="currentColor"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                {" "}
-                                <path
-                                    stroke="none"
-                                    d="M0 0h24v24H0z"
-                                />{" "}
-                                <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />{" "}
-                                <path d="M7 12h14l-3 -3m0 6l3 -3" />
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
                         </button>
                     </span>
@@ -85,11 +72,15 @@ function ChatSidebar({user, userList, chatRoomList, handleLogout, handleChatRoom
             </div>
 
             <ul className="overflow-auto">
-                {Boolean(chatRoomList.length) && (
+                <div className="flex justify-between item-center">
                     <h2 className="ml-3 mb-2 text-gray-600 text-lg my-2">
                         Chat Room
                     </h2>
-                )}
+                    <div className="mr-3 mb-2 my-2">
+                        <CreateRoom />
+                    </div>
+                </div>
+
 
                 {user &&
                     chatRoomList

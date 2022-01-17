@@ -43,7 +43,6 @@ const Chat = () => {
     const [userList, setUserList] = useState([]);
     const [chatRoomList, setChatRoomList] = useState([]);
     const [user, setUser] = useState(null);
-    const [isOpen, setIsOpen] = useState(false);
     const [conversation, setConversation] = useState(false);
     const [chatRoom, setChatRoom] = useState({});
 
@@ -500,7 +499,7 @@ const Chat = () => {
                     input: {
                         clinicaID: user_id,
                         name: name,
-                        status: "Hi there! I'm using Clinica Messenger",
+                        status: "Hi there! I'm using Conva",
                     },
                 },
             });
@@ -533,6 +532,7 @@ const Chat = () => {
                                     conversation={conversation}
                                     chatRoom={chatRoom}
                                     messageList={messageList}
+                                    handleSubmitMessage={handleSubmitMessage}
                                 />
                             </div>
                         </div>
