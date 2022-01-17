@@ -1,7 +1,7 @@
 import React from "react";
 import Avatar from 'react-avatar';
 
-export default function Users({user, handleChat}) {
+function User({user, handleChat}) {
     return (
         <li>
             <div className="hover:bg-gray-100  px-3 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" onClick={() => {
@@ -17,6 +17,8 @@ export default function Users({user, handleChat}) {
                 </div>
             </div>
         </li>
-    );
+    )
 }
+
+export default User
 

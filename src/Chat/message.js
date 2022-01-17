@@ -1,7 +1,7 @@
 import React from "react";
 import "./message.css";
 
-export default function Message({user_id, message, chatroom}) {
+function Message({user_id, message, chatroom}) {
     let name = '';
     if (chatroom.users) {
         // get name from the users list
@@ -26,3 +26,5 @@ export default function Message({user_id, message, chatroom}) {
         </div>
     );
 }
+
+export default Message;
