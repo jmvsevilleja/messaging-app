@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import Avatar from "react-avatar";
 
 import Message from "./message";
+import ConvoLogo from '../logo.svg';
 
 function ChatBody({user, conversation, chatRoom, messageList, handleSubmitMessage}) {
 
@@ -12,11 +13,7 @@ function ChatBody({user, conversation, chatRoom, messageList, handleSubmitMessag
             {!conversation && (
                 <div className="h-screen w-full flex flex-col justify-center items-center">
                     <div className="">
-                        <img
-                            className="h-80 w-80"
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/597px-WhatsApp.svg.png"
-                            alt=""
-                        />
+                        <img className="h-96 w-96" src={ConvoLogo} alt="Convo" />
                     </div>
                 </div>
             )}
