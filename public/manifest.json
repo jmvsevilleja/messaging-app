@@ -27,6 +27,7 @@
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
+    "display_modifiers": ["window-controls-overlay"],
     "theme_color": "#5d1ea5",
     "background_color": "#ffffff"
 }
