@@ -4,15 +4,18 @@ module.exports = {
     extend: {
       colors: {
         primary: "#5d1ea5",
-        secondary: "#7025c6"
+        secondary: "#7025c6",
+        font: "#4F5E7B"
+
       },
       fontFamily: {
-        roboto: ["Roboto"],
+        sans: ['Roboto', 'Helvetica', 'Arial', 'sans-serif'],
       },
       fontSize: {
-        xs: ["0.75rem", {lineHeight: "1.5"}],
-        sm: ["0.875rem", {lineHeight: "1.5715"}],
-        base: ["1rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],
+        xs: ["0.675rem", {lineHeight: "1.5"}],
+        sm: ["0.75rem", {lineHeight: "1.5715"}],
+        base: ["0.875rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],
+        normal: ["1rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],
         lg: ["1.125rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],
         xl: ["1.25rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],
         "2xl": ["1.5rem", {lineHeight: "1.33", letterSpacing: "-0.01em"}],

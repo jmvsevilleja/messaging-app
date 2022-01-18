@@ -9,8 +9,6 @@
 
 .sentMessage {
     text-align: left;
-    padding: 8px;
-    color: #fff;
     background: linear-gradient(243deg, #2397f5, #498efc 100%);
     border-radius: 8px;
 }
@@ -25,9 +23,6 @@
 }
 
 .receivedMessage {
-    text-align: left;
-    padding: 8px;
-    color: #000;
     background: linear-gradient(
         193deg,
         rgba(237, 247, 255, 1) 0%,
@@ -37,7 +32,6 @@
 }
 
 .senderText {
-    font-size: 12px;
     color: rgba(0, 0, 0, 0.7);
     margin-bottom: 4px;
 }

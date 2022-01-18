@@ -9,11 +9,11 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
     return (
         <div
             id="messages-sidebar"
-            className={"bg-white absolute z-20 top-0 bottom-0 w-full md:w-auto md:static md:top-auto md:bottom-auto -mr-px md:translate-x-0 transform transition-transform duration-200 ease-in-out border-r border-gray-200"
+            className={"bg-white absolute z-20 px-6 top-0 bottom-0 w-full md:w-auto md:static md:top-auto md:bottom-auto -mr-px md:translate-x-0 transform transition-transform duration-200 ease-in-out border-r border-gray-200"
                 + (!openChat ? " translate-x-0" : " -translate-x-full")}
 
         >
-            <div className="my-3 mx-3 ">
+            <div className="my-3">
                 <div className="flex justify-between item-center p-3 px-0">
                     <span className="flex items-center">
                         {user && (
@@ -77,11 +77,11 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
             </div>
 
             <ul className="overflow-auto">
-                <div className="flex justify-between item-center">
-                    <h2 className="ml-3 mb-2 text-gray-600 text-lg my-2">
+                <div className="flex justify-between item-center my-3">
+                    <h2 className=" text-gray-600 text-lg">
                         Chat Room
                     </h2>
-                    <div className="mr-3 mb-2 my-2">
+                    <div>
                         <CreateRoom />
                     </div>
                 </div>
@@ -109,7 +109,7 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
             </ul>
 
             <ul className="overflow-auto">
-                <h2 className="ml-3 mb-2 text-gray-600 text-lg my-2">
+                <h2 className="mb-2 text-gray-600 text-lg my-2">
                     Users
                 </h2>
 
