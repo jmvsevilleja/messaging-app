@@ -27,10 +27,6 @@ import ChatBody from "./ChatBody";
 import axios from "axios";
 import "./index.css";
 
-function eraseCookie(name) {
-    document.cookie = name + "=; Max-Age=-99999999;";
-}
-
 let subCreateChatRoomUser;
 let subCreateUser;
 let subUpdateChatRoom;
@@ -43,19 +39,20 @@ const Chat = () => {
     const [userList, setUserList] = useState([]);
     const [chatRoomList, setChatRoomList] = useState([]);
     const [user, setUser] = useState(null);
-    const [conversation, setConversation] = useState(false);
     const [chatRoom, setChatRoom] = useState({});
+    const [openChat, setOpenChat] = useState(false);
 
     let navigate = useNavigate();
 
+    // HANDLE FUNCTIONS
     const handleLogout = async () => {
         localStorage.removeItem("user_id");
         localStorage.removeItem("auth_login");
         localStorage.removeItem("auth_token");
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("access_token");
-        eraseCookie("auth_login");
-        eraseCookie("token");
+        document.cookie = "auth_login=; Max-Age=-99999999;";
+        document.cookie = "token=; Max-Age=-99999999;";
 
         // unsubscribe on logout
         if (subCreateMessage) {
@@ -178,8 +175,8 @@ const Chat = () => {
 
     const handleChatRoom = async (chatroom) => {
         console.log("handleChatRoom", chatroom);
-        setConversation(true);
         setMessageList([]);
+        setOpenChat(true);
 
         if (subCreateMessage) {
             subCreateMessage.unsubscribe();
@@ -295,6 +292,11 @@ const Chat = () => {
         );
     };
 
+    const handleOpenChat = async () => {
+        setOpenChat(false);
+    }
+
+    // OTHER FUNCTIONS
     const filterChatRoom = async (chatroom) => {
         // TODO: filter chatroom by graphQL
         // filter chatroom belong to user
@@ -316,6 +318,75 @@ const Chat = () => {
         setChatRoomList([...filtereduserchatrooms]);
     };
 
+    // const fetchMessages = async (chatroom_id) => {
+    //     try {
+    //         const request = await API.graphql({
+    //             query: listMessages,
+    //         });
+    //         setMessageList([...request.data.listMessages.items]);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
+    const fetchUser = async (user_id) => {
+        if (!user_id) return;
+        try {
+            // get logged user from User Table to get status.
+            const item = await API.graphql(
+                graphqlOperation(userByClinicaID, {clinicaID: user_id})
+            );
+            if (item.data.userByClinicaID.items) {
+                setUser(item.data.userByClinicaID.items[0]);
+                return item.data.userByClinicaID.items[0];
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+    const fetchChatRoom = async () => {
+        if (!user) return;
+        //console.log('fetching users');
+        try {
+            const result = await API.graphql({
+                query: listChatRooms,
+            });
+            //console.log('fetchChatRoom', result.data.listChatRooms.items, user.id);
+            filterChatRoom(result.data.listChatRooms.items);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const fetchUsers = async () => {
+        //console.log('fetching users');
+        try {
+            const result = await API.graphql({
+                query: listUsers,
+            });
+            setUserList([...result.data.listUsers.items]);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const addUser = async (user_id, name) => {
+        if (!user_id || !name) return;
+        try {
+            const item = await API.graphql({
+                query: createUser,
+                variables: {
+                    input: {
+                        clinicaID: user_id,
+                        name: name,
+                        status: "Hi there! I'm using Conva",
+                    },
+                },
+            });
+            return item.data.createUser;
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // USE EFFECTS
     useEffect(() => {
         const user_id = localStorage.getItem("user_id");
         const auth_token = localStorage.getItem("auth_token");
@@ -441,106 +512,40 @@ const Chat = () => {
             console.error(error);
         }
     };
-    // const fetchMessages = async (chatroom_id) => {
-    //     try {
-    //         const request = await API.graphql({
-    //             query: listMessages,
-    //         });
-    //         setMessageList([...request.data.listMessages.items]);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-    const fetchUser = async (user_id) => {
-        if (!user_id) return;
-        try {
-            // get logged user from User Table to get status.
-            const item = await API.graphql(
-                graphqlOperation(userByClinicaID, {clinicaID: user_id})
-            );
-            if (item.data.userByClinicaID.items) {
-                setUser(item.data.userByClinicaID.items[0]);
-                return item.data.userByClinicaID.items[0];
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    const fetchChatRoom = async () => {
-        if (!user) return;
-        //console.log('fetching users');
-        try {
-            const result = await API.graphql({
-                query: listChatRooms,
-            });
-            //console.log('fetchChatRoom', result.data.listChatRooms.items, user.id);
-            filterChatRoom(result.data.listChatRooms.items);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    const fetchUsers = async () => {
-        //console.log('fetching users');
-        try {
-            const result = await API.graphql({
-                query: listUsers,
-            });
-            setUserList([...result.data.listUsers.items]);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    const addUser = async (user_id, name) => {
-        if (!user_id || !name) return;
-        try {
-            const item = await API.graphql({
-                query: createUser,
-                variables: {
-                    input: {
-                        clinicaID: user_id,
-                        name: name,
-                        status: "Hi there! I'm using Conva",
-                    },
-                },
-            });
-            return item.data.createUser;
-        } catch (err) {
-            console.error(err);
-        }
-    };
+
     //console.log('Rendering index.js');
     return (
-        <>
-            <div className="min-h-screen flex flex-col">
-                <div className="bg-primary flex-1">{/* Header */}</div>
-                <div className="bg-primary flex-1">
-                    <div className="h-screen">
-                        <div className="flex h-full">
-                            <div className="w-1/3 flex flex-col bg-white border-r border-gray-300">
-                                <ChatSidebar
-                                    user={user}
-                                    userList={userList}
-                                    chatRoomList={chatRoomList}
-                                    handleLogout={handleLogout}
-                                    handleChatRoom={handleChatRoom}
-                                    handleChat={handleChat}
-                                />
-                            </div>
-                            <div className="w-2/3 flex flex-col bg-white">
-                                <ChatBody
-                                    user={user}
-                                    conversation={conversation}
-                                    chatRoom={chatRoom}
-                                    messageList={messageList}
-                                    handleSubmitMessage={handleSubmitMessage}
-                                />
-                            </div>
-                        </div>
+        <div className="bg-white flex h-screen overflow-hidden">
+            {/* Content area */}
+            <div className="relative flex flex-col flex-1" x-ref="contentarea">
+                <main>
+                    <div className="relative flex">
+                        {/* Messages sidebar */}
+                        <ChatSidebar
+                            user={user}
+                            openChat={openChat}
+                            setOpenChat={setOpenChat}
+                            userList={userList}
+                            chatRoomList={chatRoomList}
+                            handleLogout={handleLogout}
+                            handleChatRoom={handleChatRoom}
+                            handleChat={handleChat}
+                        />
+
+                        {/* Messages body */}
+                        <ChatBody
+                            user={user}
+                            openChat={openChat}
+                            chatRoom={chatRoom}
+                            messageList={messageList}
+                            handleSubmitMessage={handleSubmitMessage}
+                            handleOpenChat={handleOpenChat}
+                        />
                     </div>
-                </div>
-                <div className="bg-primary flex-1">{/* Footer */}</div>
+                </main>
             </div>
-        </>
+        </div>
+
     );
 };
 

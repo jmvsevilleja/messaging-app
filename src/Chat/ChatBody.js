@@ -4,23 +4,50 @@ import Avatar from "react-avatar";
 import Message from "./message";
 import ConvoLogo from '../logo.svg';
 
-function ChatBody({user, conversation, chatRoom, messageList, handleSubmitMessage}) {
+function ChatBody({
+    user,
+    chatRoom,
+    openChat,
+    messageList,
+    handleSubmitMessage,
+    handleOpenChat
+}) {
 
     const [messageText, setMessageText] = useState("");
 
     return (
-        <>
-            {!conversation && (
+        <div
+            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen"
+        >
+            {!(openChat || Object.keys(chatRoom).length !== 0) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center">
                     <div className="">
                         <img className="h-96 w-96" src={ConvoLogo} alt="Convo" />
                     </div>
                 </div>
             )}
-            {conversation && (
+            {Object.keys(chatRoom).length !== 0 && (
                 <div className="w-full h-full flex flex-col">
                     <div className="justify-between item-center border-b border-gray-300 p-3">
                         <span className="flex items-center">
+
+                            <button
+                                className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
+                                onClick={handleOpenChat}
+                            >
+                                <span class="sr-only">Close sidebar</span>
+                                <svg
+                                    class="w-6 h-6 fill-current"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z"
+                                    />
+                                </svg>
+                            </button>
+
+
                             {chatRoom && (
                                 <Avatar
                                     size="40"
@@ -141,7 +168,7 @@ function ChatBody({user, conversation, chatRoom, messageList, handleSubmitMessag
                     </form>
                 </div>
             )}
-        </>
+        </div>
     )
 }
 

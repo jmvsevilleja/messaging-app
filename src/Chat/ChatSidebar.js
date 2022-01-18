@@ -5,9 +5,14 @@ import User from "./user";
 import ChatRoom from "./chatroom";
 import CreateRoom from "./CreateRoom";
 
-function ChatSidebar({user, userList, chatRoomList, handleLogout, handleChatRoom, handleChat}) {
+function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, handleChatRoom, handleChat}) {
     return (
-        <>
+        <div
+            id="messages-sidebar"
+            className={"bg-white absolute z-20 top-0 bottom-0 w-full md:w-auto md:static md:top-auto md:bottom-auto -mr-px md:translate-x-0 transform transition-transform duration-200 ease-in-out border-r border-gray-200"
+                + (!openChat ? " translate-x-0" : " -translate-x-full")}
+
+        >
             <div className="my-3 mx-3 ">
                 <div className="flex justify-between item-center p-3 px-0">
                     <span className="flex items-center">
@@ -33,13 +38,13 @@ function ChatSidebar({user, userList, chatRoomList, handleLogout, handleChatRoom
                             </svg>
                         </span>
                     </span>
-                    <span class="flex items-center">
+                    <span className="flex items-center">
                         <button
                             onClick={handleLogout}
                             title="Logout"
                             className="outline-none focus:outline-none"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
                         </button>
@@ -125,7 +130,7 @@ function ChatSidebar({user, userList, chatRoomList, handleLogout, handleChatRoom
                             />
                         ))}
             </ul>
-        </>
+        </div>
     )
 }
 
