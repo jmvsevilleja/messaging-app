@@ -17,11 +17,11 @@ function Message({user_id, message, chatroom}) {
     return (
         <div
             className={
-                isme ? "sentMessageContainer" : "receivedMessageContainer"
+                "flex flex-col float-right m-2 " + (isme ? "justify-end items-end" : "justify-start items-start")
             }
         >
-            {!isme && <p className="text-xs text-font">{name}</p>}
-            <div className={"shadow-md mb-1 rounded-lg p-2 text-base  " + (isme ? " sentMessage text-white bg-violet-500" : " text-font bg-gray-100")}>
+            {!isme && <p className="text-xs text-primary font-medium">{name}</p>}
+            <div className={"shadow-md mb-1 rounded-lg p-2 text-base  " + (isme ? " text-white bg-violet-500" : " text-font bg-gray-100")}>
                 <p>{message.content}</p>
             </div>
             <div className="flex items-center justify-between">
