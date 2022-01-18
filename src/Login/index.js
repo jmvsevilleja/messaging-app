@@ -1,9 +1,19 @@
-import React from 'react'
+import React, {useEffect} from "react";
 import './login.css';
 import {Link} from 'react-router-dom'
 import ConvoLogo from '../logo.svg';
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
+
+    let navigate = useNavigate();
+    useEffect(() => {
+        const user_id = localStorage.getItem("user_id");
+        if (user_id) {
+            navigate(`/chat`);
+        }
+    }, []);
+
     return (
         <>
             <div className="w-full min-h-screen bg-gray-50 flex flex-col justify-center items-center pt-6 sm:pt-0">
