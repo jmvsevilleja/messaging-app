@@ -9,7 +9,7 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
     return (
         <div
             id="messages-sidebar"
-            className={" bg-white absolute z-20 pl-6 top-0 bottom-0 w-full md:w-auto md:static md:top-auto md:bottom-auto -mr-px md:translate-x-0 transform transition-transform duration-200 ease-in-out border-r border-gray-200"
+            className={" bg-white absolute z-20 pl-5 top-0 bottom-0 w-full md:w-auto md:static md:top-auto md:bottom-auto -mr-px md:translate-x-0 transform transition-transform duration-200 ease-in-out border-r border-gray-200"
                 + (!openChat ? " translate-x-0" : " -translate-x-full")}
 
         >
