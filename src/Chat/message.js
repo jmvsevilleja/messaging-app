@@ -21,7 +21,7 @@ function Message({user_id, message, chatroom}) {
             }
         >
             {!isme && <p className="text-xs text-primary font-medium">{name}</p>}
-            <div className={"break-all shadow-md mb-1 rounded-lg p-2 text-base text-right" + (isme ? " text-white bg-violet-500" : " text-font bg-gray-100")}>
+            <div className={"break-all shadow-md mb-1 rounded-lg p-2 text-base text-right" + (isme ? " text-white bg-blue-500" : " text-font bg-gray-100")}>
                 <p>{message.content}</p>
             </div>
             <div className="flex items-center justify-between">

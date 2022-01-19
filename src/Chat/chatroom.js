@@ -4,7 +4,7 @@ import Avatar from 'react-avatar';
 function ChatRoom({user, unread, handleChatRoom}) {
     return (
         <li>
-            <button className="hover:bg-violet-100 p-2 rounded w-full cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" onClick={() => {
+            <button className="hover:bg-blue-100 p-2 rounded w-full cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" onClick={() => {
                 handleChatRoom(user)
             }}>
 
