@@ -12,9 +12,9 @@ module.exports = {
         sans: ['Roboto', 'Helvetica', 'Arial', 'sans-serif'],
       },
       fontSize: {
-        xs: ["0.675rem", {lineHeight: "1.5"}],
-        sm: ["0.75rem", {lineHeight: "1.5715"}],
-        base: ["0.875rem", {lineHeight: "1.5"}],
+        xs: ["0.7rem", {lineHeight: "1.5"}],
+        sm: ["0.8rem", {lineHeight: "1.5715"}],
+        base: ["0.9rem", {lineHeight: "1.5"}],
         normal: ["1rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],
         lg: ["1.125rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],
         xl: ["1.25rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],

@@ -21,12 +21,12 @@ function Message({user_id, message, chatroom}) {
             }
         >
             {!isme && <p className="text-xs text-primary font-medium">{name}</p>}
-            <div className={"shadow-md mb-1 rounded-lg p-2 text-base  " + (isme ? " text-white bg-violet-500" : " text-font bg-gray-100")}>
+            <div className={"break-all shadow-md mb-1 rounded-lg p-2 text-base  " + (isme ? " text-white bg-violet-500" : " text-font bg-gray-100")}>
                 <p>{message.content}</p>
             </div>
             <div className="flex items-center justify-between">
                 <div className="mt-1 mr-1 text-xs text-gray-500 font-normal">{created}</div>
-                {isme && message.status == "SENT" &&
+                {isme && message.status === "SENT" &&
                     <svg
                         className="w-3 h-3 shrink-0 fill-current text-gray-400"
                         viewBox="0 0 12 12"
@@ -36,7 +36,7 @@ function Message({user_id, message, chatroom}) {
                         />
                     </svg>
                 }
-                {isme && message.status == "READ" &&
+                {isme && message.status === "READ" &&
                     <svg
                         className="w-5 h-3 shrink-0 fill-current text-green-500"
                         viewBox="0 0 20 12"

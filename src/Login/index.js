@@ -12,6 +12,7 @@ const Login = () => {
         if (user_id) {
             navigate(`/chat`);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

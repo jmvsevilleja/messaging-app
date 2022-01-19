@@ -4,7 +4,7 @@ import Avatar from 'react-avatar';
 function User({user, handleChat}) {
     return (
         <li>
-            <div className="hover:bg-gray-100 py-2 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out" onClick={() => {
+            <div className="hover:bg-violet-100 rounded p-2 cursor-pointer flex items-center text-sm" onClick={() => {
                 handleChat(user)
             }}>
 

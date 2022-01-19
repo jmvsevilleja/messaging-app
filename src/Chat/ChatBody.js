@@ -14,6 +14,7 @@ function ChatBody({
 }) {
 
     const [messageText, setMessageText] = useState("");
+    const messageInput = React.useRef(null);
 
     return (
         <div
@@ -35,9 +36,9 @@ function ChatBody({
                                 className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
                                 onClick={handleOpenChat}
                             >
-                                <span class="sr-only">Close sidebar</span>
+                                <span className="sr-only">Close sidebar</span>
                                 <svg
-                                    class="w-6 h-6 fill-current"
+                                    className="w-6 h-6 fill-current"
                                     viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg"
                                 >
@@ -97,6 +98,7 @@ function ChatBody({
                         onSubmit={(e) => {
                             setMessageText("");
                             handleSubmitMessage(e, messageText);
+                            messageInput.current.focus();
                         }}
                         className="w-full flex py-3 px-3 items-center justify-between border-t border-gray-300"
                     >
@@ -135,10 +137,11 @@ function ChatBody({
 
                         <input
                             value={messageText}
-                            onChange={(e) =>
+                            onChange={(e) => {
                                 setMessageText(
                                     e.target.value
-                                )
+                                );
+                            }
                             }
                             aria-placeholder="Write message..."
                             placeholder="Write message..."
@@ -146,9 +149,9 @@ function ChatBody({
                             type="text"
                             id="message"
                             name="message"
-                            autoFocus
                             required
                             autoComplete="off"
+                            ref={messageInput}
                         ></input>
 
                         <button
