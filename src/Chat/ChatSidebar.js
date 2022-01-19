@@ -67,11 +67,11 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
                     <input
                         aria-placeholder="Search"
                         placeholder="Search"
-                        className="py-2 pl-10 block w-full rounded bg-gray-100 outline-none focus:text-gray-700"
+                        className="py-2 pl-10 pr-2 block w-full rounded bg-gray-100 border-none outline-0 focus:text-gray-700"
                         type="search"
                         name="search"
                         required
-                        autoComplete="search"
+                        autoComplete="off"
                     />
                 </div>
             </div>
@@ -83,7 +83,11 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
                             Chat
                         </h2>
                         <div className="flex items-center">
-                            <CreateRoom />
+                            {user &&
+                                userList.length !== 0 && < CreateRoom
+                                    user={user}
+                                    userList={userList}
+                                />}
                         </div>
                     </div>
 

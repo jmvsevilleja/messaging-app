@@ -145,7 +145,7 @@ function ChatBody({
                             }
                             aria-placeholder="Write message..."
                             placeholder="Write message..."
-                            className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700"
+                            className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 border-none outline-0 focus:text-gray-700"
                             type="text"
                             id="message"
                             name="message"

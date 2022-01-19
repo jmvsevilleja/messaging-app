@@ -1,9 +1,59 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 
-function CreateRoom() {
+import UserSelect from "./userselect";
+
+function CreateRoom({user, userList}) {
 
     const [isOpen, setIsOpen] = useState(false);
+
+    const handleSelected = async (item) => {
+        console.log('handleSelected', item);
+    }
+    const handleCreateRoomSubmit = async (event) => {
+        event.preventDefault();
+        console.log('handleCreateRoomSubmit');
+    }
+    // const handleCreateRoom = async (event) => {
+    //     // Prevent the page from reloading
+    //     event.preventDefault();
+    //     // Try make the mutation to graphql API
+    //     try {
+    //         const created_message = await API.graphql({
+    //             query: createMessage,
+    //             variables: {
+    //                 input: {
+    //                     // id is auto populated by AWS Amplify
+    //                     content: messageText, // the message content the user submitted (from state)
+    //                     chatRoomMessagesId: chatRoom.id,
+    //                     userMessageId: user.id, // this is the id of the current user
+    //                     status: "SENT",
+    //                 },
+    //             },
+    //         });
+    //         console.log("Created Message", created_message);
+    //         if (false) {
+    //             await API.graphql({
+    //                 query: updateChatRoom,
+    //                 variables: {
+    //                     input: {
+    //                         // id: chatroom.id,
+    //                         // newMessages: 10,
+    //                         // _version: 1,
+    //                     },
+    //                 },
+    //             });
+    //         }
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // };
+
+    useEffect(() => {
+        // if (userList) {
+        //     console.log('Create Room User list', userList);
+        // }
+    }, []);
 
     return (
         <>
@@ -26,30 +76,88 @@ function CreateRoom() {
                     <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl m-5">
                         <Dialog.Title
                             as="h3"
-                            className="text-lg font-medium leading-6 text-gray-900"
+                            className="mb-3 text-lg font-medium leading-6 text-gray-600"
                         >
                             Create Group Chat
                         </Dialog.Title>
-                        <div className="mt-2">
-                            <p className="text-sm text-gray-500">
-                                Your payment has been successfully submitted.
-                                We’ve sent you an email with all of the details
-                                of your order.
-                            </p>
-                        </div>
+                        <form
+                            onSubmit={(e) => {
+                                handleCreateRoomSubmit(e);
+                                //setIsOpen(false)
+                            }}
+                        >
+                            <div className="relative text-gray-600 focus-within:text-gray-400">
+                                <input
+                                    aria-placeholder="Group Name"
+                                    placeholder="Group Name"
+                                    type="text"
+                                    className="my-2 py-2 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                    required
+                                />
+                            </div>
+                            <div className="relative text-gray-600 focus-within:text-gray-400">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-2">
+                                    <svg
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        viewBox="0 0 24 24"
+                                        className="w-6 h-6 text-gray-500"
+                                    >
+                                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </span>
+                                <input
+                                    aria-placeholder="Search Name"
+                                    placeholder="Search Name"
+                                    className="py-2 pl-10 pr-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                    type="search"
+                                    name="search"
+                                    autoComplete="off"
+                                />
+                            </div>
 
-                        <div className="mt-4">
-                            <button
-                                type="button"
-                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                Got it, thanks!
-                            </button>
-                        </div>
+                            <ul className=" pt-2 mt-2">
+
+                                {user &&
+                                    userList
+                                        .filter((item) => {
+                                            return item.id !== user.id;
+                                        })
+                                        // sort user by name
+                                        .sort((a, b) =>
+                                            a.name.localeCompare(b.name)
+                                        )
+                                        .map((item) => (
+                                            <UserSelect
+                                                user={item}
+                                                handleSelected={handleSelected}
+                                                key={item.id}
+                                            />
+                                        ))}
+                            </ul>
+
+                            <div className="mt-4 flex flex-col">
+                                <div className="flex self-end">
+                                    <button className="hover:text-gray-600 text-gray-500 font-base py-2 px-4" onClick={() => {
+                                        setIsOpen(false);
+                                    }}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="bg-primary hover:bg-secondary text-white font-base py-2 px-4 rounded">
+                                        Submit
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </Dialog>
+            </Dialog >
         </>
     )
 }
