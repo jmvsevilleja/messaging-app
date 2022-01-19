@@ -11,12 +11,12 @@ function ChatRoom({user, unread, handleChatRoom}) {
                 {user && <Avatar size="40" round={true} name={user.name} />}
                 <div className="w-full pb-2">
                     <div className="flex justify-between">
-                        <span className="block ml-2 font-medium text-base text-gray-600 ">
+                        <span className="block ml-2 font-medium text-base text-gray-600 text-left">
                             {user.name}
                             {unread && <Avatar className="ml-1" size="20" round={true} value={unread} color="red" textSizeRatio={1.75} />}
                         </span>
 
-                        <span className="block ml-2 text-sm text-gray-600">5 minutes</span>
+                        <span className="block ml-2 text-sm text-gray-600 text-left">5 minutes</span>
                     </div>
                     <span className="block ml-2 text-sm text-gray-600 text-left">last message here</span>
                 </div>

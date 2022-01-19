@@ -75,7 +75,7 @@ function ChatBody({
                     </div>
                     <div
                         id="chat"
-                        className="h-full p-5 overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100"
+                        className="h-full p-5 overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100 "
                     >
                         {messageList
                             // sort messages oldest to newest client-side

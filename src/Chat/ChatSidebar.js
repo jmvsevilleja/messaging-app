@@ -109,7 +109,7 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
                             ))}
                 </ul>
 
-                <ul class="border-t border-gray-200 pt-2 mt-2">
+                <ul className="border-t border-gray-200 pt-2 mt-2">
 
                     {user &&
                         userList

@@ -17,7 +17,7 @@ const Login = () => {
 
     return (
         <>
-            <div className="w-full min-h-screen bg-gray-50 flex flex-col justify-center items-center pt-6 sm:pt-0">
+            <div className="w-full h-screen bg-gray-50 flex flex-col justify-center items-center pt-6 sm:pt-0">
                 <div className="w-full sm:max-w-md p-5 mx-auto">
                     <div className="justify-center flex">
                         <img className=" w-96" src={ConvoLogo} alt="Convo" />
