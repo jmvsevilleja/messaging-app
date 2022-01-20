@@ -32,7 +32,6 @@ let subCreateUser;
 let subUpdateChatRoom;
 let subCreateMessage;
 let subUpdateMessage;
-let chatRoomID;
 
 const Chat = () => {
     const [messageList, setMessageList] = useState([]);
@@ -41,6 +40,7 @@ const Chat = () => {
     const [user, setUser] = useState(null);
     const [chatRoom, setChatRoom] = useState({});
     const [openChat, setOpenChat] = useState(false);
+    const [chatRoomID, setChatRoomID] = useState(null);
 
     let navigate = useNavigate();
 
@@ -109,34 +109,26 @@ const Chat = () => {
         }
     };
 
-    const handleChat = async (item) => {
+    const handleCreateChat = async (selected) => {
         // TODO: Check selected user if included in the chat room. HandleChatRoom or CreateChatRoom.
-        console.log("handleChat", user.id, item.id);
-        //listChatRooms
-        // const customChatRooms = /* GraphQL */ `
-        // query ListChatRooms($filter: ModelChatRoomFilterInput $limit: Int) {
-        //   listChatRooms(filter: $filter, limit: $limit) {items {id name}}}`;
+        console.log("handleCreateChat", user.id, selected.id);
 
-        // const chatrooms = await API.graphql({
-        //     // query: customChatRooms,
-        //     query: listChatRooms,
-        //     variables: {
-        //         filter: {chatRoomAdminId: {eq: user.id}},
-        //     }
-        // });
-        // console.log(chatrooms);
-        // if (chatrooms.data.listChatRooms.items.length) {
-        //     //console.log('Chatroom ID:', chatrooms.data.listChatRooms.items[0]);
-        //     handleChatRoom(chatrooms.data.listChatRooms.items[0]);
-
-        // }
-        //  else {
-        if (false) {
+        // check if user logged and selected user is already in chat
+        const foundinchatroom = chatRoomList.find((room) => {
+            if (!Boolean(room.group)) { // not group chat
+                let needle = [user.id, selected.id];
+                var haystack = room.chatRoomUsers.items.map(item => item.user.id);
+                let result = needle.every(item => haystack.includes(item));
+                return result;
+            }
+        });
+        console.log('handleCreateChat Found', foundinchatroom);
+        if (!Boolean(foundinchatroom)) {
             // Creating Chat Room
             const chatroom = await API.graphql(
                 graphqlOperation(createChatRoom, {
                     input: {
-                        name: user.name + " - " + item.name,
+                        name: user.name + " - " + selected.name,
                         chatRoomAdminId: user.id, // Creator of the Chatroom
                         group: false,
                     },
@@ -161,7 +153,7 @@ const Chat = () => {
             await API.graphql(
                 graphqlOperation(createChatRoomUser, {
                     input: {
-                        chatRoomUserUserId: item.id,
+                        chatRoomUserUserId: selected.id,
                         chatRoomChatRoomUsersId:
                             chatroom.data.createChatRoom.id, // Relationship of Chatroom
                     },
@@ -169,8 +161,11 @@ const Chat = () => {
             );
             //console.log('createChatRoomUser', chatroomuser.data.createChatRoomUser.id);
             // Open ChatRoom with this Id
-            chatRoomID = chatroom.data.createChatRoom.id;
+            handleChatRoomID(chatroom.data.createChatRoom.id)
             // }
+        } else {
+            // open chatroom from users list
+            handleChatRoomID(foundinchatroom.id);
         }
     };
 
@@ -293,10 +288,17 @@ const Chat = () => {
         );
     };
 
-    const handleOpenChat = async () => {
+    // Open chat toggle
+    const handleCloseChat = async () => {
         setOpenChat(false);
     }
 
+    // open chat room using room ID
+    const handleChatRoomID = async (id) => {
+        console.log('handleChatRoomID', id);
+        setOpenChat(true);
+        setChatRoomID(id);
+    }
     // OTHER FUNCTIONS
     const filterChatRoom = async (chatroom) => {
         // TODO: filter chatroom by graphQL
@@ -481,17 +483,18 @@ const Chat = () => {
     // open room when chatroom is loaded
     useEffect(() => {
         if (chatRoomList.length) {
-            console.log("chatRoomList Loaded", chatRoomList, chatRoomID);
+            console.log("useEffect chatRoomList Loaded", chatRoomList, chatRoomID);
             if (chatRoomID) {
-                const openchatroom = chatRoomList.find(
-                    (i) => i.id === chatRoomID
+                const foundchatroom = chatRoomList.find(
+                    (item) => item.id === chatRoomID
                 );
-                handleChatRoom(openchatroom);
-                chatRoomID = null;
+                if (foundchatroom) {
+                    console.log('useEffect handleChatRoom Found', chatRoomID);
+                    handleChatRoom(foundchatroom);
+                }
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [chatRoomList]);
+    }, [chatRoomID, chatRoomList]);
 
     const fetchUserDetails = async (user_id, auth_token, refresh_token) => {
         if (!user_id || !auth_token || !refresh_token) return;
@@ -524,13 +527,15 @@ const Chat = () => {
                         {/* Messages sidebar */}
                         <ChatSidebar
                             user={user}
+                            chatRoomID={chatRoomID}
                             openChat={openChat}
                             setOpenChat={setOpenChat}
                             userList={userList}
                             chatRoomList={chatRoomList}
                             handleLogout={handleLogout}
                             handleChatRoom={handleChatRoom}
-                            handleChat={handleChat}
+                            handleChatRoomID={handleChatRoomID}
+                            handleCreateChat={handleCreateChat}
                         />
 
                         {/* Messages body */}
@@ -540,7 +545,7 @@ const Chat = () => {
                             chatRoom={chatRoom}
                             messageList={messageList}
                             handleSubmitMessage={handleSubmitMessage}
-                            handleOpenChat={handleOpenChat}
+                            handleCloseChat={handleCloseChat}
                         />
                     </div>
                 </main>
