@@ -97,6 +97,7 @@ function ChatSidebar({
                                 userList.length !== 0 && < CreateRoom
                                     user={user}
                                     userList={userList}
+                                    handleChatRoomID={handleChatRoomID}
                                 />}
                         </div>
                     </div>
@@ -107,9 +108,9 @@ function ChatSidebar({
                             .filter((item) => {
                                 return item.id !== user.id;
                             })
-                            // sort user by name
+                            // sort by updatedAt
                             .sort((a, b) =>
-                                a.name.localeCompare(b.name)
+                                b.updatedAt.localeCompare(a.updatedAt)
                             )
                             .map((item) => (
                                 <ChatRoom
