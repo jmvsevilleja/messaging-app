@@ -30,6 +30,7 @@ export const getMessage = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -93,6 +94,7 @@ export const getMessage = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -147,6 +149,7 @@ export const listMessages = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -210,6 +213,7 @@ export const syncMessages = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -265,6 +269,7 @@ export const getChatRoom = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -343,6 +348,7 @@ export const getChatRoom = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -363,6 +369,7 @@ export const getChatRoom = /* GraphQL */ `
         userChatRoomUserId
       }
       name
+      group
       imageUri
       createdAt
       updatedAt
@@ -424,6 +431,7 @@ export const listChatRooms = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -494,6 +502,7 @@ export const syncChatRooms = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -541,6 +550,7 @@ export const getUser = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -618,6 +628,7 @@ export const getUser = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -670,6 +681,7 @@ export const listUsers = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -731,6 +743,7 @@ export const syncUsers = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -796,6 +809,7 @@ export const userByClinicaID = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -861,6 +875,7 @@ export const userByName = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt

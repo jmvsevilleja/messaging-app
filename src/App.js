@@ -2,7 +2,6 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import SSO from './Login/sso'
 import Login from './Login';
 import Chat from './Chat';
-import './App.css';
 
 function App() {
   return (

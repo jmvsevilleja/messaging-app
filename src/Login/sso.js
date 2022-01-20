@@ -73,9 +73,9 @@ const SSO = (props) => {
     }, []);
 
     return (
-        <div className="w-full min-h-screen bg-gray-50 flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
+        <div className="w-full h-screen bg-gray-50 flex flex-col justify-center items-center pt-6 sm:pt-0">
             <div className="w-full sm:max-w-md p-5 mx-auto text-center">
-                <h3>{headerMessage}</h3>
+                <h3 className="text-font">{headerMessage}</h3>
             </div>
         </div>
     );

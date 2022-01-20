@@ -79,6 +79,7 @@ export declare class ChatRoom {
   readonly chatRoomUsers?: (ChatRoomUser | null)[];
   readonly admin: User;
   readonly name?: string;
+  readonly group?: boolean;
   readonly imageUri?: string;
   readonly createdAt?: string;
   readonly updatedAt?: string;

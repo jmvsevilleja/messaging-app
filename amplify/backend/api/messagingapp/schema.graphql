@@ -27,6 +27,7 @@ type ChatRoom @model @auth(rules: [{ allow: public }]) {
     chatRoomUsers: [ChatRoomUser] @hasMany
     admin: User! @hasOne
     name: String
+    group: Boolean
     imageUri: String
 }
 
