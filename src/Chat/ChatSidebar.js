@@ -107,9 +107,9 @@ function ChatSidebar({
                             .filter((item) => {
                                 return item.id !== user.id;
                             })
-                            // sort user by name
+                            // sort by updatedAt
                             .sort((a, b) =>
-                                a.name.localeCompare(b.name)
+                                b.updatedAt.localeCompare(a.updatedAt)
                             )
                             .map((item) => (
                                 <ChatRoom
