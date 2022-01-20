@@ -460,6 +460,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "group": {
+                    "name": "group",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "imageUri": {
                     "name": "imageUri",
                     "isArray": false,
@@ -528,5 +535,5 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "version": "293ca00786801cab0504966f8e859bb4"
+    "version": "7c30d58da312b0bd4eb3fb181385e4dc"
 };

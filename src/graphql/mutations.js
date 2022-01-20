@@ -33,6 +33,7 @@ export const createMessage = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -96,6 +97,7 @@ export const createMessage = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -151,6 +153,7 @@ export const updateMessage = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -214,6 +217,7 @@ export const updateMessage = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -269,6 +273,7 @@ export const deleteMessage = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -332,6 +337,7 @@ export const deleteMessage = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -387,6 +393,7 @@ export const createChatRoom = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -465,6 +472,7 @@ export const createChatRoom = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -485,6 +493,7 @@ export const createChatRoom = /* GraphQL */ `
         userChatRoomUserId
       }
       name
+      group
       imageUri
       createdAt
       updatedAt
@@ -527,6 +536,7 @@ export const updateChatRoom = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -605,6 +615,7 @@ export const updateChatRoom = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -625,6 +636,7 @@ export const updateChatRoom = /* GraphQL */ `
         userChatRoomUserId
       }
       name
+      group
       imageUri
       createdAt
       updatedAt
@@ -667,6 +679,7 @@ export const deleteChatRoom = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -745,6 +758,7 @@ export const deleteChatRoom = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -765,6 +779,7 @@ export const deleteChatRoom = /* GraphQL */ `
         userChatRoomUserId
       }
       name
+      group
       imageUri
       createdAt
       updatedAt
@@ -812,6 +827,7 @@ export const createUser = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -889,6 +905,7 @@ export const createUser = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -947,6 +964,7 @@ export const updateUser = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -1024,6 +1042,7 @@ export const updateUser = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -1082,6 +1101,7 @@ export const deleteUser = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -1159,6 +1179,7 @@ export const deleteUser = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -1231,6 +1252,7 @@ export const createChatRoomUser = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -1263,6 +1285,7 @@ export const createChatRoomUser = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -1343,6 +1366,7 @@ export const updateChatRoomUser = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -1375,6 +1399,7 @@ export const updateChatRoomUser = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt
@@ -1455,6 +1480,7 @@ export const deleteChatRoomUser = /* GraphQL */ `
           userChatRoomUserId
         }
         name
+        group
         imageUri
         createdAt
         updatedAt
@@ -1487,6 +1513,7 @@ export const deleteChatRoomUser = /* GraphQL */ `
           id
           newMessages
           name
+          group
           imageUri
           createdAt
           updatedAt

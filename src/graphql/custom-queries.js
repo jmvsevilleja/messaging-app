@@ -41,6 +41,7 @@ export const listChatRooms = /* GraphQL */ `
         }
         id
         name
+        group
         }
     }
   }
