@@ -117,10 +117,11 @@ const Chat = () => {
             if (!Boolean(room.group)) { // not group chat
                 let needle = [user.id, selected_user.id];
                 var haystack = room.chatRoomUsers.items.map(item => item.user.id);
-                let result = needle.every(item => haystack.includes(item));
-                return result;
+                return needle.every(item => haystack.includes(item));
             }
+            return false;
         });
+
         console.log('handleCreateChat Found', userfoundchatroom);
         if (!Boolean(userfoundchatroom)) {
             // Creating Chat Room
@@ -167,6 +168,9 @@ const Chat = () => {
         console.log("handleChatRoom", chatroom);
         setMessageList([]);
         setOpenChat(true);
+        setChatRoom({
+            name: chatroom.name
+        });
 
         if (subCreateMessage) {
             subCreateMessage.unsubscribe();
@@ -488,6 +492,7 @@ const Chat = () => {
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatRoomID, chatRoomList]);
 
     const fetchUserDetails = async (user_id, auth_token, refresh_token) => {
