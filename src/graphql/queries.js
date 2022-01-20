@@ -770,7 +770,7 @@ export const syncUsers = /* GraphQL */ `
 `;
 export const userByClinicaID = /* GraphQL */ `
   query UserByClinicaID(
-    $clinicaID: String
+    $clinicaID: String!
     $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -836,7 +836,7 @@ export const userByClinicaID = /* GraphQL */ `
 `;
 export const userByName = /* GraphQL */ `
   query UserByName(
-    $name: String
+    $name: String!
     $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
