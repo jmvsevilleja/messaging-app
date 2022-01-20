@@ -5,7 +5,17 @@ import User from "./user";
 import ChatRoom from "./chatroom";
 import CreateRoom from "./CreateRoom";
 
-function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, handleChatRoom, handleChat}) {
+function ChatSidebar({
+    user,
+    chatRoomID,
+    openChat,
+    userList,
+    chatRoomList,
+    handleLogout,
+    handleChatRoom,
+    handleChatRoomID,
+    handleCreateChat
+}) {
     return (
         <div
             id="messages-sidebar"
@@ -103,10 +113,10 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
                             )
                             .map((item) => (
                                 <ChatRoom
-                                    user={item}
-                                    handleChatRoom={
-                                        handleChatRoom
-                                    }
+                                    room={item}
+                                    chatRoomID={chatRoomID}
+                                    handleChatRoom={handleChatRoom}
+                                    handleChatRoomID={handleChatRoomID}
                                     key={item.id}
                                 // unread={12}
                                 />
@@ -127,7 +137,7 @@ function ChatSidebar({user, openChat, userList, chatRoomList, handleLogout, hand
                             .map((item) => (
                                 <User
                                     user={item}
-                                    handleChat={handleChat}
+                                    handleCreateChat={handleCreateChat}
                                     key={item.id}
                                 />
                             ))}

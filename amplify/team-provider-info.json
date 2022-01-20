@@ -24,5 +24,18 @@
       "StackId": "arn:aws:cloudformation:ap-southeast-1:436966076357:stack/amplify-messagingapp-test-143643/521ffdb0-7504-11ec-82bf-0a0a2a0160f8",
       "AmplifyAppId": "dtx7zjrnqqy6a"
     }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-messagingapp-prod-91643-authRole",
+      "UnauthRoleArn": "arn:aws:iam::436966076357:role/amplify-messagingapp-prod-91643-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::436966076357:role/amplify-messagingapp-prod-91643-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-messagingapp-prod-91643-deployment",
+      "UnauthRoleName": "amplify-messagingapp-prod-91643-unauthRole",
+      "StackName": "amplify-messagingapp-prod-91643",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:436966076357:stack/amplify-messagingapp-prod-91643/99921f50-798e-11ec-9811-0ad563014e62",
+      "AmplifyAppId": "dtx7zjrnqqy6a"
+    }
   }
 }
