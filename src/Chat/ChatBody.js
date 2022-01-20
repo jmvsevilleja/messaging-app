@@ -10,7 +10,7 @@ function ChatBody({
     openChat,
     messageList,
     handleSubmitMessage,
-    handleOpenChat
+    handleCloseChat
 }) {
 
     const [messageText, setMessageText] = useState("");
@@ -34,7 +34,7 @@ function ChatBody({
 
                             <button
                                 className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
-                                onClick={handleOpenChat}
+                                onClick={handleCloseChat}
                             >
                                 <span className="sr-only">Close sidebar</span>
                                 <svg

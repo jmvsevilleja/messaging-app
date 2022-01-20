@@ -1,11 +1,11 @@
 import React from "react";
 import Avatar from 'react-avatar';
 
-function User({user, handleChat}) {
+function User({user, handleCreateChat}) {
     return (
         <li>
             <div className="hover:bg-indigo-100 rounded p-2 cursor-pointer flex items-center text-sm" onClick={() => {
-                handleChat(user)
+                handleCreateChat(user)
             }}>
 
                 {user && <Avatar size="40" round={true} name={user.name} />}
