@@ -97,6 +97,7 @@ function ChatSidebar({
                                 userList.length !== 0 && < CreateRoom
                                     user={user}
                                     userList={userList}
+                                    handleChatRoomID={handleChatRoomID}
                                 />}
                         </div>
                     </div>

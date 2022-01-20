@@ -1,69 +1,76 @@
 import React, {useEffect, useState} from "react";
-import {Dialog} from "@headlessui/react";
 
+import {API, graphqlOperation} from "aws-amplify";
+import {
+    createChatRoom,
+    createChatRoomUser
+} from "../graphql/mutations";
+
+import {Dialog} from "@headlessui/react";
 import UserSelect from "./userselect";
 
-function CreateRoom({user, userList}) {
+function CreateRoom({user, userList, handleChatRoomID}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [groupName, setGroupName] = useState("");
-    const [selected, setSelected] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState([]);
     const [searchText, setSearchText] = useState("");
 
-    const handleSelected = async (e, user) => {
+    const handleSelectedUsers = async (e, user) => {
+        //console.log('handleSelectedUsers', e.target.checked, item);
         if (e.target.checked) {
-            setSelected([
-                ...selected,
+            setSelectedUsers([
+                ...selectedUsers,
                 {id: user.id}
             ]);
 
         } else {
-            setSelected(selected.filter((item) => item.id !== user.id));
+            setSelectedUsers(selectedUsers.filter((item) => item.id !== user.id));
         }
-        //console.log('handleSelected', e.target.checked, item);
     }
     const handleCreateRoomSubmit = async (event) => {
         event.preventDefault();
-        console.log('handleCreateRoomSubmit', groupName, selected);
+        console.log('handleCreateRoomSubmit', groupName, selectedUsers);
+        // Creating Chat Room
+        const room = await API.graphql(
+            graphqlOperation(createChatRoom, {
+                input: {
+                    name: groupName,
+                    chatRoomAdminId: user.id,
+                    group: true,
+                },
+            })
+        );
+        console.log("createChatRoom", room, room.data.createChatRoom.id);
+        //Creating Chat Room User
+        selectedUsers.map(async (item) => {
+            await API.graphql(
+                graphqlOperation(createChatRoomUser, {
+                    input: {
+                        chatRoomUserUserId: item.id,
+                        chatRoomChatRoomUsersId:
+                            room.data.createChatRoom.id,
+                    },
+                })
+            );
+        });
+        //Creating Chat Room Admin
+        await API.graphql(
+            graphqlOperation(createChatRoomUser, {
+                input: {
+                    chatRoomUserUserId: user.id,
+                    chatRoomChatRoomUsersId: room.data.createChatRoom.id,
+                },
+            })
+        );
+        console.log('createChatRoomUser', room.data.createChatRoom.id);
+        // Open ChatRoom with this Id
+        handleChatRoomID(room.data.createChatRoom.id);
         setGroupName("");
         setSearchText("");
-        setSelected([]);
+        setSelectedUsers([]);
         setIsOpen(false);
-    }
-    // const handleCreateRoom = async (event) => {
-    //     // Prevent the page from reloading
-    //     event.preventDefault();
-    //     // Try make the mutation to graphql API
-    //     try {
-    //         const created_message = await API.graphql({
-    //             query: createMessage,
-    //             variables: {
-    //                 input: {
-    //                     // id is auto populated by AWS Amplify
-    //                     content: messageText, // the message content the user submitted (from state)
-    //                     chatRoomMessagesId: chatRoom.id,
-    //                     userMessageId: user.id, // this is the id of the current user
-    //                     status: "SENT",
-    //                 },
-    //             },
-    //         });
-    //         console.log("Created Message", created_message);
-    //         if (false) {
-    //             await API.graphql({
-    //                 query: updateChatRoom,
-    //                 variables: {
-    //                     input: {
-    //                         // id: chatroom.id,
-    //                         // newMessages: 10,
-    //                         // _version: 1,
-    //                     },
-    //                 },
-    //             });
-    //         }
-    //     } catch (err) {
-    //         console.error(err);
-    //     }
-    // };
+    };
 
     // useEffect(() => {
     //     console.log('useEffect Create Room');
@@ -160,8 +167,8 @@ function CreateRoom({user, userList}) {
                                         .map((item) => (
                                             <UserSelect
                                                 user={item}
-                                                selected={selected}
-                                                handleSelected={handleSelected}
+                                                selectedUsers={selectedUsers}
+                                                handleSelectedUsers={handleSelectedUsers}
                                                 key={item.id}
                                             />
                                         ))}

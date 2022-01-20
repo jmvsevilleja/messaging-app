@@ -1,7 +1,7 @@
 import React from "react";
 import Avatar from 'react-avatar';
 
-function User({user, selected, handleSelected}) {
+function User({user, selectedUsers, handleSelectedUsers}) {
     return (
         <li>
             <label className="flex items-center  justify-between hover:bg-indigo-100 rounded p-2 cursor-pointer text-sm">
@@ -15,9 +15,9 @@ function User({user, selected, handleSelected}) {
                         name="participants"
                         value={user.id}
                         className="w-4 h-4 rounded-md focus:ring-1 text-primary" onChange={(e) => {
-                            handleSelected(e, user);
+                            handleSelectedUsers(e, user);
                         }}
-                        checked={Boolean(selected.find((item) => item.id === user.id))}
+                        checked={Boolean(selectedUsers.find((item) => item.id === user.id))}
                     />
                 </span>
             </label>
