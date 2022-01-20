@@ -1,21 +1,21 @@
 #chat::-webkit-scrollbar,
-#messages-sidebar #scrollable::-webkit-scrollbar {
+.scrollable::-webkit-scrollbar {
     width: 4px;
 }
 
 #chat::-webkit-scrollbar-track,
-#messages-sidebar #scrollable::-webkit-scrollbar-track {
+.scrollable::-webkit-scrollbar-track {
     cursor: pointer;
 }
 
 #chat::-webkit-scrollbar-thumb,
-#messages-sidebar #scrollable::-webkit-scrollbar-thumb {
+.scrollable::-webkit-scrollbar-thumb {
     cursor: pointer;
     background-color: #dcdcdc;
     border-radius: 10px;
 }
 
-#messages-sidebar #scrollable::-webkit-scrollbar-thumb {
+.scrollable::-webkit-scrollbar-thumb {
     cursor: pointer;
     background-color: #ececec;
     border-radius: 10px;

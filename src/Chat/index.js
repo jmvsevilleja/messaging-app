@@ -138,6 +138,7 @@ const Chat = () => {
                     input: {
                         name: user.name + " - " + item.name,
                         chatRoomAdminId: user.id, // Creator of the Chatroom
+                        group: false,
                     },
                 })
             );

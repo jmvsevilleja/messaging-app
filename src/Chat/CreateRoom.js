@@ -6,13 +6,29 @@ import UserSelect from "./userselect";
 function CreateRoom({user, userList}) {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [groupName, setGroupName] = useState("");
+    const [selected, setSelected] = useState([]);
+    const [searchText, setSearchText] = useState("");
 
-    const handleSelected = async (item) => {
-        console.log('handleSelected', item);
+    const handleSelected = async (e, user) => {
+        if (e.target.checked) {
+            setSelected([
+                ...selected,
+                {id: user.id}
+            ]);
+
+        } else {
+            setSelected(selected.filter((item) => item.id !== user.id));
+        }
+        //console.log('handleSelected', e.target.checked, item);
     }
     const handleCreateRoomSubmit = async (event) => {
         event.preventDefault();
-        console.log('handleCreateRoomSubmit');
+        console.log('handleCreateRoomSubmit', groupName, selected);
+        setGroupName("");
+        setSearchText("");
+        setSelected([]);
+        setIsOpen(false);
     }
     // const handleCreateRoom = async (event) => {
     //     // Prevent the page from reloading
@@ -49,11 +65,12 @@ function CreateRoom({user, userList}) {
     //     }
     // };
 
-    useEffect(() => {
-        // if (userList) {
-        //     console.log('Create Room User list', userList);
-        // }
-    }, []);
+    // useEffect(() => {
+    //     console.log('useEffect Create Room');
+    //     // if (userList) {
+    //     //     console.log('Create Room User list', userList);
+    //     // }
+    // }, []);
 
     return (
         <>
@@ -93,8 +110,15 @@ function CreateRoom({user, userList}) {
                                     type="text"
                                     className="my-2 py-2 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                     required
+                                    onChange={(e) => {
+                                        setGroupName(e.target.value);
+                                    }}
+                                    value={groupName}
                                 />
                             </div>
+                            <p className="mt-5 text-base text-gray-500">
+                                Add group participants
+                            </p>
                             <div className="relative text-gray-600 focus-within:text-gray-400">
                                 <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                                     <svg
@@ -116,10 +140,13 @@ function CreateRoom({user, userList}) {
                                     type="search"
                                     name="search"
                                     autoComplete="off"
+                                    onChange={(e) => {
+                                        setSearchText(e.target.value);
+                                    }}
                                 />
                             </div>
 
-                            <ul className=" pt-2 mt-2">
+                            <ul className="pt-2 mt-2 scrollable pr-5 overflow-x-hidden overflow-y-auto h-80">
 
                                 {user &&
                                     userList
@@ -133,6 +160,7 @@ function CreateRoom({user, userList}) {
                                         .map((item) => (
                                             <UserSelect
                                                 user={item}
+                                                selected={selected}
                                                 handleSelected={handleSelected}
                                                 key={item.id}
                                             />
