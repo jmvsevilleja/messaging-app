@@ -109,63 +109,57 @@ const Chat = () => {
         }
     };
 
-    const handleCreateChat = async (selected) => {
-        // TODO: Check selected user if included in the chat room. HandleChatRoom or CreateChatRoom.
-        console.log("handleCreateChat", user.id, selected.id);
+    const handleCreateChat = async (selected_user) => {
+        console.log("handleCreateChat", chatRoomList, user.id, selected_user.id);
 
-        // check if user logged and selected user is already in chat
-        const foundinchatroom = chatRoomList.find((room) => {
+        // check if user logged and selected_user is already in chat room
+        const userfoundchatroom = chatRoomList.find((room) => {
             if (!Boolean(room.group)) { // not group chat
-                let needle = [user.id, selected.id];
+                let needle = [user.id, selected_user.id];
                 var haystack = room.chatRoomUsers.items.map(item => item.user.id);
                 let result = needle.every(item => haystack.includes(item));
                 return result;
             }
         });
-        console.log('handleCreateChat Found', foundinchatroom);
-        if (!Boolean(foundinchatroom)) {
+        console.log('handleCreateChat Found', userfoundchatroom);
+        if (!Boolean(userfoundchatroom)) {
             // Creating Chat Room
-            const chatroom = await API.graphql(
+            const room = await API.graphql(
                 graphqlOperation(createChatRoom, {
                     input: {
-                        name: user.name + " - " + selected.name,
+                        name: user.name + " - " + selected_user.name,
                         chatRoomAdminId: user.id, // Creator of the Chatroom
                         group: false,
                     },
                 })
             );
-            console.log(
-                "createChatRoom",
-                chatroom,
-                chatroom.data.createChatRoom.id
-            );
+            console.log("createChatRoom", room, room.data.createChatRoom.id);
             //Creating Chat Room User
             await API.graphql(
                 graphqlOperation(createChatRoomUser, {
                     input: {
-                        chatRoomUserUserId: user.id,
+                        chatRoomUserUserId: selected_user.id,
                         chatRoomChatRoomUsersId:
-                            chatroom.data.createChatRoom.id, // Relationship of Chatroom
+                            room.data.createChatRoom.id,
                     },
                 })
             );
-            //console.log('createChatRoomUser', chatroomadmin.data.createChatRoomUser.id);
+            //Creating Chat Room Admin
             await API.graphql(
                 graphqlOperation(createChatRoomUser, {
                     input: {
-                        chatRoomUserUserId: selected.id,
-                        chatRoomChatRoomUsersId:
-                            chatroom.data.createChatRoom.id, // Relationship of Chatroom
+                        chatRoomUserUserId: user.id,
+                        chatRoomChatRoomUsersId: room.data.createChatRoom.id,
                     },
                 })
             );
-            //console.log('createChatRoomUser', chatroomuser.data.createChatRoomUser.id);
+            console.log('createChatRoomUser', room.data.createChatRoom.id);
             // Open ChatRoom with this Id
-            handleChatRoomID(chatroom.data.createChatRoom.id)
+            handleChatRoomID(room.data.createChatRoom.id);
             // }
         } else {
             // open chatroom from users list
-            handleChatRoomID(foundinchatroom.id);
+            handleChatRoomID(userfoundchatroom.id);
         }
     };
 
@@ -307,15 +301,15 @@ const Chat = () => {
             i.chatRoomUsers.items.find((j) => j.user.id === user.id)
         );
 
-        const filtereduserchatrooms = filteredchatrooms.map((i) => {
-            if (i.chatRoomUsers.items.length === 2) {
+        const filtereduserchatrooms = filteredchatrooms.map((room) => {
+            if (!Boolean(room.group)) {
                 // Change name to the one you are chatting with
-                const modifiedname = i.chatRoomUsers.items.find((j) => {
-                    return j.user.id !== user.id ? j.user.name : "";
+                const modifiedname = room.chatRoomUsers.items.find((item) => {
+                    return item.user.id !== user.id ? item.user.name : "";
                 });
-                i.name = modifiedname.user.name;
+                room.name = modifiedname.user.name;
             }
-            return i;
+            return room;
         });
         //console.log('filtereduserchatrooms', filtereduserchatrooms);
         setChatRoomList([...filtereduserchatrooms]);
