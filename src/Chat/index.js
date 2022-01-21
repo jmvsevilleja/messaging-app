@@ -4,16 +4,15 @@ import {API, graphqlOperation} from "aws-amplify";
 import {userByClinicaID, listUsers} from "../graphql/queries";
 import {getChatRoom, listChatRooms} from "../graphql/custom-queries";
 import {
-    createMessage,
     createUser,
     createChatRoom,
-    createChatRoomUser,
-    updateMessage,
     updateChatRoom,
+    createChatRoomUser
 } from "../graphql/mutations";
-// import {
-//     createMessage
-// } from "../graphql/custom-mutations";
+import {
+    updateMessage,
+    createMessage,
+} from "../graphql/custom-mutations";
 import {
     onCreateUser,
     onUpdateChatRoom,
@@ -93,17 +92,20 @@ const Chat = () => {
             });
             console.log("Created Message", created_message);
             if (false) {
-                await API.graphql({
+                const updated_chatroom = await API.graphql({
                     query: updateChatRoom,
                     variables: {
                         input: {
-                            // id: chatroom.id,
-                            // newMessages: 10,
-                            // _version: 1,
+                            id: chatRoom.id,
+                            lastMessage: created_message,
+                            newMessages: 12,
+                            _version: 16,
                         },
                     },
                 });
+                console.log("Update Chatroom", updated_chatroom);
             }
+
         } catch (err) {
             console.error(err);
         }
@@ -117,10 +119,11 @@ const Chat = () => {
             if (!Boolean(room.group)) { // not group chat
                 let needle = [user.id, selected_user.id];
                 var haystack = room.chatRoomUsers.items.map(item => item.user.id);
-                let result = needle.every(item => haystack.includes(item));
-                return result;
+                return needle.every(item => haystack.includes(item));
             }
+            return false;
         });
+
         console.log('handleCreateChat Found', userfoundchatroom);
         if (!Boolean(userfoundchatroom)) {
             // Creating Chat Room
@@ -167,6 +170,10 @@ const Chat = () => {
         console.log("handleChatRoom", chatroom);
         setMessageList([]);
         setOpenChat(true);
+        setChatRoom({
+            id: chatroom.id,
+            name: chatroom.name
+        });
 
         if (subCreateMessage) {
             subCreateMessage.unsubscribe();
@@ -187,16 +194,9 @@ const Chat = () => {
                     value.data.onCreateMessageByChatRoomMessagesId,
                 ]);
 
-                // TODO: set Read if your not the owner
-                if (
-                    user &&
-                    user.id !==
-                    value.data.onCreateMessageByChatRoomMessagesId
-                        .userMessageId
-                ) {
-                    handleReadMessage(
-                        value.data.onCreateMessageByChatRoomMessagesId.id
-                    );
+                // set READ if your not the owner
+                if (user && user.id !== value.data.onCreateMessageByChatRoomMessagesId.userMessageId) {
+                    handleReadMessage(value.data.onCreateMessageByChatRoomMessagesId.id);
                 }
             },
             error: (error) => console.warn(error),
@@ -210,14 +210,12 @@ const Chat = () => {
         ).subscribe({
             next: ({provider, value}) => {
                 console.log("onUpdateMessageByChatRoomMessagesId", value);
-                // setMessageList((list) => [
-                //     ...list,
-                //     value.data.onUpdateMessageByChatRoomMessagesId,
-                // ]);
-                handleMessageStatusUpdates(
-                    value.data.onUpdateMessageByChatRoomMessagesId.id,
-                    value.data.onUpdateMessageByChatRoomMessagesId.status
-                );
+                if (value.data.onUpdateMessageByChatRoomMessagesId.userMessageId === user.id) {
+                    handleMessageStatusUpdates(
+                        value.data.onUpdateMessageByChatRoomMessagesId.id,
+                        value.data.onUpdateMessageByChatRoomMessagesId.status
+                    );
+                }
             },
             error: (error) => console.warn(error),
         });
@@ -225,13 +223,14 @@ const Chat = () => {
         const result = await API.graphql(
             graphqlOperation(getChatRoom, {id: chatroom.id})
         );
-        //console.log('getChatRoom', result.data.getChatRoom);
+        console.log('getChatRoom', result.data.getChatRoom);
         //fetchMessages(chatroom.id);
         setMessageList(result.data.getChatRoom.messages.items);
         setChatRoom({
             id: result.data.getChatRoom.id,
             name: chatroom.name,
             users: result.data.getChatRoom.chatRoomUsers.items,
+            group: result.data.getChatRoom.group
         });
 
         // Set All message to READ
@@ -271,14 +270,8 @@ const Chat = () => {
 
     const handleMessageStatusUpdates = async (message_id, message_status) => {
         console.log("handleMessageStatusUpdates", message_id);
-        //const new_message_list = [...messageList];
-        // console.log('Message List', messageList);
         setMessageList((list) =>
-            list.map((item) =>
-                item.id === message_id
-                    ? {...item, status: message_status}
-                    : item
-            )
+            list.map((item) => item.id === message_id ? {...item, status: message_status} : item)
         );
     };
 
@@ -435,7 +428,7 @@ const Chat = () => {
             graphqlOperation(onUpdateChatRoom)
         ).subscribe({
             next: ({provider, value}) => {
-                console.log("onUpdateChatRoom", value.data.onUpdateChatRoom);
+                console.log("onUpdateChatRoom", value);
                 // setUserList((list) => [
                 //     ...list,
                 //     value.data.onCreateUser,
@@ -488,6 +481,7 @@ const Chat = () => {
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatRoomID, chatRoomList]);
 
     const fetchUserDetails = async (user_id, auth_token, refresh_token) => {

@@ -1,5 +1,4 @@
 import React from "react";
-import "./message.css";
 
 function Message({user_id, message, chatroom}) {
     let name = "";

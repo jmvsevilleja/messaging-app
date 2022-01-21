@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 
 import {API, graphqlOperation} from "aws-amplify";
 import {
@@ -15,6 +15,7 @@ function CreateRoom({user, userList, handleChatRoomID}) {
     const [groupName, setGroupName] = useState("");
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [searchText, setSearchText] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSelectedUsers = async (e, user) => {
         //console.log('handleSelectedUsers', e.target.checked, item);
@@ -31,6 +32,9 @@ function CreateRoom({user, userList, handleChatRoomID}) {
     const handleCreateRoomSubmit = async (event) => {
         event.preventDefault();
         console.log('handleCreateRoomSubmit', groupName, selectedUsers);
+        // prevent double submit
+        if (loading) return;
+        setLoading(true);
         // Creating Chat Room
         const room = await API.graphql(
             graphqlOperation(createChatRoom, {
@@ -65,11 +69,14 @@ function CreateRoom({user, userList, handleChatRoomID}) {
         );
         console.log('createChatRoomUser', room.data.createChatRoom.id);
         // Open ChatRoom with this Id
-        handleChatRoomID(room.data.createChatRoom.id);
-        setGroupName("");
-        setSearchText("");
-        setSelectedUsers([]);
-        setIsOpen(false);
+        handleChatRoomID(room.data.createChatRoom.id).then(() => {
+            setGroupName("");
+            setSearchText("");
+            setSelectedUsers([]);
+            setIsOpen(false);
+            setLoading(false);
+        });
+
     };
 
     // useEffect(() => {
@@ -107,7 +114,6 @@ function CreateRoom({user, userList, handleChatRoomID}) {
                         <form
                             onSubmit={(e) => {
                                 handleCreateRoomSubmit(e);
-                                //setIsOpen(false)
                             }}
                         >
                             <div className="relative text-gray-600 focus-within:text-gray-400">
@@ -115,7 +121,7 @@ function CreateRoom({user, userList, handleChatRoomID}) {
                                     aria-placeholder="Group Name"
                                     placeholder="Group Name"
                                     type="text"
-                                    className="my-2 py-2 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                    className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                     required
                                     onChange={(e) => {
                                         setGroupName(e.target.value);
@@ -123,35 +129,37 @@ function CreateRoom({user, userList, handleChatRoomID}) {
                                     value={groupName}
                                 />
                             </div>
-                            <p className="mt-5 text-base text-gray-500">
-                                Add group participants
-                            </p>
-                            <div className="relative text-gray-600 focus-within:text-gray-400">
-                                <span className="absolute inset-y-0 left-0 flex items-center pl-2">
-                                    <svg
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        viewBox="0 0 24 24"
-                                        className="w-6 h-6 text-gray-500"
-                                    >
-                                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                    </svg>
-                                </span>
-                                <input
-                                    aria-placeholder="Search Name"
-                                    placeholder="Search Name"
-                                    className="py-2 pl-10 pr-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
-                                    type="search"
-                                    name="search"
-                                    autoComplete="off"
-                                    onChange={(e) => {
-                                        setSearchText(e.target.value);
-                                    }}
-                                />
-                            </div>
+                            <label>
+                                <span className="text-base text-gray-500">Add group participants</span>
+
+                                <div className="relative text-gray-600 focus-within:text-gray-400">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-2">
+                                        <svg
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            viewBox="0 0 24 24"
+                                            className="w-6 h-6 text-gray-500"
+                                        >
+                                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                    </span>
+                                    <input
+                                        aria-placeholder="Search Name"
+                                        placeholder="Search Name"
+                                        className="py-2 pl-10 pr-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                        type="search"
+                                        name="search"
+                                        autoComplete="off"
+                                        onChange={(e) => {
+                                            setSearchText(e.target.value);
+                                        }}
+                                        value={searchText}
+                                    />
+                                </div>
+                            </label>
 
                             <ul className="pt-2 mt-2 scrollable pr-5 overflow-x-hidden overflow-y-auto h-80">
 
@@ -183,8 +191,16 @@ function CreateRoom({user, userList, handleChatRoomID}) {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-primary hover:bg-secondary text-white font-base py-2 px-4 rounded">
-                                        Submit
+                                        className="bg-primary hover:bg-secondary text-white font-base w-24 px-4 rounded">
+
+
+
+                                        {loading && <svg fill='none' className="w-10 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                                            <path clipRule='evenodd'
+                                                d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                                                fill='currentColor' fillRule='evenodd' />
+                                        </svg>}
+                                        {!loading && <span className="py-2">Submit</span>}
                                     </button>
 
                                 </div>
