@@ -5,7 +5,7 @@ function ChatRoom({room, chatRoomID, unread, handleChatRoom, handleChatRoomID}) 
     return (
         <li>
             <button
-                className={"hover:bg-indigo-100 p-2 my-1 rounded w-full cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out " +
+                className={"hover:bg-indigo-100 p-2 my-1 rounded w-full cursor-pointer flex items-center text-sm focus:outline-none transition duration-150 ease-in-out " +
                     (chatRoomID === room.id ? "bg-indigo-100" : "")}
                 onClick={() => {
                     //handleChatRoom(room);
