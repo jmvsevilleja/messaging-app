@@ -119,7 +119,6 @@ function ChatSidebar({
                                     handleChatRoom={handleChatRoom}
                                     handleChatRoomID={handleChatRoomID}
                                     key={item.id}
-                                // unread={12}
                                 />
                             ))}
                 </ul>

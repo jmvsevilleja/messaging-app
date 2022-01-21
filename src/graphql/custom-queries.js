@@ -3,6 +3,8 @@ export const getChatRoom = /* GraphQL */ `
         getChatRoom(id: $id) {
         id
         name
+        group
+        newMessages
         messages {
             items {
                 id
@@ -42,6 +44,7 @@ export const listChatRooms = /* GraphQL */ `
         id
         name
         group
+        newMessages
         updatedAt
         }
     }

@@ -31,7 +31,6 @@ function ChatBody({
                 <div className="w-full h-full flex flex-col">
                     <div className="justify-between item-center border-b border-gray-300 p-3">
                         <span className="flex items-center">
-
                             <button
                                 className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
                                 onClick={handleCloseChat}
@@ -47,8 +46,6 @@ function ChatBody({
                                     />
                                 </svg>
                             </button>
-
-
                             {chatRoom && (
                                 <Avatar
                                     size="40"
@@ -56,21 +53,34 @@ function ChatBody({
                                     name={chatRoom.name}
                                 />
                             )}
-                            <span className="block ml-2 font-bold text-base text-gray-600">
-                                {" "}
-                                {chatRoom && chatRoom.name}
-                            </span>
+                            <div className="w-full">
+                                <div className="flex items-center">
+                                    <span className="block ml-2 font-bold text-base text-gray-600">
+                                        {" "}
+                                        {chatRoom && chatRoom.name}
+                                    </span>
+                                    <span className="connected text-green-500 ml-2">
+                                        <svg width="6" height="6">
+                                            <circle
+                                                cx="3"
+                                                cy="3"
+                                                r="3"
+                                                fill="currentColor"
+                                            ></circle>
+                                        </svg>
+                                    </span>
+                                </div>
+                                {chatRoom.group &&
+                                    <span className="block ml-2 text-sm text-gray-600 text-left">
 
-                            <span className="connected text-green-500 ml-2">
-                                <svg width="6" height="6">
-                                    <circle
-                                        cx="3"
-                                        cy="3"
-                                        r="3"
-                                        fill="currentColor"
-                                    ></circle>
-                                </svg>
-                            </span>
+                                        {chatRoom.users
+                                            .sort((a, b) => b.user.name.localeCompare(a.user.name))
+                                            .map((item) => (
+                                                item.user.name
+                                            )).join(", ")}
+
+                                    </span>}
+                            </div>
                         </span>
                     </div>
                     <div
