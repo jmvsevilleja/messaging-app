@@ -8,7 +8,7 @@ function User({user, handleCreateChat}) {
     return (
         <li>
             <button
-                className="hover:bg-indigo-100 w-full rounded p-2 cursor-pointer flex items-center text-sm focus:outline-none"
+                className="hover:bg-indigo-100 w-full rounded p-2 cursor-pointer flex items-center overflow-hidden text-sm focus:outline-none"
                 onClick={() => {
                     if (!loading) {
                         setLoading(true);
@@ -21,11 +21,11 @@ function User({user, handleCreateChat}) {
             >
 
                 {user && <Avatar size="40" round={true} name={user.name} />}
-                <div className="w-full pb-2">
-                    <div className="flex justify-between">
+                <div className="w-full pb-2 overflow-hidden">
+                    <div className="flex justify-between overflow-hidden">
                         <span className="block ml-2 font-medium text-base text-gray-600 text-left">{user.name}</span>
                     </div>
-                    <span className="block mt-1 ml-2 text-sm text-gray-600 text-left">{user.status}</span>
+                    <span className="block mt-1 ml-2 text-sm text-gray-600 text-left truncate overflow-hidden">{user.status}</span>
                 </div>
                 {loading && <svg className="w-10 animate-spin text-primary" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
                     <path clipRule='evenodd'

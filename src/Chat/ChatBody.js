@@ -18,7 +18,7 @@ function ChatBody({
 
     return (
         <div
-            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen"
+            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen  overflow-hidden"
         >
             {!(openChat || Object.keys(chatRoom).length !== 0) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center">
@@ -28,9 +28,9 @@ function ChatBody({
                 </div>
             )}
             {Object.keys(chatRoom).length !== 0 && (
-                <div className="w-full h-full flex flex-col">
+                <div className="w-full h-full flex flex-col overflow-hidden">
                     <div className="justify-between item-center border-b border-gray-300 p-3">
-                        <span className="flex items-center">
+                        <span className="flex items-center overflow-hidden">
                             <button
                                 className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
                                 onClick={handleCloseChat}
@@ -53,7 +53,7 @@ function ChatBody({
                                     name={chatRoom.name}
                                 />
                             )}
-                            <div className="w-full">
+                            <div className="w-full overflow-hidden">
                                 <div className="flex items-center">
                                     <span className="block ml-2 font-bold text-base text-gray-600">
                                         {" "}
@@ -71,14 +71,12 @@ function ChatBody({
                                     </span>
                                 </div>
                                 {chatRoom.group &&
-                                    <span className="block ml-2 text-sm text-gray-600 text-left">
-
+                                    <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
                                         {chatRoom.users
                                             .sort((a, b) => b.user.name.localeCompare(a.user.name))
                                             .map((item) => (
                                                 item.user.name
                                             )).join(", ")}
-
                                     </span>}
                             </div>
                         </span>

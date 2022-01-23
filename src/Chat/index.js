@@ -2,16 +2,19 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from "aws-amplify";
 import {userByClinicaID, listUsers} from "../graphql/queries";
-import {getChatRoom, listChatRooms} from "../graphql/custom-queries";
+import {
+    messageByChatRoomMessagesId,
+    chatRoomUserByChatRoomUserUserId
+} from "../graphql/custom-queries";
 import {
     createUser,
     createChatRoom,
-    updateChatRoom,
     createChatRoomUser
 } from "../graphql/mutations";
 import {
     updateMessage,
     createMessage,
+    updateChatRoom,
 } from "../graphql/custom-mutations";
 import {
     onCreateUser,
@@ -26,11 +29,13 @@ import ChatBody from "./ChatBody";
 import axios from "axios";
 import "./index.css";
 
-let subCreateChatRoomUser;
-let subCreateUser;
-let subUpdateChatRoom;
-let subCreateMessage;
-let subUpdateMessage;
+let subs = {
+    subCreateChatRoomUser: null,
+    subCreateUser: null,
+    subUpdateChatRoom: null,
+    subCreateMessage: null,
+    subUpdateMessage: null
+};
 
 const Chat = () => {
     const [messageList, setMessageList] = useState([]);
@@ -38,9 +43,10 @@ const Chat = () => {
     const [chatRoomList, setChatRoomList] = useState([]);
     const [user, setUser] = useState(null);
     const [chatRoom, setChatRoom] = useState({});
-    const [openChat, setOpenChat] = useState(false);
+    const [openChat, setOpenChat] = useState(false); // set the chat room open
+    const [forceOpenChat, setForceOpenChat] = useState(false); // force to open the chat room
     const [chatRoomID, setChatRoomID] = useState(null);
-
+    //const [messageText, setMessageText] = useState("");
     let navigate = useNavigate();
 
     // HANDLE FUNCTIONS
@@ -52,22 +58,11 @@ const Chat = () => {
         localStorage.removeItem("access_token");
         document.cookie = "auth_login=; Max-Age=-99999999;";
         document.cookie = "token=; Max-Age=-99999999;";
-
-        // unsubscribe on logout
-        if (subCreateMessage) {
-            subCreateMessage.unsubscribe();
-        }
-        if (subUpdateMessage) {
-            subUpdateMessage.unsubscribe();
-        }
-        if (subUpdateChatRoom) {
-            subUpdateChatRoom.unsubscribe();
-        }
-        if (subCreateChatRoomUser) {
-            subCreateChatRoomUser.unsubscribe();
-        }
-        if (subCreateUser) {
-            subCreateUser.unsubscribe();
+        // unsubscribe
+        for (const item in subs) {
+            if (subs[item]) {
+                subs[item].unsubscribe();
+            }
         }
 
         navigate(`/`);
@@ -90,22 +85,7 @@ const Chat = () => {
                     },
                 },
             });
-            console.log("Created Message", created_message);
-            if (false) {
-                const updated_chatroom = await API.graphql({
-                    query: updateChatRoom,
-                    variables: {
-                        input: {
-                            id: chatRoom.id,
-                            lastMessage: created_message,
-                            newMessages: 12,
-                            _version: 16,
-                        },
-                    },
-                });
-                console.log("Update Chatroom", updated_chatroom);
-            }
-
+            console.log("Created Message", created_message, chatRoom);
         } catch (err) {
             console.error(err);
         }
@@ -115,17 +95,17 @@ const Chat = () => {
         console.log("handleCreateChat", chatRoomList, user.id, selected_user.id);
 
         // check if user logged and selected_user is already in chat room
-        const userfoundchatroom = chatRoomList.find((room) => {
-            if (!Boolean(room.group)) { // not group chat
+        const found_user = chatRoomList.find((room) => {
+            if (!Boolean(room.chatroom.group)) { // not group chat
                 let needle = [user.id, selected_user.id];
-                var haystack = room.chatRoomUsers.items.map(item => item.user.id);
+                var haystack = room.chatroom.chatRoomUsers.items.map(item => item.user.id);
                 return needle.every(item => haystack.includes(item));
             }
             return false;
         });
 
-        console.log('handleCreateChat Found', userfoundchatroom);
-        if (!Boolean(userfoundchatroom)) {
+        console.log('handleCreateChat Found', found_user);
+        if (!Boolean(found_user)) {
             // Creating Chat Room
             const room = await API.graphql(
                 graphqlOperation(createChatRoom, {
@@ -162,7 +142,7 @@ const Chat = () => {
             // }
         } else {
             // open chatroom from users list
-            handleChatRoomID(userfoundchatroom.id);
+            handleChatRoomID(found_user.chatroom.id);
         }
     };
 
@@ -172,20 +152,21 @@ const Chat = () => {
         setOpenChat(true);
         setChatRoom({
             id: chatroom.id,
-            name: chatroom.name
+            name: chatroom.name,
+            users: chatroom.chatRoomUsers.items,
+            group: chatroom.group,
+            lastMessage: chatroom.lastMessage,
         });
 
-        if (subCreateMessage) {
-            subCreateMessage.unsubscribe();
+        if (subs.subCreateMessage) {
+            subs.subCreateMessage.unsubscribe();
         }
-        if (subUpdateMessage) {
-            subUpdateMessage.unsubscribe();
+        if (subs.subUpdateMessage) {
+            subs.subUpdateMessage.unsubscribe();
         }
         //console.log('Subscribe to onCreateMessageByChatRoomMessagesId');
-        subCreateMessage = API.graphql(
-            graphqlOperation(onCreateMessageByChatRoomMessagesId, {
-                chatRoomMessagesId: chatroom.id,
-            })
+        subs.subCreateMessage = API.graphql(
+            graphqlOperation(onCreateMessageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id})
         ).subscribe({
             next: ({provider, value}) => {
                 console.log("onCreateMessageByChatRoomMessagesId", value);
@@ -196,14 +177,31 @@ const Chat = () => {
 
                 // set READ if your not the owner
                 if (user && user.id !== value.data.onCreateMessageByChatRoomMessagesId.userMessageId) {
-                    handleReadMessage(value.data.onCreateMessageByChatRoomMessagesId.id);
+                    handleUnreadMessage(value.data.onCreateMessageByChatRoomMessagesId.id);
+                }
+
+                // pass the last message and the counter
+                if (user && user.id === value.data.onCreateMessageByChatRoomMessagesId.userMessageId) {
+                    console.log('onCreateMessageByChatRoomMessagesId', value.data.onCreateMessageByChatRoomMessagesId);
+                    // update chatroom new message and add counter
+                    API.graphql({
+                        query: updateChatRoom,
+                        variables: {
+                            input: {
+                                id: value.data.onCreateMessageByChatRoomMessagesId.chatRoom.id,
+                                newMessages: (value.data.onCreateMessageByChatRoomMessagesId.chatRoom.newMessages * 1) + 1,
+                                lastMessage: value.data.onCreateMessageByChatRoomMessagesId.content
+                            },
+                        },
+                    });
+                    //console.log("Updated Chatroom", updated_chatroom);
                 }
             },
             error: (error) => console.warn(error),
         });
 
         //console.log('Subscribe to onUpdateMessageByChatRoomMessagesId');
-        subUpdateMessage = API.graphql(
+        subs.subUpdateMessage = API.graphql(
             graphqlOperation(onUpdateMessageByChatRoomMessagesId, {
                 chatRoomMessagesId: chatroom.id,
             })
@@ -211,48 +209,57 @@ const Chat = () => {
             next: ({provider, value}) => {
                 console.log("onUpdateMessageByChatRoomMessagesId", value);
                 if (value.data.onUpdateMessageByChatRoomMessagesId.userMessageId === user.id) {
-                    handleMessageStatusUpdates(
-                        value.data.onUpdateMessageByChatRoomMessagesId.id,
-                        value.data.onUpdateMessageByChatRoomMessagesId.status
+                    // Update all message status
+                    setMessageList((list) =>
+                        list.map((item) => item.id === value.data.onUpdateMessageByChatRoomMessagesId.id
+                            ? {...item, status: value.data.onUpdateMessageByChatRoomMessagesId.status}
+                            : item)
                     );
+                    if (user && user.id === value.data.onUpdateMessageByChatRoomMessagesId.userMessageId) {
+                        // update removing counter
+                        handleCounterMessage(value.data.onUpdateMessageByChatRoomMessagesId.chatRoom.id);
+                    }
                 }
             },
             error: (error) => console.warn(error),
         });
-
+        // TODO: load the next 100 messages on scroll
         const result = await API.graphql(
-            graphqlOperation(getChatRoom, {id: chatroom.id})
+            graphqlOperation(messageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id, sortDirection: "DESC", limit: 100})
         );
-        console.log('getChatRoom', result.data.getChatRoom);
+        console.log('messageByChatRoomMessagesId', result.data.MessageByChatRoomMessagesId);
         //fetchMessages(chatroom.id);
-        setMessageList(result.data.getChatRoom.messages.items);
-        setChatRoom({
-            id: result.data.getChatRoom.id,
-            name: chatroom.name,
-            users: result.data.getChatRoom.chatRoomUsers.items,
-            group: result.data.getChatRoom.group
-        });
+        setMessageList(result.data.MessageByChatRoomMessagesId.items);
 
         // Set All message to READ
-        result.data.getChatRoom.messages.items.forEach((item) => {
+        result.data.MessageByChatRoomMessagesId.items.forEach((item) => {
             if (item.userMessageId !== user.id && item.status !== "READ") {
                 //console.log('handleUnreadMessage', item);
                 handleUnreadMessage(item.id);
             }
         });
+
+        result.data.MessageByChatRoomMessagesId.items.find((item) => {
+            if (item.userMessageId !== user.id && item.status !== "READ") {
+                // update removing counter
+                handleCounterMessage(chatroom.id);
+                return true;
+            }
+        });
+
     };
 
-    const handleReadMessage = async (message_id) => {
-        console.log("handleReadMessage", message_id);
-        await API.graphql(
-            graphqlOperation(updateMessage, {
+    const handleCounterMessage = async (chatroom_id) => {
+        console.log("handleCounterMessage", chatroom_id);
+        API.graphql({
+            query: updateChatRoom,
+            variables: {
                 input: {
-                    id: message_id,
-                    status: "READ",
-                    _version: 1,
+                    id: chatroom_id,
+                    newMessages: 0,
                 },
-            })
-        );
+            },
+        });
     };
 
     const handleUnreadMessage = async (message_id) => {
@@ -262,16 +269,8 @@ const Chat = () => {
                 input: {
                     id: message_id,
                     status: "READ",
-                    _version: 1,
                 },
             })
-        );
-    };
-
-    const handleMessageStatusUpdates = async (message_id, message_status) => {
-        console.log("handleMessageStatusUpdates", message_id);
-        setMessageList((list) =>
-            list.map((item) => item.id === message_id ? {...item, status: message_status} : item)
         );
     };
 
@@ -283,42 +282,42 @@ const Chat = () => {
     // open chat room using room ID
     const handleChatRoomID = async (id) => {
         console.log('handleChatRoomID', id);
-        setOpenChat(true);
         setChatRoomID(id);
+        setOpenChat(true);
+        setForceOpenChat(true);
     }
     // OTHER FUNCTIONS
-    const filterChatRoom = async (chatroom) => {
-        // TODO: filter chatroom by graphQL
-        // filter chatroom belong to user
-        const filteredchatrooms = chatroom.filter((i) =>
-            i.chatRoomUsers.items.find((j) => j.user.id === user.id)
-        );
-
-        const filtereduserchatrooms = filteredchatrooms.map((room) => {
-            if (!Boolean(room.group)) {
+    const namedChatRoom = async (chatroom) => {
+        const name_chatroom = chatroom.map((room) => {
+            if (!Boolean(room.chatroom.group)) {
                 // Change name to the one you are chatting with
-                const modifiedname = room.chatRoomUsers.items.find((item) => {
+                const modifiedname = room.chatroom.chatRoomUsers.items.find((item) => {
                     return item.user.id !== user.id ? item.user.name : "";
                 });
-                room.name = modifiedname.user.name;
+                if (modifiedname) {
+                    room.chatroom.name = modifiedname.user.name;
+                }
             }
             return room;
         });
-        //console.log('filtereduserchatrooms', filtereduserchatrooms);
-        setChatRoomList([...filtereduserchatrooms]);
+        console.log('namedChatRoom', name_chatroom);
+        setChatRoomList([...name_chatroom]);
     };
-
-    // const fetchMessages = async (chatroom_id) => {
-    //     try {
-    //         const request = await API.graphql({
-    //             query: listMessages,
-    //         });
-    //         setMessageList([...request.data.listMessages.items]);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+    const fetchChatRooms = async (user_id) => {
+        console.log('fetchChatRooms', user_id);
+        if (!user_id) return;
+        try {
+            // get logged user from User Table to get status.
+            const item = await API.graphql(
+                graphqlOperation(chatRoomUserByChatRoomUserUserId, {chatRoomUserUserId: user_id})
+            );
+            return item.data.ChatRoomUserByChatRoomUserUserId.items;
+        } catch (e) {
+            console.log(e);
+        }
+    };
     const fetchUser = async (user_id) => {
+        console.log('fetchUser', user_id);
         if (!user_id) return;
         try {
             // get logged user from User Table to get status.
@@ -326,6 +325,7 @@ const Chat = () => {
                 graphqlOperation(userByClinicaID, {clinicaID: user_id})
             );
             if (item.data.userByClinicaID.items) {
+                console.log('setUser', user_id);
                 setUser(item.data.userByClinicaID.items[0]);
                 return item.data.userByClinicaID.items[0];
             }
@@ -333,26 +333,24 @@ const Chat = () => {
             console.log(e);
         }
     };
-    const fetchChatRoom = async () => {
-        if (!user) return;
-        //console.log('fetching users');
-        try {
-            const result = await API.graphql({
-                query: listChatRooms,
-            });
-            //console.log('fetchChatRoom', result.data.listChatRooms.items, user.id);
-            filterChatRoom(result.data.listChatRooms.items);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    // const fetchChatRoom = async () => {
+    //     if (!user) return;
+    //     //console.log('fetchChatRoom', user);
+    //     try {
+    //         const result = await API.graphql({query: listChatRooms});
+    //         console.log('fetchChatRoom', result.data.listChatRooms.items, user.id);
+    //         //filterChatRoom(result.data.listChatRooms.items);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // };
     const fetchUsers = async () => {
         //console.log('fetching users');
         try {
             const result = await API.graphql({
                 query: listUsers,
             });
-            setUserList([...result.data.listUsers.items]);
+            return result.data.listUsers.items;
         } catch (error) {
             console.error(error);
         }
@@ -378,6 +376,7 @@ const Chat = () => {
 
     // USE EFFECTS
     useEffect(() => {
+        if (user) return;
         const user_id = localStorage.getItem("user_id");
         const auth_token = localStorage.getItem("auth_token");
         const refresh_token = localStorage.getItem("refresh_token");
@@ -415,74 +414,104 @@ const Chat = () => {
                 return;
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // fetch Users and Chatroom once user is loaded
+    useEffect(() => {
+        if (!user) return;
+
+        console.log("USER: ", user.id);
+
+        fetchChatRooms(user.id).then((result) => {
+            console.log('fetchChatRooms', result);
+            namedChatRoom(result);
+
+            fetchUsers(user.id).then((result) => {
+                setUserList([...result]);
+            });
+        });
+
+        console.log("Subscribe to onCreateChatRoomUserByChatRoomUserUserId");
+        subs.subCreateChatRoomUser = API.graphql(
+            graphqlOperation(onCreateChatRoomUserByChatRoomUserUserId, {
+                chatRoomUserUserId: user.id,
+            })
+        ).subscribe({
+            next: ({provider, value}) => {
+                console.log("onCreateChatRoomUserByChatRoomUserUserId", value);
+                fetchChatRooms(user.id).then((result) => {
+                    namedChatRoom(result);
+                    if (value.data.onCreateChatRoomUserByChatRoomUserUserId.chatRoomUserUserId !== user.id) {
+                        handleChatRoomID(value.data.onCreateChatRoomUserByChatRoomUserUserId.chatRoomChatRoomUsersId);
+                    }
+                });
+            },
+            error: (error) => console.warn(error),
+        });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
+
+    // open room when chatroom is loaded
+    useEffect(() => {
+        if (chatRoomID && forceOpenChat) {
+            if (chatRoomList.length) {
+                console.log("useEffect chatRoomList Loaded", chatRoomList, chatRoomID);
+                const user_found = chatRoomList.find(
+                    (item) => item.chatroom.id === chatRoomID
+                );
+                //console.log('useEffect handleChatRoom Found', user_found);
+                if (user_found) {
+                    console.log('useEffect handleChatRoom Found', chatRoomID);
+                    handleChatRoom(user_found.chatroom);
+                    setForceOpenChat(false);
+                }
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatRoomID, forceOpenChat, chatRoomList]);
+
+    useEffect(() => {
 
         // Subscribe to creation of user
-        subCreateUser = API.graphql(graphqlOperation(onCreateUser)).subscribe({
+        subs.subCreateUser = API.graphql(graphqlOperation(onCreateUser)).subscribe({
             next: ({provider, value}) => {
                 setUserList((list) => [...list, value.data.onCreateUser]);
             },
             error: (error) => console.warn(error),
         });
         // Subscribe to update of chatroom
-        subUpdateChatRoom = API.graphql(
+        subs.subUpdateChatRoom = API.graphql(
             graphqlOperation(onUpdateChatRoom)
         ).subscribe({
             next: ({provider, value}) => {
-                console.log("onUpdateChatRoom", value);
-                // setUserList((list) => [
-                //     ...list,
-                //     value.data.onCreateUser,
-                // ]);
+                //console.log("onUpdateChatRoom", value.data.onUpdateChatRoom);
+                setChatRoomList((list) => list.map((item) => item.chatroom.id === value.data.onUpdateChatRoom.id
+                    ? {
+                        ...item,
+                        chatroom: {
+                            ...item.chatroom,
+                            lastMessage: value.data.onUpdateChatRoom.lastMessage,
+                            newMessages: value.data.onUpdateChatRoom.newMessages,
+                            updatedAt: value.data.onUpdateChatRoom.updatedAt,
+                        }
+                    }
+                    : item));
             },
             error: (error) => console.warn(error),
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
-    // fetch Users and Chatroom once user is loaded
-    useEffect(() => {
-        if (user) {
-            console.log("USER: ", user.id);
-            fetchUsers();
-            fetchChatRoom();
-
-            console.log(
-                "Subscribe to onCreateChatRoomUserByChatRoomUserUserId"
-            );
-            subCreateChatRoomUser = API.graphql(
-                graphqlOperation(onCreateChatRoomUserByChatRoomUserUserId, {
-                    chatRoomUserUserId: user.id,
-                })
-            ).subscribe({
-                next: ({provider, value}) => {
-                    console.log(
-                        "onCreateChatRoomUserByChatRoomUserUserId",
-                        value
-                    );
-                    fetchChatRoom();
-                },
-                error: (error) => console.warn(error),
-            });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
-
-    // open room when chatroom is loaded
-    useEffect(() => {
-        if (chatRoomList.length) {
-            console.log("useEffect chatRoomList Loaded", chatRoomList, chatRoomID);
-            if (chatRoomID) {
-                const foundchatroom = chatRoomList.find(
-                    (item) => item.id === chatRoomID
-                );
-                if (foundchatroom) {
-                    console.log('useEffect handleChatRoom Found', chatRoomID);
-                    handleChatRoom(foundchatroom);
+        return () => {
+            console.log('UNMOUNTED');
+            //unsubscribe
+            for (const item in subs) {
+                if (subs[item]) {
+                    subs[item].unsubscribe();
                 }
             }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [chatRoomID, chatRoomList]);
+        };
+    }, []);
 
     const fetchUserDetails = async (user_id, auth_token, refresh_token) => {
         if (!user_id || !auth_token || !refresh_token) return;
@@ -509,7 +538,7 @@ const Chat = () => {
     return (
         <div className="bg-white flex h-screen overflow-hidden">
             {/* Content area */}
-            <div className="relative flex flex-col flex-1" x-ref="contentarea">
+            <div className="relative flex flex-col flex-1 overflow-hidden" x-ref="contentarea">
                 <main>
                     <div className="relative flex">
                         {/* Messages sidebar */}
@@ -539,7 +568,6 @@ const Chat = () => {
                 </main>
             </div>
         </div>
-
     );
 };
 

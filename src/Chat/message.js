@@ -20,7 +20,7 @@ function Message({user_id, message, chatroom}) {
             }
         >
             {!isme && <p className="text-xs text-primary font-medium">{name}</p>}
-            <div className={"break-all xl:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-black bg-gray-50 rounded-tl-none")}>
+            <div className={"break-normal xl:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-black bg-gray-50 rounded-tl-none")}>
                 <p>{message.content}</p>
             </div>
             <div className="flex items-center justify-between">

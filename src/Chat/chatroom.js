@@ -2,6 +2,10 @@ import React from "react";
 import Avatar from 'react-avatar';
 
 function ChatRoom({room, chatRoomID, handleChatRoom, handleChatRoomID}) {
+    var dateobj = new Date(room.updatedAt);
+    const updated = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})
+
+
     return (
         <li>
             <button
@@ -13,17 +17,17 @@ function ChatRoom({room, chatRoomID, handleChatRoom, handleChatRoomID}) {
                 }}>
 
                 {room && <Avatar size="40" round={true} name={room.name} />}
-                <div className="w-full pb-2">
+                <div className="w-full pb-2 overflow-hidden">
                     <div className="flex justify-between">
                         <span className="block ml-2 font-medium text-base text-gray-600 text-left">
                             {room.name}
                         </span>
 
-                        <span className="block ml-2 text-sm text-gray-600 text-left">5 minutes</span>
+                        <span className="block ml-2 text-sm text-gray-600 text-left">{updated}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="block ml-2 text-sm text-gray-600 text-left">last message</span>
-                        {room.newMessages && <div className="text-xs inline-flex font-medium bg-primary text-white rounded-full text-center leading-5 px-2">
+                    <div className="flex justify-between overflow-hidden">
+                        <div className="ml-2 pr-5 text-sm text-gray-600 text-left truncate overflow-hidden">{Boolean(room.lastMessage) && room.lastMessage}</div>
+                        {Boolean(room.newMessages) && <div className="text-xs inline-flex font-medium bg-primary text-white rounded-full text-center leading-5 px-2">
                             {room.newMessages}
                         </div>}
                     </div>
