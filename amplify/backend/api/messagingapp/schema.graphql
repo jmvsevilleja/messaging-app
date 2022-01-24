@@ -6,7 +6,9 @@ enum MessageStatus {
     DELIVERED
     READ
 }
-
+enum UserType {
+    USER
+}
 type Message @model @auth(rules: [{ allow: public }]) {
     id: ID!
     content: String
@@ -14,6 +16,7 @@ type Message @model @auth(rules: [{ allow: public }]) {
     chatRoom: ChatRoom @belongsTo
     image: String
     audio: String
+    file: String
     status: MessageStatus
     replyToMessageID: ID
     forUserId: ID
@@ -52,6 +55,12 @@ type User @model @auth(rules: [{ allow: public }]) {
             queryField: "userByName"
             sortKeyFields: ["id"]
         )
+    type: UserType!
+        @index(
+            name: "byUserType"
+            queryField: "userByType"
+            sortKeyFields: ["name"]
+        )
     imageUri: String
     status: String
     message: [Message] @hasMany
@@ -59,6 +68,7 @@ type User @model @auth(rules: [{ allow: public }]) {
     chatRoom: ChatRoom @belongsTo
     lastOnlineAt: AWSTimestamp
     online: Boolean
+    typing: Boolean
     publicKey: String
 }
 

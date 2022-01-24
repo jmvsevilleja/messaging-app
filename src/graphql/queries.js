@@ -10,6 +10,7 @@ export const getMessage = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -35,6 +36,7 @@ export const getMessage = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -55,10 +57,12 @@ export const getMessage = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -74,6 +78,7 @@ export const getMessage = /* GraphQL */ `
       }
       image
       audio
+      file
       status
       replyToMessageID
       forUserId
@@ -98,10 +103,12 @@ export const listMessages = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -121,6 +128,7 @@ export const listMessages = /* GraphQL */ `
         }
         image
         audio
+        file
         status
         replyToMessageID
         forUserId
@@ -157,10 +165,12 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -180,6 +190,7 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
         }
         image
         audio
+        file
         status
         replyToMessageID
         forUserId
@@ -204,6 +215,7 @@ export const getChatRoom = /* GraphQL */ `
           content
           image
           audio
+          file
           status
           replyToMessageID
           forUserId
@@ -228,6 +240,7 @@ export const getChatRoom = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -253,6 +266,7 @@ export const getChatRoom = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -289,10 +303,12 @@ export const listChatRooms = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -316,6 +332,7 @@ export const getUser = /* GraphQL */ `
       id
       clinicaID
       name
+      type
       imageUri
       status
       message {
@@ -324,6 +341,7 @@ export const getUser = /* GraphQL */ `
           content
           image
           audio
+          file
           status
           replyToMessageID
           forUserId
@@ -351,10 +369,12 @@ export const getUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -380,10 +400,12 @@ export const getUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -399,6 +421,7 @@ export const getUser = /* GraphQL */ `
       }
       lastOnlineAt
       online
+      typing
       publicKey
       createdAt
       updatedAt
@@ -418,6 +441,7 @@ export const listUsers = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -443,6 +467,7 @@ export const listUsers = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -474,6 +499,7 @@ export const userByClinicaID = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -499,6 +525,7 @@ export const userByClinicaID = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -530,6 +557,7 @@ export const userByName = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -555,6 +583,65 @@ export const userByName = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
+        publicKey
+        createdAt
+        updatedAt
+        userChatRoomId
+        userChatRoomUserId
+      }
+      nextToken
+    }
+  }
+`;
+export const userByType = /* GraphQL */ `
+  query UserByType(
+    $type: UserType
+    $name: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    userByType(
+      type: $type
+      name: $name
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        clinicaID
+        name
+        type
+        imageUri
+        status
+        message {
+          nextToken
+        }
+        chatRoomUser {
+          id
+          chatRoomUserUserId
+          createdAt
+          updatedAt
+          chatRoomChatRoomUsersId
+        }
+        chatRoom {
+          id
+          newMessages
+          lastMessage
+          name
+          group
+          imageUri
+          createdAt
+          updatedAt
+          chatRoomAdminId
+        }
+        lastOnlineAt
+        online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -599,10 +686,12 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt

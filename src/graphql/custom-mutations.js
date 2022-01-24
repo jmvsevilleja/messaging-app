@@ -81,3 +81,16 @@ export const updateChatRoom = /* GraphQL */ `
     }
   }
 `;
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    updateUser(input: $input, condition: $condition) {
+      id
+      name
+      online
+      typing
+    }
+  }
+`;

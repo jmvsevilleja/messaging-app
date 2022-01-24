@@ -26,32 +26,6 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
     }
   }
 `;
-export const listChatRooms = /* GraphQL */ `
-  query ListChatRooms(
-    $filter: ModelChatRoomFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listChatRooms(filter: $filter, limit: $limit, nextToken: $nextToken) {
-        items {
-        chatRoomUsers {
-            items {
-            user {
-                id
-                name
-            }
-            }
-        }
-        id
-        name
-        group
-        newMessages
-        lastMessage
-        updatedAt
-        }
-    }
-  }
-`;
 export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
   query ChatRoomUserByChatRoomUserUserId(
     $chatRoomUserUserId: ID
@@ -84,11 +58,33 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
               id
               name
               online
+              typing
             }
           }
         }
       }
     }
+      nextToken
+    }
+  }
+`;
+export const listUsers = /* GraphQL */ `
+  query ListUsers(
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        imageUri
+        status
+        lastOnlineAt
+        online
+        typing
+        publicKey
+      }
       nextToken
     }
   }

@@ -10,12 +10,22 @@ function ChatBody({
     openChat,
     messageList,
     handleSubmitMessage,
+    handleTyping,
     handleCloseChat
 }) {
 
     const [messageText, setMessageText] = useState("");
-    const messageInput = React.useRef(null);
+    const onFocus = (typing = false) => {
+        handleTyping(true, typing);
+    }
+    const onBlur = () => {
+        handleTyping(false, false);
+    }
 
+
+    const messageInput = React.useRef(null);
+    const online = (chatRoom.users) ? chatRoom.users.find((item) => (user.id !== item.user.id && item.user.online)) : false;
+    const typing = (chatRoom.users) ? chatRoom.users.find((item) => (user.id !== item.user.id && item.user.typing)) : false;
     return (
         <div
             className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen  overflow-hidden"
@@ -29,7 +39,7 @@ function ChatBody({
             )}
             {Object.keys(chatRoom).length !== 0 && (
                 <div className="w-full h-full flex flex-col overflow-hidden">
-                    <div className="justify-between item-center border-b border-gray-300 p-3">
+                    <div className="justify-between item-center border-b border-gray-300 p-5">
                         <span className="flex items-center overflow-hidden">
                             <button
                                 className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
@@ -47,11 +57,14 @@ function ChatBody({
                                 </svg>
                             </button>
                             {chatRoom && (
-                                <Avatar
-                                    size="40"
-                                    round={true}
-                                    name={chatRoom.name}
-                                />
+                                <div className="relative">
+                                    <Avatar
+                                        size="40"
+                                        round={true}
+                                        name={chatRoom.name}
+                                    />
+                                    <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (online ? "bg-green-500" : "bg-gray-500")}></div>
+                                </div>
                             )}
                             <div className="w-full overflow-hidden">
                                 <div className="flex items-center">
@@ -59,16 +72,7 @@ function ChatBody({
                                         {" "}
                                         {chatRoom && chatRoom.name}
                                     </span>
-                                    <span className="connected text-green-500 ml-2">
-                                        <svg width="6" height="6">
-                                            <circle
-                                                cx="3"
-                                                cy="3"
-                                                r="3"
-                                                fill="currentColor"
-                                            ></circle>
-                                        </svg>
-                                    </span>
+
                                 </div>
                                 {chatRoom.group &&
                                     <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
@@ -102,13 +106,53 @@ function ChatBody({
                                 />
                             ))}
                     </div>
+                    {typing &&
+                        <div className="flex justify-center items-center absolute inset-x-0 bottom-16">
+                            <div>
+                                <svg
+                                    className="fill-current text-primary"
+                                    viewBox="0 0 15 3"
+                                    width="30"
+                                    height="10"
+                                >
+                                    <circle cx="1.5" cy="1.5" r="1.5">
+                                        <animate
+                                            attributeName="opacity"
+                                            dur="1s"
+                                            values="0;1;0"
+                                            repeatCount="indefinite"
+                                            begin="0.1"
+                                        />
+                                    </circle>
+                                    <circle cx="7.5" cy="1.5" r="1.5">
+                                        <animate
+                                            attributeName="opacity"
+                                            dur="1s"
+                                            values="0;1;0"
+                                            repeatCount="indefinite"
+                                            begin="0.2"
+                                        />
+                                    </circle>
+                                    <circle cx="13.5" cy="1.5" r="1.5">
+                                        <animate
+                                            attributeName="opacity"
+                                            dur="1s"
+                                            values="0;1;0"
+                                            repeatCount="indefinite"
+                                            begin="0.3"
+                                        />
+                                    </circle>
+                                </svg>
+                            </div>
+                            <div className="text-sm text-primary ml-2">Jess Mark is typing</div>
+                        </div>}
                     <form
                         onSubmit={(e) => {
                             setMessageText("");
                             handleSubmitMessage(e, messageText);
                             messageInput.current.focus();
                         }}
-                        className="w-full flex py-3 px-3 items-center justify-between border-t border-gray-300"
+                        className="w-full flex py-3 px-3 items-center justify-between"
                     >
                         <button className="outline-none focus:outline-none">
                             <svg
@@ -149,6 +193,7 @@ function ChatBody({
                                 setMessageText(
                                     e.target.value
                                 );
+                                onFocus(e.target.value != "");
                             }
                             }
                             aria-placeholder="Write message..."
@@ -160,6 +205,10 @@ function ChatBody({
                             required
                             autoComplete="off"
                             ref={messageInput}
+                            onFocus={() => {
+                                onFocus(false)
+                            }}
+                            onBlur={onBlur}
                         ></input>
 
                         <button

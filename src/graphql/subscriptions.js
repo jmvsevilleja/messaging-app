@@ -12,6 +12,7 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -37,6 +38,7 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -57,10 +59,12 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -76,6 +80,7 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
       }
       image
       audio
+      file
       status
       replyToMessageID
       forUserId
@@ -97,6 +102,7 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -122,6 +128,7 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -142,10 +149,12 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -161,6 +170,7 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
       }
       image
       audio
+      file
       status
       replyToMessageID
       forUserId
@@ -193,10 +203,12 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -214,6 +226,7 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -239,6 +252,7 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -261,6 +275,7 @@ export const onCreateMessage = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -286,6 +301,7 @@ export const onCreateMessage = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -306,10 +322,12 @@ export const onCreateMessage = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -325,6 +343,7 @@ export const onCreateMessage = /* GraphQL */ `
       }
       image
       audio
+      file
       status
       replyToMessageID
       forUserId
@@ -344,6 +363,7 @@ export const onUpdateMessage = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -369,6 +389,7 @@ export const onUpdateMessage = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -389,10 +410,12 @@ export const onUpdateMessage = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -408,6 +431,7 @@ export const onUpdateMessage = /* GraphQL */ `
       }
       image
       audio
+      file
       status
       replyToMessageID
       forUserId
@@ -427,6 +451,7 @@ export const onDeleteMessage = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -452,6 +477,7 @@ export const onDeleteMessage = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -472,10 +498,12 @@ export const onDeleteMessage = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -491,6 +519,7 @@ export const onDeleteMessage = /* GraphQL */ `
       }
       image
       audio
+      file
       status
       replyToMessageID
       forUserId
@@ -513,6 +542,7 @@ export const onCreateChatRoom = /* GraphQL */ `
           content
           image
           audio
+          file
           status
           replyToMessageID
           forUserId
@@ -537,6 +567,7 @@ export const onCreateChatRoom = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -562,6 +593,7 @@ export const onCreateChatRoom = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -589,6 +621,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
           content
           image
           audio
+          file
           status
           replyToMessageID
           forUserId
@@ -613,6 +646,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -638,6 +672,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -665,6 +700,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
           content
           image
           audio
+          file
           status
           replyToMessageID
           forUserId
@@ -689,6 +725,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -714,6 +751,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -735,6 +773,7 @@ export const onCreateUser = /* GraphQL */ `
       id
       clinicaID
       name
+      type
       imageUri
       status
       message {
@@ -743,6 +782,7 @@ export const onCreateUser = /* GraphQL */ `
           content
           image
           audio
+          file
           status
           replyToMessageID
           forUserId
@@ -770,10 +810,12 @@ export const onCreateUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -799,10 +841,12 @@ export const onCreateUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -818,6 +862,7 @@ export const onCreateUser = /* GraphQL */ `
       }
       lastOnlineAt
       online
+      typing
       publicKey
       createdAt
       updatedAt
@@ -832,6 +877,7 @@ export const onUpdateUser = /* GraphQL */ `
       id
       clinicaID
       name
+      type
       imageUri
       status
       message {
@@ -840,6 +886,7 @@ export const onUpdateUser = /* GraphQL */ `
           content
           image
           audio
+          file
           status
           replyToMessageID
           forUserId
@@ -867,10 +914,12 @@ export const onUpdateUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -896,10 +945,12 @@ export const onUpdateUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -915,6 +966,7 @@ export const onUpdateUser = /* GraphQL */ `
       }
       lastOnlineAt
       online
+      typing
       publicKey
       createdAt
       updatedAt
@@ -929,6 +981,7 @@ export const onDeleteUser = /* GraphQL */ `
       id
       clinicaID
       name
+      type
       imageUri
       status
       message {
@@ -937,6 +990,7 @@ export const onDeleteUser = /* GraphQL */ `
           content
           image
           audio
+          file
           status
           replyToMessageID
           forUserId
@@ -964,10 +1018,12 @@ export const onDeleteUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -993,10 +1049,12 @@ export const onDeleteUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -1012,6 +1070,7 @@ export const onDeleteUser = /* GraphQL */ `
       }
       lastOnlineAt
       online
+      typing
       publicKey
       createdAt
       updatedAt
@@ -1038,10 +1097,12 @@ export const onCreateChatRoomUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -1059,6 +1120,7 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -1084,6 +1146,7 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -1115,10 +1178,12 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -1136,6 +1201,7 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -1161,6 +1227,7 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt
@@ -1192,10 +1259,12 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
           id
           clinicaID
           name
+          type
           imageUri
           status
           lastOnlineAt
           online
+          typing
           publicKey
           createdAt
           updatedAt
@@ -1213,6 +1282,7 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         id
         clinicaID
         name
+        type
         imageUri
         status
         message {
@@ -1238,6 +1308,7 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         }
         lastOnlineAt
         online
+        typing
         publicKey
         createdAt
         updatedAt

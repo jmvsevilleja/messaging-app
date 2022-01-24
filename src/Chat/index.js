@@ -12,6 +12,7 @@ import {
     createChatRoomUser
 } from "../graphql/mutations";
 import {
+    updateUser,
     updateMessage,
     createMessage,
     updateChatRoom,
@@ -22,6 +23,7 @@ import {
     onCreateChatRoomUserByChatRoomUserUserId,
     onCreateMessageByChatRoomMessagesId,
     onUpdateMessageByChatRoomMessagesId,
+    onUpdateUser,
 } from "../graphql/custom-subscriptions";
 
 import ChatSidebar from "./ChatSidebar";
@@ -46,7 +48,7 @@ const Chat = () => {
     const [openChat, setOpenChat] = useState(false); // set the chat room open
     const [forceOpenChat, setForceOpenChat] = useState(false); // force to open the chat room
     const [chatRoomID, setChatRoomID] = useState(null);
-    //const [messageText, setMessageText] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
     let navigate = useNavigate();
 
     // HANDLE FUNCTIONS
@@ -64,7 +66,16 @@ const Chat = () => {
                 subs[item].unsubscribe();
             }
         }
-
+        // update offline status
+        API.graphql(
+            graphqlOperation(updateUser, {
+                input: {
+                    id: user.id,
+                    online: false,
+                    typing: false
+                },
+            })
+        );
         navigate(`/`);
     };
 
@@ -88,6 +99,34 @@ const Chat = () => {
             console.log("Created Message", created_message, chatRoom);
         } catch (err) {
             console.error(err);
+        }
+    };
+
+    const handleTyping = async (focused, typing) => {
+        if (focused && typing) {
+            if (!isTyping) {
+                API.graphql(
+                    graphqlOperation(updateUser, {
+                        input: {
+                            id: user.id,
+                            typing: true
+                        },
+                    })
+                );
+                setIsTyping(true);
+            }
+        } else {
+            if (isTyping) {
+                API.graphql(
+                    graphqlOperation(updateUser, {
+                        input: {
+                            id: user.id,
+                            typing: false
+                        },
+                    })
+                );
+                setIsTyping(false);
+            }
         }
     };
 
@@ -239,6 +278,7 @@ const Chat = () => {
             }
         });
 
+        // remove counter when messages are read
         result.data.MessageByChatRoomMessagesId.items.find((item) => {
             if (item.userMessageId !== user.id && item.status !== "READ") {
                 // update removing counter
@@ -365,6 +405,7 @@ const Chat = () => {
                         clinicaID: user_id,
                         name: name,
                         status: "Hi there! I'm using Conva",
+                        type: "USER"
                     },
                 },
             });
@@ -380,6 +421,8 @@ const Chat = () => {
         const user_id = localStorage.getItem("user_id");
         const auth_token = localStorage.getItem("auth_token");
         const refresh_token = localStorage.getItem("refresh_token");
+
+        // TODO: check user auth token if valid
 
         fetchUser(user_id).then((user_list) => {
             if (user_id && auth_token && refresh_token) {
@@ -423,6 +466,17 @@ const Chat = () => {
 
         console.log("USER: ", user.id);
 
+        // update online status
+        API.graphql(
+            graphqlOperation(updateUser, {
+                input: {
+                    id: user.id,
+                    online: true,
+                    typing: false
+                },
+            })
+        );
+
         fetchChatRooms(user.id).then((result) => {
             console.log('fetchChatRooms', result);
             namedChatRoom(result);
@@ -446,6 +500,17 @@ const Chat = () => {
                         handleChatRoomID(value.data.onCreateChatRoomUserByChatRoomUserUserId.chatRoomChatRoomUsersId);
                     }
                 });
+            },
+            error: (error) => console.warn(error),
+        });
+
+        console.log("Subscribe to onUpdateUser");
+        subs.subCreateChatRoomUser = API.graphql(
+            graphqlOperation(onUpdateUser)
+        ).subscribe({
+            next: ({provider, value}) => {
+                console.log("onUpdateUser", value);
+
             },
             error: (error) => console.warn(error),
         });
@@ -562,6 +627,7 @@ const Chat = () => {
                             chatRoom={chatRoom}
                             messageList={messageList}
                             handleSubmitMessage={handleSubmitMessage}
+                            handleTyping={handleTyping}
                             handleCloseChat={handleCloseChat}
                         />
                     </div>

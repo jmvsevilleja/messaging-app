@@ -24,29 +24,23 @@ function ChatSidebar({
 
         >
             <div className="my-3 pr-5">
-                <div className="flex justify-between item-center p-3 px-0">
+                <div className="flex justify-between item-center p-3 px-0 mb-3">
                     <span className="flex items-center">
                         {user && (
-                            <Avatar
-                                size="40"
-                                round={true}
-                                name={user.name}
-                            />
+                            <div className="relative">
+                                <Avatar
+                                    size="40"
+                                    round={true}
+                                    name={user.name}
+                                />
+                                <div className={"absolute bottom-0 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"}></div>
+                            </div>
                         )}
+
                         <span className="block ml-2 font-bold text-base text-gray-600">
-                            {" "}
                             {user && user.name}
                         </span>
-                        <span className="connected text-green-500 ml-2">
-                            <svg width="6" height="6">
-                                <circle
-                                    cx="3"
-                                    cy="3"
-                                    r="3"
-                                    fill="currentColor"
-                                ></circle>
-                            </svg>
-                        </span>
+
                     </span>
                     <span className="flex items-center">
                         <button
@@ -110,6 +104,7 @@ function ChatSidebar({
                             )
                             .map((item) => (
                                 <ChatRoom
+                                    user={user}
                                     room={item.chatroom}
                                     chatRoomID={chatRoomID}
                                     handleChatRoom={handleChatRoom}

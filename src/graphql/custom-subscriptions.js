@@ -147,3 +147,16 @@ export const onUpdateChatRoom = /* GraphQL */ `
     }
   }
 `;
+export const onUpdateUser = /* GraphQL */ `
+  subscription OnUpdateUser {
+    onUpdateUser {
+      id
+      name
+      imageUri
+      status
+      lastOnlineAt
+      online
+      typing
+    }
+  }
+`;
