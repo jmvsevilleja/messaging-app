@@ -54,11 +54,12 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         updatedAt
         chatRoomUsers {
           items {
+            id
+            typing
             user {
               id
               name
               online
-              typing
             }
           }
         }
@@ -82,7 +83,6 @@ export const listUsers = /* GraphQL */ `
         status
         lastOnlineAt
         online
-        typing
         publicKey
       }
       nextToken

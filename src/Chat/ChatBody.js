@@ -1,4 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+
+import {API, graphqlOperation} from "aws-amplify";
+import {
+    updateChatRoomUser
+} from "../graphql/custom-mutations";
+
 import Avatar from "react-avatar";
 
 import Message from "./message";
@@ -10,22 +16,63 @@ function ChatBody({
     openChat,
     messageList,
     handleSubmitMessage,
-    handleTyping,
     handleCloseChat
 }) {
 
     const [messageText, setMessageText] = useState("");
-    const onFocus = (typing = false) => {
-        handleTyping(true, typing);
-    }
-    const onBlur = () => {
-        handleTyping(false, false);
-    }
-
-
+    const [isTyping, setIsTyping] = useState(false);
+    const [isOnline, setIsOnline] = useState(false);
+    const [userTyping, setUserTyping] = useState(null);
     const messageInput = React.useRef(null);
-    const online = (chatRoom.users) ? chatRoom.users.find((item) => (user.id !== item.user.id && item.user.online)) : false;
-    const typing = (chatRoom.users) ? chatRoom.users.find((item) => (user.id !== item.user.id && item.user.typing)) : false;
+
+    const handleTyping = async (focused) => {
+        if (focused) {
+            if (!isTyping) {
+                handleTypingUpdate(true);
+            }
+        }
+        if (!(focused)) {
+            if (isTyping) {
+                handleTypingUpdate(false);
+            }
+
+        };
+    }
+    const handleTypingUpdate = (typing) => {
+        console.log('handleTypingUpdate', typing);
+        const typist = chatRoom.users.find((item) => (user.id === item.user.id));
+        if (!typist) return;
+        API.graphql(
+            graphqlOperation(updateChatRoomUser, {
+                input: {
+                    id: typist.id,
+                    typing: typing
+                },
+            })
+        );
+        setIsTyping(typing);
+    };
+
+    useEffect(() => {
+        if (!chatRoom.users) return;
+        const online = chatRoom.users.find((item) => (user.id !== item.user.id && item.user.online))
+        console.log('isOnline', online);
+        setIsOnline(online);
+        setUserTyping(null);
+        const typing = chatRoom.users.filter((item) => (user.id !== item.user.id && item.user.online && item.typing));
+        console.log('isTyping', typing, chatRoom.users);
+        if (typing && typing.length) {
+            if (typing.length === 1) {
+                setUserTyping(typing[0].user.name + " is typing");
+            }
+            if (typing.length > 1) {
+                setUserTyping("+" + typing.length + " others are typing");
+            }
+        }
+
+
+    }, [chatRoom]);
+
     return (
         <div
             className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen  overflow-hidden"
@@ -63,7 +110,7 @@ function ChatBody({
                                         round={true}
                                         name={chatRoom.name}
                                     />
-                                    <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (online ? "bg-green-500" : "bg-gray-500")}></div>
+                                    <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (isOnline ? "bg-green-500" : "bg-gray-500")}></div>
                                 </div>
                             )}
                             <div className="w-full overflow-hidden">
@@ -106,7 +153,7 @@ function ChatBody({
                                 />
                             ))}
                     </div>
-                    {typing &&
+                    {userTyping &&
                         <div className="flex justify-center items-center absolute inset-x-0 bottom-16">
                             <div>
                                 <svg
@@ -144,7 +191,7 @@ function ChatBody({
                                     </circle>
                                 </svg>
                             </div>
-                            <div className="text-sm text-primary ml-2">Jess Mark is typing</div>
+                            <div className="text-sm text-primary ml-2">{userTyping}</div>
                         </div>}
                     <form
                         onSubmit={(e) => {
@@ -190,10 +237,8 @@ function ChatBody({
                         <input
                             value={messageText}
                             onChange={(e) => {
-                                setMessageText(
-                                    e.target.value
-                                );
-                                onFocus(e.target.value != "");
+                                setMessageText(e.target.value);
+                                handleTyping(true);
                             }
                             }
                             aria-placeholder="Write message..."
@@ -205,10 +250,9 @@ function ChatBody({
                             required
                             autoComplete="off"
                             ref={messageInput}
-                            onFocus={() => {
-                                onFocus(false)
+                            onBlur={() => {
+                                handleTyping(false);
                             }}
-                            onBlur={onBlur}
                         ></input>
 
                         <button

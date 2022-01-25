@@ -21,6 +21,7 @@ export const createMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -39,7 +40,6 @@ export const createMessage = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -65,7 +65,6 @@ export const createMessage = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -112,6 +111,7 @@ export const updateMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -130,7 +130,6 @@ export const updateMessage = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -156,7 +155,6 @@ export const updateMessage = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -203,6 +201,7 @@ export const deleteMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -221,7 +220,6 @@ export const deleteMessage = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -247,7 +245,6 @@ export const deleteMessage = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -303,6 +300,7 @@ export const createChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -322,6 +320,7 @@ export const createChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -340,7 +339,6 @@ export const createChatRoom = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -385,6 +383,7 @@ export const updateChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -404,6 +403,7 @@ export const updateChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -422,7 +422,6 @@ export const updateChatRoom = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -467,6 +466,7 @@ export const deleteChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -486,6 +486,7 @@ export const deleteChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -504,7 +505,6 @@ export const deleteChatRoom = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -571,13 +571,13 @@ export const createUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
           userChatRoomId
           userChatRoomUserId
         }
+        typing
         chatRoomUserUserId
         createdAt
         updatedAt
@@ -602,7 +602,6 @@ export const createUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -618,7 +617,6 @@ export const createUser = /* GraphQL */ `
       }
       lastOnlineAt
       online
-      typing
       publicKey
       createdAt
       updatedAt
@@ -678,13 +676,13 @@ export const updateUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
           userChatRoomId
           userChatRoomUserId
         }
+        typing
         chatRoomUserUserId
         createdAt
         updatedAt
@@ -709,7 +707,6 @@ export const updateUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -725,7 +722,6 @@ export const updateUser = /* GraphQL */ `
       }
       lastOnlineAt
       online
-      typing
       publicKey
       createdAt
       updatedAt
@@ -785,13 +781,13 @@ export const deleteUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
           userChatRoomId
           userChatRoomUserId
         }
+        typing
         chatRoomUserUserId
         createdAt
         updatedAt
@@ -816,7 +812,6 @@ export const deleteUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -832,7 +827,6 @@ export const deleteUser = /* GraphQL */ `
       }
       lastOnlineAt
       online
-      typing
       publicKey
       createdAt
       updatedAt
@@ -867,7 +861,6 @@ export const createChatRoomUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -893,6 +886,7 @@ export const createChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -911,13 +905,13 @@ export const createChatRoomUser = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
         userChatRoomId
         userChatRoomUserId
       }
+      typing
       chatRoomUserUserId
       createdAt
       updatedAt
@@ -951,7 +945,6 @@ export const updateChatRoomUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -977,6 +970,7 @@ export const updateChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -995,13 +989,13 @@ export const updateChatRoomUser = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
         userChatRoomId
         userChatRoomUserId
       }
+      typing
       chatRoomUserUserId
       createdAt
       updatedAt
@@ -1035,7 +1029,6 @@ export const deleteChatRoomUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -1061,6 +1054,7 @@ export const deleteChatRoomUser = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -1079,13 +1073,13 @@ export const deleteChatRoomUser = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
         userChatRoomId
         userChatRoomUserId
       }
+      typing
       chatRoomUserUserId
       createdAt
       updatedAt

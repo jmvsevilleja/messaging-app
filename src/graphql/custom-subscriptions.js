@@ -156,7 +156,20 @@ export const onUpdateUser = /* GraphQL */ `
       status
       lastOnlineAt
       online
+    }
+  }
+`;
+export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
+  subscription OnUpdateChatRoomUserByChatRoomChatRoomUsersId(
+    $chatRoomChatRoomUsersId: ID
+  ) {
+    onUpdateChatRoomUserByChatRoomChatRoomUsersId(
+      chatRoomChatRoomUsersId: $chatRoomChatRoomUsersId
+    ) {
+      id
       typing
+      chatRoomUserUserId
+      updatedAt
     }
   }
 `;

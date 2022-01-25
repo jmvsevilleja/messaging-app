@@ -90,7 +90,21 @@ export const updateUser = /* GraphQL */ `
       id
       name
       online
+    }
+  }
+`;
+export const updateChatRoomUser = /* GraphQL */ `
+  mutation UpdateChatRoomUser(
+    $input: UpdateChatRoomUserInput!
+    $condition: ModelChatRoomUserConditionInput
+  ) {
+    updateChatRoomUser(input: $input, condition: $condition) {
+      id
       typing
+      chatRoomUserUserId
+      createdAt
+      updatedAt
+      chatRoomChatRoomUsersId
     }
   }
 `;

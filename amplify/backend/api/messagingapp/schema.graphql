@@ -68,7 +68,6 @@ type User @model @auth(rules: [{ allow: public }]) {
     chatRoom: ChatRoom @belongsTo
     lastOnlineAt: AWSTimestamp
     online: Boolean
-    typing: Boolean
     publicKey: String
 }
 
@@ -76,6 +75,7 @@ type ChatRoomUser @model(queries: null) @auth(rules: [{ allow: public }]) {
     id: ID!
     chatroom: ChatRoom! @belongsTo
     user: User! @belongsTo
+    typing: Boolean
     chatRoomUserUserId: ID!
         @index(
             name: "byChatRoomUser"
@@ -94,4 +94,8 @@ type Subscription {
     onCreateChatRoomUserByChatRoomUserUserId(
         chatRoomUserUserId: ID
     ): ChatRoomUser @aws_subscribe(mutations: ["createChatRoomUser"])
+
+    onUpdateChatRoomUserByChatRoomChatRoomUsersId(
+        chatRoomChatRoomUsersId: ID
+    ): ChatRoomUser @aws_subscribe(mutations: ["updateChatRoomUser"])
 }

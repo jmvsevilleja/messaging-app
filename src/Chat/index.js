@@ -19,11 +19,12 @@ import {
 } from "../graphql/custom-mutations";
 import {
     onCreateUser,
+    onUpdateUser,
     onUpdateChatRoom,
     onCreateChatRoomUserByChatRoomUserUserId,
     onCreateMessageByChatRoomMessagesId,
     onUpdateMessageByChatRoomMessagesId,
-    onUpdateUser,
+    onUpdateChatRoomUserByChatRoomChatRoomUsersId,
 } from "../graphql/custom-subscriptions";
 
 import ChatSidebar from "./ChatSidebar";
@@ -34,9 +35,11 @@ import "./index.css";
 let subs = {
     subCreateChatRoomUser: null,
     subCreateUser: null,
+    subUpdateUser: null,
     subUpdateChatRoom: null,
     subCreateMessage: null,
-    subUpdateMessage: null
+    subUpdateMessage: null,
+    subUpdateChatRoomUser: null,
 };
 
 const Chat = () => {
@@ -48,7 +51,6 @@ const Chat = () => {
     const [openChat, setOpenChat] = useState(false); // set the chat room open
     const [forceOpenChat, setForceOpenChat] = useState(false); // force to open the chat room
     const [chatRoomID, setChatRoomID] = useState(null);
-    const [isTyping, setIsTyping] = useState(false);
     let navigate = useNavigate();
 
     // HANDLE FUNCTIONS
@@ -72,7 +74,7 @@ const Chat = () => {
                 input: {
                     id: user.id,
                     online: false,
-                    typing: false
+                    //typing: false
                 },
             })
         );
@@ -99,34 +101,6 @@ const Chat = () => {
             console.log("Created Message", created_message, chatRoom);
         } catch (err) {
             console.error(err);
-        }
-    };
-
-    const handleTyping = async (focused, typing) => {
-        if (focused && typing) {
-            if (!isTyping) {
-                API.graphql(
-                    graphqlOperation(updateUser, {
-                        input: {
-                            id: user.id,
-                            typing: true
-                        },
-                    })
-                );
-                setIsTyping(true);
-            }
-        } else {
-            if (isTyping) {
-                API.graphql(
-                    graphqlOperation(updateUser, {
-                        input: {
-                            id: user.id,
-                            typing: false
-                        },
-                    })
-                );
-                setIsTyping(false);
-            }
         }
     };
 
@@ -203,6 +177,9 @@ const Chat = () => {
         if (subs.subUpdateMessage) {
             subs.subUpdateMessage.unsubscribe();
         }
+        if (subs.subUpdateChatRoomUser) {
+            subs.subUpdateChatRoomUser.unsubscribe();
+        }
         //console.log('Subscribe to onCreateMessageByChatRoomMessagesId');
         subs.subCreateMessage = API.graphql(
             graphqlOperation(onCreateMessageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id})
@@ -262,6 +239,34 @@ const Chat = () => {
             },
             error: (error) => console.warn(error),
         });
+
+        console.log("Subscribe to onUpdateChatRoomUserByChatRoomChatRoomUsersId");
+        subs.subUpdateChatRoomUser = API.graphql(
+            graphqlOperation(onUpdateChatRoomUserByChatRoomChatRoomUsersId, {
+                chatRoomChatRoomUsersId: chatroom.id,
+            })
+        ).subscribe({
+            next: ({provider, value}) => {
+                console.log("onUpdateChatRoomUserByChatRoomChatRoomUsersId", value);
+
+                // update typing in current chatroom
+                setChatRoom((items) => {
+                    const users = items.users.map((item) =>
+                        (item.id === value.data.onUpdateChatRoomUserByChatRoomChatRoomUsersId.id) ? {
+                            ...item,
+                            typing: value.data.onUpdateChatRoomUserByChatRoomChatRoomUsersId.typing
+                        } : item
+                    );
+                    return {
+                        ...items,
+                        users
+                    }
+                });
+
+            },
+            error: (error) => console.warn(error),
+        });
+
         // TODO: load the next 100 messages on scroll
         const result = await API.graphql(
             graphqlOperation(messageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id, sortDirection: "DESC", limit: 100})
@@ -322,9 +327,12 @@ const Chat = () => {
     // open chat room using room ID
     const handleChatRoomID = async (id) => {
         console.log('handleChatRoomID', id);
-        setChatRoomID(id);
+        // don't load chatroom if the same clicked
+        if (chatRoomID !== id) {
+            setChatRoomID(id);
+            setForceOpenChat(true);
+        }
         setOpenChat(true);
-        setForceOpenChat(true);
     }
     // OTHER FUNCTIONS
     const namedChatRoom = async (chatroom) => {
@@ -472,7 +480,6 @@ const Chat = () => {
                 input: {
                     id: user.id,
                     online: true,
-                    typing: false
                 },
             })
         );
@@ -505,16 +512,63 @@ const Chat = () => {
         });
 
         console.log("Subscribe to onUpdateUser");
-        subs.subCreateChatRoomUser = API.graphql(
+        subs.subUpdateUser = API.graphql(
             graphqlOperation(onUpdateUser)
         ).subscribe({
             next: ({provider, value}) => {
                 console.log("onUpdateUser", value);
+                //TODO: optimize to find
+                // update online in user list
+                setUserList((list) => list.map((item) => item.id === value.data.onUpdateUser.id
+                    ? {
+                        ...item,
+                        online: value.data.onUpdateUser.online
+                    }
+                    : item));
+                // update online in chatroom list
+                setChatRoomList((list) => list.map((item) => {
+                    const items = item.chatroom.chatRoomUsers.items.map((item) =>
+                        (item.user.id === value.data.onUpdateUser.id) ? {
+                            ...item,
+                            user: {
+                                ...item.user,
+                                online: value.data.onUpdateUser.online
+                            }
+                        } : item
+                    );
+                    return {
+                        ...item,
+                        chatroom: {
+                            ...item.chatroom,
+                            chatRoomUsers: {
+                                ...item.chatroom.chatRoomUsers,
+                                items
+                            }
+                        }
+                    };
+                }));
+                if (chatRoom.users) {
+                    // update typing in current chatroom
+                    setChatRoom((items) => {
+                        const users = items.users.map((item) =>
+                            (item.user.id === value.data.onUpdateUser.id) ? {
+                                ...item,
+                                user: {
+                                    ...item.user,
+                                    online: value.data.onUpdateUser.online
+                                }
+                            } : item
+                        );
+                        return {
+                            ...items,
+                            users
+                        }
+                    });
+                }
 
             },
             error: (error) => console.warn(error),
         });
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
@@ -552,6 +606,7 @@ const Chat = () => {
         ).subscribe({
             next: ({provider, value}) => {
                 //console.log("onUpdateChatRoom", value.data.onUpdateChatRoom);
+                //TODO: optimize to find
                 setChatRoomList((list) => list.map((item) => item.chatroom.id === value.data.onUpdateChatRoom.id
                     ? {
                         ...item,
@@ -627,7 +682,6 @@ const Chat = () => {
                             chatRoom={chatRoom}
                             messageList={messageList}
                             handleSubmitMessage={handleSubmitMessage}
-                            handleTyping={handleTyping}
                             handleCloseChat={handleCloseChat}
                         />
                     </div>

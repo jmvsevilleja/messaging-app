@@ -18,6 +18,7 @@ export const getMessage = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -36,7 +37,6 @@ export const getMessage = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -62,7 +62,6 @@ export const getMessage = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -108,7 +107,6 @@ export const listMessages = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -170,7 +168,6 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -229,6 +226,7 @@ export const getChatRoom = /* GraphQL */ `
       chatRoomUsers {
         items {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -248,6 +246,7 @@ export const getChatRoom = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -266,7 +265,6 @@ export const getChatRoom = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -308,7 +306,6 @@ export const listChatRooms = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -374,13 +371,13 @@ export const getUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
           userChatRoomId
           userChatRoomUserId
         }
+        typing
         chatRoomUserUserId
         createdAt
         updatedAt
@@ -405,7 +402,6 @@ export const getUser = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
@@ -421,7 +417,6 @@ export const getUser = /* GraphQL */ `
       }
       lastOnlineAt
       online
-      typing
       publicKey
       createdAt
       updatedAt
@@ -449,6 +444,7 @@ export const listUsers = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -467,7 +463,6 @@ export const listUsers = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -507,6 +502,7 @@ export const userByClinicaID = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -525,7 +521,6 @@ export const userByClinicaID = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -565,6 +560,7 @@ export const userByName = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -583,7 +579,6 @@ export const userByName = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -623,6 +618,7 @@ export const userByType = /* GraphQL */ `
         }
         chatRoomUser {
           id
+          typing
           chatRoomUserUserId
           createdAt
           updatedAt
@@ -641,7 +637,6 @@ export const userByType = /* GraphQL */ `
         }
         lastOnlineAt
         online
-        typing
         publicKey
         createdAt
         updatedAt
@@ -691,13 +686,13 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
           status
           lastOnlineAt
           online
-          typing
           publicKey
           createdAt
           updatedAt
           userChatRoomId
           userChatRoomUserId
         }
+        typing
         chatRoomUserUserId
         createdAt
         updatedAt

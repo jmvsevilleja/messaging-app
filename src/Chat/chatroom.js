@@ -1,7 +1,7 @@
 import React from "react";
 import Avatar from 'react-avatar';
 
-function ChatRoom({user, room, chatRoomID, handleChatRoom, handleChatRoomID}) {
+function ChatRoom({user, room, chatRoomID, handleChatRoomID}) {
     var dateobj = new Date(room.updatedAt);
     const updated = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})
     const online = room.chatRoomUsers.items.find((item) => (user.id !== item.user.id && item.user.online));
@@ -12,7 +12,6 @@ function ChatRoom({user, room, chatRoomID, handleChatRoom, handleChatRoomID}) {
                 className={"hover:bg-indigo-100 p-2 my-3 rounded w-full cursor-pointer flex items-center text-sm focus:outline-none transition duration-150 ease-in-out " +
                     (chatRoomID === room.id ? "bg-indigo-100" : "")}
                 onClick={() => {
-                    //handleChatRoom(room);
                     handleChatRoomID(room.id);
                 }}>
 
