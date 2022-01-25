@@ -547,9 +547,12 @@ const Chat = () => {
                         }
                     };
                 }));
-                if (chatRoom.users) {
-                    // update typing in current chatroom
-                    setChatRoom((items) => {
+
+                console.log('chatRoom.users', chatRoom.users);
+
+                // update typing in current chatroom
+                setChatRoom((items) => {
+                    if (items.users) {
                         const users = items.users.map((item) =>
                             (item.user.id === value.data.onUpdateUser.id) ? {
                                 ...item,
@@ -563,8 +566,12 @@ const Chat = () => {
                             ...items,
                             users
                         }
-                    });
-                }
+                    }
+                    return {
+                        ...items,
+                    }
+                });
+
 
             },
             error: (error) => console.warn(error),
