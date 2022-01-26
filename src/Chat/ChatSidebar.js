@@ -80,7 +80,7 @@ function ChatSidebar({
                 </div>
             </div>
 
-            <div className="scrollable pr-5 overflow-x-hidden overflow-y-auto shrink-0 md:w-72 xl:w-80 h-[calc(100vh-130px)]">
+            <div className="scrollable pr-5 overflow-x-hidden overflow-y-auto shrink-0 md:w-80 xl:w-96 h-[calc(100vh-130px)]">
                 <ul>
                     <div className="flex justify-between item-center my-3">
                         <h2 className=" text-gray-600 text-lg">

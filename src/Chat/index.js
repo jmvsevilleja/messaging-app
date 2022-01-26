@@ -14,7 +14,6 @@ import {
 import {
     updateUser,
     updateMessage,
-    createMessage,
     updateChatRoom,
 } from "../graphql/custom-mutations";
 import {
@@ -79,29 +78,6 @@ const Chat = () => {
             })
         );
         navigate(`/`);
-    };
-
-    const handleSubmitMessage = async (event, messageText) => {
-        // Prevent the page from reloading
-        event.preventDefault();
-        // Try make the mutation to graphql API
-        try {
-            const created_message = await API.graphql({
-                query: createMessage,
-                variables: {
-                    input: {
-                        // id is auto populated by AWS Amplify
-                        content: messageText, // the message content the user submitted (from state)
-                        chatRoomMessagesId: chatRoom.id,
-                        userMessageId: user.id, // this is the id of the current user
-                        status: "SENT",
-                    },
-                },
-            });
-            console.log("Created Message", created_message, chatRoom);
-        } catch (err) {
-            console.error(err);
-        }
     };
 
     const handleCreateChat = async (selected_user) => {
@@ -290,6 +266,7 @@ const Chat = () => {
                 handleCounterMessage(chatroom.id);
                 return true;
             }
+            return false;
         });
 
     };
@@ -688,7 +665,6 @@ const Chat = () => {
                             openChat={openChat}
                             chatRoom={chatRoom}
                             messageList={messageList}
-                            handleSubmitMessage={handleSubmitMessage}
                             handleCloseChat={handleCloseChat}
                         />
                     </div>

@@ -14,9 +14,9 @@ type Message @model @auth(rules: [{ allow: public }]) {
     content: String
     user: User @belongsTo
     chatRoom: ChatRoom @belongsTo
-    image: String
+    image: [String]
     audio: String
-    file: String
+    file: [String]
     status: MessageStatus
     replyToMessageID: ID
     forUserId: ID
