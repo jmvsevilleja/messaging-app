@@ -13,6 +13,10 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
       status
       userMessageId
       createdAt
+      chatRoom {
+        id
+        newMessages
+      }
     }
   }
 `;
@@ -27,6 +31,10 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
       userMessageId
       createdAt
       updatedAt
+      chatRoom {
+        id
+        newMessages
+      }
     }
   }
 `;
@@ -71,51 +79,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
     onUpdateChatRoom {
       id
       newMessages
-      lastMessage {
-        id
-        content
-        user {
-          id
-          clinicaID
-          name
-          imageUri
-          status
-          lastOnlineAt
-          online
-          publicKey
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          userChatRoomId
-          userChatRoomUserId
-        }
-        chatRoom {
-          id
-          newMessages
-          name
-          imageUri
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          chatRoomAdminId
-        }
-        image
-        audio
-        status
-        replyToMessageID
-        forUserId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        chatRoomMessagesId
-        userMessageId
-      }
+      lastMessage
       messages {
         items {
           id
@@ -127,23 +91,16 @@ export const onUpdateChatRoom = /* GraphQL */ `
           forUserId
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           chatRoomMessagesId
           userMessageId
         }
         nextToken
-        startedAt
       }
       chatRoomUsers {
         items {
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           chatRoomUserUserId
           chatRoomChatRoomUsersId
         }
@@ -157,15 +114,11 @@ export const onUpdateChatRoom = /* GraphQL */ `
         status
         message {
           nextToken
-          startedAt
         }
         chatRoomUser {
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           chatRoomUserUserId
           chatRoomChatRoomUsersId
         }
@@ -176,9 +129,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
           imageUri
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           chatRoomAdminId
         }
         lastOnlineAt
@@ -186,9 +136,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
         publicKey
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         userChatRoomId
         userChatRoomUserId
       }
@@ -196,10 +143,33 @@ export const onUpdateChatRoom = /* GraphQL */ `
       imageUri
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       chatRoomAdminId
+    }
+  }
+`;
+export const onUpdateUser = /* GraphQL */ `
+  subscription OnUpdateUser {
+    onUpdateUser {
+      id
+      name
+      imageUri
+      status
+      lastOnlineAt
+      online
+    }
+  }
+`;
+export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
+  subscription OnUpdateChatRoomUserByChatRoomChatRoomUsersId(
+    $chatRoomChatRoomUsersId: ID
+  ) {
+    onUpdateChatRoomUserByChatRoomChatRoomUsersId(
+      chatRoomChatRoomUsersId: $chatRoomChatRoomUsersId
+    ) {
+      id
+      typing
+      chatRoomUserUserId
+      updatedAt
     }
   }
 `;

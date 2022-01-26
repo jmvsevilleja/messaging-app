@@ -24,29 +24,23 @@ function ChatSidebar({
 
         >
             <div className="my-3 pr-5">
-                <div className="flex justify-between item-center p-3 px-0">
+                <div className="flex justify-between item-center p-3 px-0 mb-3">
                     <span className="flex items-center">
                         {user && (
-                            <Avatar
-                                size="40"
-                                round={true}
-                                name={user.name}
-                            />
+                            <div className="relative">
+                                <Avatar
+                                    size="40"
+                                    round={true}
+                                    name={user.name}
+                                />
+                                <div className={"absolute bottom-0 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"}></div>
+                            </div>
                         )}
+
                         <span className="block ml-2 font-bold text-base text-gray-600">
-                            {" "}
                             {user && user.name}
                         </span>
-                        <span className="connected text-green-500 ml-2">
-                            <svg width="6" height="6">
-                                <circle
-                                    cx="3"
-                                    cy="3"
-                                    r="3"
-                                    fill="currentColor"
-                                ></circle>
-                            </svg>
-                        </span>
+
                     </span>
                     <span className="flex items-center">
                         <button
@@ -86,7 +80,7 @@ function ChatSidebar({
                 </div>
             </div>
 
-            <div className="scrollable pr-5 overflow-x-hidden overflow-y-auto shrink-0 md:w-72 xl:w-80 h-[calc(100vh-130px)]">
+            <div className="scrollable pr-5 overflow-x-hidden overflow-y-auto shrink-0 md:w-80 xl:w-96 h-[calc(100vh-130px)]">
                 <ul>
                     <div className="flex justify-between item-center my-3">
                         <h2 className=" text-gray-600 text-lg">
@@ -105,16 +99,13 @@ function ChatSidebar({
 
                     {user &&
                         chatRoomList
-                            .filter((item) => {
-                                return item.id !== user.id;
-                            })
-                            // sort by updatedAt
                             .sort((a, b) =>
-                                b.updatedAt.localeCompare(a.updatedAt)
+                                b.chatroom.updatedAt.localeCompare(a.chatroom.updatedAt)
                             )
                             .map((item) => (
                                 <ChatRoom
-                                    room={item}
+                                    user={user}
+                                    room={item.chatroom}
                                     chatRoomID={chatRoomID}
                                     handleChatRoom={handleChatRoom}
                                     handleChatRoomID={handleChatRoomID}
