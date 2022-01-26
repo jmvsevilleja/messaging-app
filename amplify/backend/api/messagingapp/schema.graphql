@@ -6,23 +6,33 @@ enum MessageStatus {
     DELIVERED
     READ
 }
-
+enum UserType {
+    USER
+}
 type Message @model @auth(rules: [{ allow: public }]) {
     id: ID!
     content: String
     user: User @belongsTo
     chatRoom: ChatRoom @belongsTo
-    image: String
+    image: [String]
     audio: String
+    file: [String]
     status: MessageStatus
     replyToMessageID: ID
     forUserId: ID
+    createdAt: String!
+    chatRoomMessagesId: ID
+        @index(
+            name: "byMessage"
+            queryField: "MessageByChatRoomMessagesId"
+            sortKeyFields: ["createdAt"]
+        )
 }
 
 type ChatRoom @model @auth(rules: [{ allow: public }]) {
     id: ID!
     newMessages: Int
-    lastMessage: Message
+    lastMessage: String
     messages: [Message] @hasMany
     chatRoomUsers: [ChatRoomUser] @hasMany
     admin: User! @hasOne
@@ -45,6 +55,12 @@ type User @model @auth(rules: [{ allow: public }]) {
             queryField: "userByName"
             sortKeyFields: ["id"]
         )
+    type: UserType!
+        @index(
+            name: "byUserType"
+            queryField: "userByType"
+            sortKeyFields: ["name"]
+        )
     imageUri: String
     status: String
     message: [Message] @hasMany
@@ -59,6 +75,13 @@ type ChatRoomUser @model(queries: null) @auth(rules: [{ allow: public }]) {
     id: ID!
     chatroom: ChatRoom! @belongsTo
     user: User! @belongsTo
+    typing: Boolean
+    chatRoomUserUserId: ID!
+        @index(
+            name: "byChatRoomUser"
+            queryField: "ChatRoomUserByChatRoomUserUserId"
+            sortKeyFields: ["id"]
+        )
 }
 
 type Subscription {
@@ -71,4 +94,8 @@ type Subscription {
     onCreateChatRoomUserByChatRoomUserUserId(
         chatRoomUserUserId: ID
     ): ChatRoomUser @aws_subscribe(mutations: ["createChatRoomUser"])
+
+    onUpdateChatRoomUserByChatRoomChatRoomUsersId(
+        chatRoomChatRoomUsersId: ID
+    ): ChatRoomUser @aws_subscribe(mutations: ["updateChatRoomUser"])
 }

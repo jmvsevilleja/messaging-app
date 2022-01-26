@@ -1,6 +1,7 @@
 #chat::-webkit-scrollbar,
 .scrollable::-webkit-scrollbar {
     width: 4px;
+    height: 4px;
 }
 
 #chat::-webkit-scrollbar-track,
