@@ -61,10 +61,18 @@ function ChatBody({
             chatRoomMessagesId: chatRoom.id,
             userMessageId: user.id, // this is the id of the current user
             status: "SENT",
+            type: "TEXT",
         }
+        // check if its a link message
+        const has_url = messageText.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        if (has_url !== null) {
+            input.type = "LINK";
+        }
+
         // prepare needed attachments
         if (selectedImages.length !== 0) {
             // Upload file before submitting
+            input.type = "IMAGE";
             input.image = await Promise.all(selectedImages.map(async (file, key) => {
                 console.log("Image file", file, file.type);
                 setIsUploading(true);
@@ -89,6 +97,7 @@ function ChatBody({
         }
 
         if (selectedFiles.length !== 0) {
+            input.type = "FILE";
             input.file = await Promise.all(selectedFiles.map(async (file, key) => {
                 console.log("Document file", file, file.type);
                 setIsUploading(true);
@@ -113,6 +122,7 @@ function ChatBody({
         }
 
         if (recordedAudio) {
+            input.type = "AUDIO";
             input.audio = {
                 name: 'audiofile.wma',
                 path: "path"
@@ -170,6 +180,7 @@ function ChatBody({
         const new_files = selectedFiles.filter((item, i) => i !== index);
         if (!Boolean(new_files.length)) {
             fileRef.current.value = null;
+            messageInput.current.required = true;
         }
         setSelectedFiles(new_files);
     }
@@ -177,6 +188,7 @@ function ChatBody({
         const new_files = selectedImages.filter((item, i) => i !== index);
         if (!Boolean(new_files.length)) {
             imageRef.current.value = null;
+            messageInput.current.required = true;
         }
         setSelectedImages(new_files);
     }
@@ -431,7 +443,9 @@ function ChatBody({
                             onChange={handleImageUpload} />
                         <button className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
                             onClick={() => imageRef.current.click()}
-                            type="button">
+                            type="button"
+                            title="Attach Image"
+                        >
                             <svg
                                 className=" h-6 w-6"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -458,6 +472,7 @@ function ChatBody({
                             className="outline-none focus:outline-none ml-1 text-gray-400 hover:text-gray-500"
                             onClick={() => fileRef.current.click()}
                             type="button"
+                            title="Attach File"
                         >
 
                             <svg
@@ -496,12 +511,23 @@ function ChatBody({
                                 handleTyping(false);
                             }}
                         ></input>
-
+                        <button
+                            className="outline-none focus:outline-none mr-2"
+                            type="button"
+                            title="Record"
+                        >
+                            <div className=" bg-primary hover:bg-secondary text-white rounded-full text-center p-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                            </div>
+                        </button>
                         <button
                             className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
                             type="submit"
-                            title="Submit"
+                            title="Send"
                         >
+
                             <svg
                                 className="h-7 w-7 origin-center transform rotate-90"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -510,6 +536,7 @@ function ChatBody({
                             >
                                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
                             </svg>
+
                         </button>
                     </form>
                 </div>

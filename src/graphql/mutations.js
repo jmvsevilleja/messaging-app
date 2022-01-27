@@ -90,6 +90,7 @@ export const createMessage = /* GraphQL */ `
         name
         path
       }
+      type
       status
       replyToMessageID
       forUserId
@@ -189,6 +190,7 @@ export const updateMessage = /* GraphQL */ `
         name
         path
       }
+      type
       status
       replyToMessageID
       forUserId
@@ -288,6 +290,7 @@ export const deleteMessage = /* GraphQL */ `
         name
         path
       }
+      type
       status
       replyToMessageID
       forUserId
@@ -311,6 +314,7 @@ export const createChatRoom = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -391,6 +395,7 @@ export const updateChatRoom = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -471,6 +476,7 @@ export const deleteChatRoom = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -554,6 +560,7 @@ export const createUser = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -656,6 +663,7 @@ export const updateUser = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -758,6 +766,7 @@ export const deleteUser = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId

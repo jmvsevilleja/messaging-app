@@ -18,6 +18,7 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
       items {
           id
           content
+          type
           image {
             name
             path

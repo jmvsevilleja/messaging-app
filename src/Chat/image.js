@@ -17,6 +17,7 @@ function Image({file, src}) {
         <>
             <button
                 type="button"
+                className="outline-none focus:outline-none"
                 onClick={() => setIsOpen(true)}
             >
                 <img className="rounded-xl" src={src} alt={file.name} />
