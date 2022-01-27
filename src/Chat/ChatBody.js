@@ -89,13 +89,29 @@ function ChatBody({
         }
 
         if (selectedFiles.length !== 0) {
-            input.file = selectedFiles.map((item) => {
-                return {
-                    name: item.name,
-                    path: "path" + item.name
-                }
-            });
+            input.file = await Promise.all(selectedFiles.map(async (file, key) => {
+                console.log("Document file", file, file.type);
+                setIsUploading(true);
+                return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
+                    filename: file.name
+                }, {headers: {"X-ROUTE": "public"}}).then(async res => {
+                    if (res.status === 200) {
+                        const {presigned_url, public_url, filename} = res.data.message;
+                        console.log('Uploading ... ', filename);
+                        return await axios.put(presigned_url, file, {headers: {"Content-Type": file.type}}).then(async res => {
+                            if (res.status === 200) {
+                                console.log("Upload Success", filename, public_url);
+                                return {
+                                    name: filename,
+                                    path: public_url
+                                }
+                            }
+                        });
+                    }
+                });
+            }));
         }
+
         if (recordedAudio) {
             input.audio = {
                 name: 'audiofile.wma',
@@ -111,12 +127,7 @@ function ChatBody({
                 },
             });
             console.log("Created Message", created_message, chatRoom);
-            setIsUploading(false);
-            setMessageText("");
-            setSelectedFiles([]);
-            setSelectedImages([]);
-            setRecordedAudio(null);
-            messageInput.current.required = true;
+            handleResetChat();
             if (messageText) {
                 messageInput.current.focus();
             }
@@ -125,14 +136,31 @@ function ChatBody({
         }
     };
 
+    const handleResetChat = () => {
+        setIsUploading(false);
+        setMessageText("");
+        setSelectedFiles([]);
+        setSelectedImages([]);
+        setRecordedAudio(null);
+        messageInput.current.required = true;
+        imageRef.current.value = null;
+        fileRef.current.value = null;
+    }
+
     const handleFileUpload = (e) => {
         if (e.target.files.length === 0) return;
+        setSelectedImages([]);
+        setRecordedAudio(null);
         messageInput.current.required = false;
+        imageRef.current.value = null;
         setSelectedFiles([...e.target.files]);
     };
     const handleImageUpload = async (e) => {
         if (e.target.files.length === 0) return;
+        setSelectedFiles([]);
+        setRecordedAudio(null);
         messageInput.current.required = false;
+        fileRef.current.value = null;
         const resized_images = await Promise.all([...e.target.files].map(async (item) => {
             return await resizeFile(item);
         }));
@@ -182,12 +210,12 @@ function ChatBody({
 
     useEffect(() => {
         if (!chatRoom.users) return;
-        const online = chatRoom.users.find((item) => (user.id !== item.user.id && item.user.online))
-        console.log('isOnline', online);
-        setIsOnline(online);
-        setUserTyping(null);
+        const online = chatRoom.users.find((item) => (user.id !== item.user.id && item.user.online));
         const typing = chatRoom.users.filter((item) => (user.id !== item.user.id && item.user.online && item.typing));
-        console.log('isTyping', typing, chatRoom.users);
+        //console.log('isOnline', online);
+        setIsOnline(online);
+        //console.log('isTyping', typing, chatRoom.users);
+        setUserTyping("");
         if (typing && typing.length) {
             if (typing.length === 1) {
                 setUserTyping(typing[0].user.name + " is typing");
@@ -199,6 +227,12 @@ function ChatBody({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatRoom]);
 
+    useEffect(() => {
+        if (messageList.length) {
+            handleResetChat();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [messageList]);
     return (
         <div
             className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen  overflow-hidden"
@@ -319,13 +353,48 @@ function ChatBody({
                             </div>
                             <div className="text-sm text-primary ml-2">{userTyping}</div>
                         </div>}
-                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center  absolute inset-x-0 bottom-16 bg-white bg-opacity-75 overflow-y-auto scrollable  p-2">
+                    {selectedFiles.length !== 0 && <div className="absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
+                        {selectedFiles.map((file, index) => {
+                            return (
+                                <div key={file.name}>
+                                    <div className="m-1 inline-flex break-all shadow-md mb-1 rounded-lg p-2 text-sm text-left text-gray-500 bg-gray-50 rounded-tl-none">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                </div>
+
+                                                <div className="mx-2">{file.name}</div>
+                                            </div>
+                                            {!isUploading && <button className="text-gray-400 hover:text-gray-500" onClick={(e) => {
+                                                handleDeleteFileUpload(e, index);
+                                            }}>
+                                                <div className="sr-only">Close</div>
+                                                <svg className="w-4 h-4 fill-current">
+                                                    <path d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" />
+                                                </svg>
+                                            </button>}
+                                            {isUploading && <div className="text-gray-500"><svg fill='none' className="w-8 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                                                <path clipRule='evenodd'
+                                                    d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                                                    fill='currentColor' fillRule='evenodd' />
+                                            </svg></div>}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>}
+                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center  absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
                         {selectedImages.map((file, index) => {
                             const objectURL = URL.createObjectURL(file);
                             return (
                                 <div key={file.name}>
                                     <div className="relative w-40 mx-2">
-                                        <button className="absolute top-1 right-2 text-white hover:text-gray-400 drop-shadow"
+                                        {!isUploading && <button className="absolute top-1 right-2 text-white hover:text-gray-400 drop-shadow"
                                             onClick={(e) => {
                                                 URL.revokeObjectURL(objectURL);
                                                 handleDeleteImageUpload(e, index);
@@ -335,9 +404,9 @@ function ChatBody({
                                             <svg className="w-4 h-4 fill-current">
                                                 <path d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z"></path>
                                             </svg>
-                                        </button>
+                                        </button>}
                                         <Image file={file} src={objectURL} />
-                                        {isUploading && <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white"><svg fill='none' className="w-14 animate-spin m-auto opacity-50" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                                        {isUploading && <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white"><svg fill='none' className="w-14 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
                                             <path clipRule='evenodd'
                                                 d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
                                                 fill='currentColor' fillRule='evenodd' />
@@ -360,11 +429,11 @@ function ChatBody({
                             accept="image/*"
                             hidden
                             onChange={handleImageUpload} />
-                        <button className="outline-none focus:outline-none"
+                        <button className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
                             onClick={() => imageRef.current.click()}
                             type="button">
                             <svg
-                                className="text-gray-400 h-6 w-6"
+                                className=" h-6 w-6"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
@@ -386,13 +455,13 @@ function ChatBody({
                             hidden
                             onChange={handleFileUpload} />
                         <button
-                            className="outline-none focus:outline-none ml-1"
+                            className="outline-none focus:outline-none ml-1 text-gray-400 hover:text-gray-500"
                             onClick={() => fileRef.current.click()}
                             type="button"
                         >
 
                             <svg
-                                className="text-gray-400 h-6 w-6"
+                                className=" h-6 w-6"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
@@ -416,7 +485,7 @@ function ChatBody({
                             }
                             aria-placeholder="Write message..."
                             placeholder="Write message..."
-                            className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 border-none outline-0 focus:text-gray-700"
+                            className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100  border-none outline-0 focus:text-gray-700"
                             type="text"
                             id="message"
                             name="message"
@@ -429,12 +498,12 @@ function ChatBody({
                         ></input>
 
                         <button
-                            className="outline-none focus:outline-none"
+                            className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
                             type="submit"
                             title="Submit"
                         >
                             <svg
-                                className="text-gray-400 h-7 w-7 origin-center transform rotate-90"
+                                className="h-7 w-7 origin-center transform rotate-90"
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20"
                                 fill="currentColor"

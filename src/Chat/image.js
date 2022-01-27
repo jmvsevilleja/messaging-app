@@ -19,7 +19,7 @@ function Image({file, src}) {
                 type="button"
                 onClick={() => setIsOpen(true)}
             >
-                <img className="rounded-md" src={src} alt={file.name} />
+                <img className="rounded-xl" src={src} alt={file.name} />
             </button>
             <Dialog
                 open={isOpen}

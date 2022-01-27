@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "./image";
+import File from "./file";
 
-function downloadImage(url, name) {
+function handleDownloadFile(url, name) {
     fetch(url)
         .then(resp => resp.blob())
         .then(blob => {
@@ -42,29 +43,41 @@ function Message({user_id, message, chatroom}) {
                 <div>
                     {message.image.map((file, index) => {
                         return (file.name && file.path &&
-                            <div key={file.name}>
-                                <div className="relative w-60 m-2 mr-0">
-                                    <button className="absolute top-1 right-2 text-white hover:text-gray-400 drop-shadow"
-                                        onClick={(e) => {
-                                            downloadImage(file.path, file.name);
-                                        }}
-                                    >
-                                        <div className="sr-only">Download</div>
+                            <div className="flex items-center w-60 m-2 mx-0" key={file.name}>
+                                <Image file={file} src={file.path} />
+                                <button className=" text-gray-400 hover:text-gray-500 rounded border-gray-400 border ml-2"
+                                    onClick={(e) => {
+                                        handleDownloadFile(file.path, file.name);
+                                    }}
+                                >
+                                    <div className="sr-only">Download</div>
 
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                        </svg>
-                                    </button>
-                                    <Image file={file} src={file.path} />
-                                </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                </button>
                             </div>
+
                         )
                     })}
                 </div>
             }
-            <div className={"break-normal xl:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-black bg-gray-50 rounded-tl-none")}>
+            {message.file &&
+                <div>
+                    {message.file.map((file, index) => {
+                        return (file.name && file.path &&
+                            <div className="flex items-center m-2 mx-0" key={file.name}>
+                                <File file={file} src={file.path}
+                                    handleDownloadFile={handleDownloadFile} />
+                            </div>
+
+                        )
+                    })}
+                </div>
+            }
+            {message.content && <div className={"break-normal xl:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-50 rounded-tl-none")}>
                 <p>{message.content}</p>
-            </div>
+            </div>}
             <div className="flex items-center justify-between">
                 <div className="mt-1 mr-1 text-xs text-gray-500 font-normal">{created}</div>
                 {isme && message.status === "SENT" &&
