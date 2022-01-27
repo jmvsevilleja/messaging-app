@@ -7,6 +7,18 @@ mutation CreateMessage(
   createMessage(input: $input, condition: $condition) {
     id
     content
+    image {
+        name
+        path
+    }
+      audio {
+        name
+        path
+    }
+      file {
+        name
+        path
+    }
     chatRoomMessagesId
     userMessageId
     status

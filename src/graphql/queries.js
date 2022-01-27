@@ -75,9 +75,18 @@ export const getMessage = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
       status
       replyToMessageID
       forUserId
@@ -124,9 +133,18 @@ export const listMessages = /* GraphQL */ `
           updatedAt
           chatRoomAdminId
         }
-        image
-        audio
-        file
+        image {
+          name
+          path
+        }
+        audio {
+          name
+          path
+        }
+        file {
+          name
+          path
+        }
         status
         replyToMessageID
         forUserId
@@ -185,9 +203,18 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
           updatedAt
           chatRoomAdminId
         }
-        image
-        audio
-        file
+        image {
+          name
+          path
+        }
+        audio {
+          name
+          path
+        }
+        file {
+          name
+          path
+        }
         status
         replyToMessageID
         forUserId
@@ -210,9 +237,6 @@ export const getChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
           status
           replyToMessageID
           forUserId
@@ -336,9 +360,6 @@ export const getUser = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
           status
           replyToMessageID
           forUserId

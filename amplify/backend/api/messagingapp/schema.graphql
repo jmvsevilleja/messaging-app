@@ -1,22 +1,29 @@
 input AMPLIFY {
     globalAuthRule: AuthRule = { allow: public }
 }
+
 enum MessageStatus {
     SENT
-    DELIVERED
     READ
 }
+
 enum UserType {
     USER
 }
+
+type File {
+    name: String
+    path: String
+}
+
 type Message @model @auth(rules: [{ allow: public }]) {
     id: ID!
     content: String
     user: User @belongsTo
     chatRoom: ChatRoom @belongsTo
-    image: [String]
-    audio: String
-    file: [String]
+    image: [File]
+    audio: File
+    file: [File]
     status: MessageStatus
     replyToMessageID: ID
     forUserId: ID
@@ -87,14 +94,11 @@ type ChatRoomUser @model(queries: null) @auth(rules: [{ allow: public }]) {
 type Subscription {
     onCreateMessageByChatRoomMessagesId(chatRoomMessagesId: ID): Message
         @aws_subscribe(mutations: ["createMessage"])
-
     onUpdateMessageByChatRoomMessagesId(chatRoomMessagesId: ID): Message
         @aws_subscribe(mutations: ["updateMessage"])
-
     onCreateChatRoomUserByChatRoomUserUserId(
         chatRoomUserUserId: ID
     ): ChatRoomUser @aws_subscribe(mutations: ["createChatRoomUser"])
-
     onUpdateChatRoomUserByChatRoomChatRoomUsersId(
         chatRoomChatRoomUsersId: ID
     ): ChatRoomUser @aws_subscribe(mutations: ["updateChatRoomUser"])
