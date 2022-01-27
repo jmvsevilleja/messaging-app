@@ -1,4 +1,22 @@
 import React from "react";
+import Image from "./image";
+
+function downloadImage(url, name) {
+    fetch(url)
+        .then(resp => resp.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            // the filename you want
+            a.download = name;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(() => alert('Download failed. Please try again.'));
+}
 
 function Message({user_id, message, chatroom}) {
     let name = "";
@@ -11,7 +29,7 @@ function Message({user_id, message, chatroom}) {
     }
     const isme = user_id === message.userMessageId;
     var dateobj = new Date(message.createdAt);
-    const created = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})
+    const created = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
 
     return (
         <div
@@ -20,6 +38,30 @@ function Message({user_id, message, chatroom}) {
             }
         >
             {!isme && <p className="text-xs text-primary font-medium">{name}</p>}
+            {message.image &&
+                <div>
+                    {message.image.map((file, index) => {
+                        return (file.name && file.path &&
+                            <div key={file.name}>
+                                <div className="relative w-60 m-2 mr-0">
+                                    <button className="absolute top-1 right-2 text-white hover:text-gray-400 drop-shadow"
+                                        onClick={(e) => {
+                                            downloadImage(file.path, file.name);
+                                        }}
+                                    >
+                                        <div className="sr-only">Download</div>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                    </button>
+                                    <Image file={file} src={file.path} />
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            }
             <div className={"break-normal xl:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-black bg-gray-50 rounded-tl-none")}>
                 <p>{message.content}</p>
             </div>

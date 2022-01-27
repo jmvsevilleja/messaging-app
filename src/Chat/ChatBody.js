@@ -9,7 +9,27 @@ import {
 import Avatar from "react-avatar";
 
 import Message from "./message";
+import Image from "./image";
+
 import ConvoLogo from '../logo.svg';
+import axios from "axios";
+import Resizer from "react-image-file-resizer";
+
+const resizeFile = (file) =>
+    new Promise((resolve) => {
+        Resizer.imageFileResizer(
+            file,
+            1440,
+            1080,
+            "JPEG",
+            80,
+            0,
+            (uri) => {
+                resolve(uri);
+            },
+            "file"
+        );
+    });
 
 function ChatBody({
     user,
@@ -24,6 +44,9 @@ function ChatBody({
     const [isOnline, setIsOnline] = useState(false);
     const [userTyping, setUserTyping] = useState(null);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [selectedImages, setSelectedImages] = useState([]);
+    const [recordedAudio, setRecordedAudio] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     const messageInput = React.useRef(null);
     const fileRef = React.useRef();
@@ -31,32 +54,103 @@ function ChatBody({
 
     const handleSubmitMessage = async (e) => {
         e.preventDefault();
-        // Try make the mutation to graphql API
+        if (isUploading) {return;}
+        // prepare input
+        const input = {
+            content: messageText, // the message content the user submitted (from state)
+            chatRoomMessagesId: chatRoom.id,
+            userMessageId: user.id, // this is the id of the current user
+            status: "SENT",
+        }
+        // prepare needed attachments
+        if (selectedImages.length !== 0) {
+            // Upload file before submitting
+            input.image = await Promise.all(selectedImages.map(async (file, key) => {
+                console.log("Image file", file, file.type);
+                setIsUploading(true);
+                return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
+                    filename: file.name
+                }, {headers: {"X-ROUTE": "public"}}).then(async res => {
+                    if (res.status === 200) {
+                        const {presigned_url, public_url, filename} = res.data.message;
+                        console.log('Uploading ... ', filename);
+                        return await axios.put(presigned_url, file, {headers: {"Content-Type": file.type}}).then(async res => {
+                            if (res.status === 200) {
+                                console.log("Upload Success", filename, public_url);
+                                return {
+                                    name: filename,
+                                    path: public_url
+                                }
+                            }
+                        });
+                    }
+                });
+            }));
+        }
+
+        if (selectedFiles.length !== 0) {
+            input.file = selectedFiles.map((item) => {
+                return {
+                    name: item.name,
+                    path: "path" + item.name
+                }
+            });
+        }
+        if (recordedAudio) {
+            input.audio = {
+                name: 'audiofile.wma',
+                path: "path"
+            }
+        }
+
         try {
             const created_message = await API.graphql({
                 query: createMessage,
                 variables: {
-                    input: {
-                        // id is auto populated by AWS Amplify
-                        content: messageText, // the message content the user submitted (from state)
-                        chatRoomMessagesId: chatRoom.id,
-                        userMessageId: user.id, // this is the id of the current user
-                        status: "SENT",
-                    },
+                    input: input,
                 },
             });
             console.log("Created Message", created_message, chatRoom);
+            setIsUploading(false);
+            setMessageText("");
+            setSelectedFiles([]);
+            setSelectedImages([]);
+            setRecordedAudio(null);
+            messageInput.current.required = true;
+            if (messageText) {
+                messageInput.current.focus();
+            }
         } catch (err) {
             console.error(err);
         }
     };
 
     const handleFileUpload = (e) => {
+        if (e.target.files.length === 0) return;
+        messageInput.current.required = false;
         setSelectedFiles([...e.target.files]);
     };
-    const handleDeleteFileUpload = (index) => {
+    const handleImageUpload = async (e) => {
+        if (e.target.files.length === 0) return;
+        messageInput.current.required = false;
+        const resized_images = await Promise.all([...e.target.files].map(async (item) => {
+            return await resizeFile(item);
+        }));
+        setSelectedImages(resized_images);
+    };
+    const handleDeleteFileUpload = (e, index) => {
         const new_files = selectedFiles.filter((item, i) => i !== index);
+        if (!Boolean(new_files.length)) {
+            fileRef.current.value = null;
+        }
         setSelectedFiles(new_files);
+    }
+    const handleDeleteImageUpload = (e, index) => {
+        const new_files = selectedImages.filter((item, i) => i !== index);
+        if (!Boolean(new_files.length)) {
+            imageRef.current.value = null;
+        }
+        setSelectedImages(new_files);
     }
     const handleTyping = async (focused) => {
         if (focused) {
@@ -225,16 +319,16 @@ function ChatBody({
                             </div>
                             <div className="text-sm text-primary ml-2">{userTyping}</div>
                         </div>}
-                    {selectedFiles.length !== 0 && <div className="flex justify-center items-center  absolute inset-x-0 bottom-16 bg-white bg-opacity-75 overflow-y-auto scrollable  p-2">
-                        {selectedFiles.map((file, index) => {
-                            const img = URL.createObjectURL(file);
+                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center  absolute inset-x-0 bottom-16 bg-white bg-opacity-75 overflow-y-auto scrollable  p-2">
+                        {selectedImages.map((file, index) => {
+                            const objectURL = URL.createObjectURL(file);
                             return (
                                 <div key={file.name}>
                                     <div className="relative w-40 mx-2">
                                         <button className="absolute top-1 right-2 text-white hover:text-gray-400 drop-shadow"
-                                            onClick={() => {
-                                                URL.revokeObjectURL(img);
-                                                handleDeleteFileUpload(index);
+                                            onClick={(e) => {
+                                                URL.revokeObjectURL(objectURL);
+                                                handleDeleteImageUpload(e, index);
                                             }}
                                         >
                                             <div className="sr-only">Close</div>
@@ -242,7 +336,12 @@ function ChatBody({
                                                 <path d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z"></path>
                                             </svg>
                                         </button>
-                                        <img className="rounded-md" src={img} alt={file.name} />
+                                        <Image file={file} src={objectURL} />
+                                        {isUploading && <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white"><svg fill='none' className="w-14 animate-spin m-auto opacity-50" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                                            <path clipRule='evenodd'
+                                                d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                                                fill='currentColor' fillRule='evenodd' />
+                                        </svg></div>}
                                     </div>
                                 </div>
                             )
@@ -250,9 +349,7 @@ function ChatBody({
                     </div>}
                     <form
                         onSubmit={(e) => {
-                            setMessageText("");
                             handleSubmitMessage(e, messageText);
-                            messageInput.current.focus();
                         }}
                         className="w-full flex py-3 px-3 items-center justify-between"
                     >
@@ -262,7 +359,7 @@ function ChatBody({
                             type="file"
                             accept="image/*"
                             hidden
-                            onChange={handleFileUpload} />
+                            onChange={handleImageUpload} />
                         <button className="outline-none focus:outline-none"
                             onClick={() => imageRef.current.click()}
                             type="button">

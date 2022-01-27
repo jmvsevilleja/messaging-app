@@ -78,9 +78,18 @@ export const createMessage = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
       status
       replyToMessageID
       forUserId
@@ -168,9 +177,18 @@ export const updateMessage = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
       status
       replyToMessageID
       forUserId
@@ -258,9 +276,18 @@ export const deleteMessage = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
       status
       replyToMessageID
       forUserId
@@ -284,9 +311,6 @@ export const createChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
           status
           replyToMessageID
           forUserId
@@ -367,9 +391,6 @@ export const updateChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
           status
           replyToMessageID
           forUserId
@@ -450,9 +471,6 @@ export const deleteChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
           status
           replyToMessageID
           forUserId
@@ -536,9 +554,6 @@ export const createUser = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
           status
           replyToMessageID
           forUserId
@@ -641,9 +656,6 @@ export const updateUser = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
           status
           replyToMessageID
           forUserId
@@ -746,9 +758,6 @@ export const deleteUser = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
           status
           replyToMessageID
           forUserId

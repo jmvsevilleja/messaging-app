@@ -2,9 +2,12 @@
 import { initSchema } from '@aws-amplify/datastore';
 import { schema } from './schema';
 
+const UserType = {
+  "USER": "USER"
+};
+
 const MessageStatus = {
   "SENT": "SENT",
-  "DELIVERED": "DELIVERED",
   "READ": "READ"
 };
 
@@ -15,5 +18,6 @@ export {
   User,
   ChatRoomUser,
   ChatRoom,
+  UserType,
   MessageStatus
 };

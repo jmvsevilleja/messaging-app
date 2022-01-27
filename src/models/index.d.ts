@@ -1,15 +1,18 @@
 import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplify/datastore";
 
+export enum UserType {
+  USER = "USER"
+}
+
 export enum MessageStatus {
   SENT = "SENT",
-  DELIVERED = "DELIVERED",
   READ = "READ"
 }
 
 
 
 type MessageMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
+  readOnlyFields: 'updatedAt';
 }
 
 type UserMetaData = {
@@ -29,12 +32,13 @@ export declare class Message {
   readonly content?: string;
   readonly user?: User;
   readonly chatRoom?: ChatRoom;
-  readonly image?: string;
+  readonly image?: (string | null)[];
   readonly audio?: string;
+  readonly file?: (string | null)[];
   readonly status?: MessageStatus | keyof typeof MessageStatus;
   readonly replyToMessageID?: string;
   readonly forUserId?: string;
-  readonly createdAt?: string;
+  readonly createdAt: string;
   readonly updatedAt?: string;
   readonly userMessageId?: string;
   readonly chatRoomMessagesId?: string;
@@ -46,6 +50,7 @@ export declare class User {
   readonly id: string;
   readonly clinicaID: string;
   readonly name: string;
+  readonly type: UserType | keyof typeof UserType;
   readonly imageUri?: string;
   readonly status?: string;
   readonly message?: (Message | null)[];
@@ -65,6 +70,7 @@ export declare class ChatRoomUser {
   readonly id: string;
   readonly chatroom: ChatRoom;
   readonly user: User;
+  readonly typing?: boolean;
   readonly createdAt?: string;
   readonly updatedAt?: string;
   readonly chatRoomChatRoomUsersId?: string;
