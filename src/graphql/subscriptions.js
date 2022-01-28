@@ -77,9 +77,19 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
+      type
       status
       replyToMessageID
       forUserId
@@ -166,9 +176,19 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
+      type
       status
       replyToMessageID
       forUserId
@@ -423,9 +443,19 @@ export const onCreateMessage = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
+      type
       status
       replyToMessageID
       forUserId
@@ -510,9 +540,19 @@ export const onUpdateMessage = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
+      type
       status
       replyToMessageID
       forUserId
@@ -597,9 +637,19 @@ export const onDeleteMessage = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
+      type
       status
       replyToMessageID
       forUserId
@@ -620,9 +670,7 @@ export const onCreateChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
+          type
           status
           replyToMessageID
           forUserId
@@ -700,9 +748,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
+          type
           status
           replyToMessageID
           forUserId
@@ -780,9 +826,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
+          type
           status
           replyToMessageID
           forUserId
@@ -863,9 +907,7 @@ export const onCreateUser = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
+          type
           status
           replyToMessageID
           forUserId
@@ -965,9 +1007,7 @@ export const onUpdateUser = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
+          type
           status
           replyToMessageID
           forUserId
@@ -1067,9 +1107,7 @@ export const onDeleteUser = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
+          type
           status
           replyToMessageID
           forUserId

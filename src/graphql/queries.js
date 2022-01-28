@@ -75,9 +75,19 @@ export const getMessage = /* GraphQL */ `
         updatedAt
         chatRoomAdminId
       }
-      image
-      audio
-      file
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
+      type
       status
       replyToMessageID
       forUserId
@@ -124,9 +134,90 @@ export const listMessages = /* GraphQL */ `
           updatedAt
           chatRoomAdminId
         }
-        image
-        audio
-        file
+        image {
+          name
+          path
+        }
+        audio {
+          name
+          path
+        }
+        file {
+          name
+          path
+        }
+        type
+        status
+        replyToMessageID
+        forUserId
+        createdAt
+        chatRoomMessagesId
+        updatedAt
+        userMessageId
+      }
+      nextToken
+    }
+  }
+`;
+export const messageByMessageType = /* GraphQL */ `
+  query MessageByMessageType(
+    $type: MessageType
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    MessageByMessageType(
+      type: $type
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        content
+        user {
+          id
+          clinicaID
+          name
+          type
+          imageUri
+          status
+          lastOnlineAt
+          online
+          publicKey
+          createdAt
+          updatedAt
+          userChatRoomId
+          userChatRoomUserId
+        }
+        chatRoom {
+          id
+          newMessages
+          lastMessage
+          name
+          group
+          imageUri
+          createdAt
+          updatedAt
+          chatRoomAdminId
+        }
+        image {
+          name
+          path
+        }
+        audio {
+          name
+          path
+        }
+        file {
+          name
+          path
+        }
+        type
         status
         replyToMessageID
         forUserId
@@ -185,9 +276,19 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
           updatedAt
           chatRoomAdminId
         }
-        image
-        audio
-        file
+        image {
+          name
+          path
+        }
+        audio {
+          name
+          path
+        }
+        file {
+          name
+          path
+        }
+        type
         status
         replyToMessageID
         forUserId
@@ -210,9 +311,7 @@ export const getChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
+          type
           status
           replyToMessageID
           forUserId
@@ -336,9 +435,7 @@ export const getUser = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
-          file
+          type
           status
           replyToMessageID
           forUserId

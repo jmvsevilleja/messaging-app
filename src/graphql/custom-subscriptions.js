@@ -8,8 +8,19 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
     ) {
       id
       content
-      image
-      audio
+      type
+      image {
+        name
+        path
+      }
+      audio {
+        name
+        path
+      }
+      file {
+        name
+        path
+      }
       status
       userMessageId
       createdAt
@@ -84,8 +95,19 @@ export const onUpdateChatRoom = /* GraphQL */ `
         items {
           id
           content
-          image
-          audio
+          type
+          image {
+            name
+            path
+          }
+          audio {
+            name
+            path
+          }
+          file {
+            name
+            path
+          }
           status
           replyToMessageID
           forUserId

@@ -45,10 +45,11 @@ export const schema = {
                 },
                 "image": {
                     "name": "image",
-                    "isArray": false,
+                    "isArray": true,
                     "type": "String",
                     "isRequired": false,
-                    "attributes": []
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "audio": {
                     "name": "audio",
@@ -56,6 +57,14 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
+                },
+                "file": {
+                    "name": "file",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "status": {
                     "name": "status",
@@ -83,10 +92,9 @@ export const schema = {
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
                 },
                 "updatedAt": {
                     "name": "updatedAt",
@@ -117,6 +125,17 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byMessage",
+                        "queryField": "MessageByChatRoomMessagesId",
+                        "fields": [
+                            "chatRoomMessagesId",
+                            "createdAt"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -157,6 +176,15 @@ export const schema = {
                     "name": "name",
                     "isArray": false,
                     "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "type": {
+                    "name": "type",
+                    "isArray": false,
+                    "type": {
+                        "enum": "UserType"
+                    },
                     "isRequired": true,
                     "attributes": []
                 },
@@ -290,6 +318,17 @@ export const schema = {
                     }
                 },
                 {
+                    "type": "key",
+                    "properties": {
+                        "name": "byUserType",
+                        "queryField": "userByType",
+                        "fields": [
+                            "type",
+                            "name"
+                        ]
+                    }
+                },
+                {
                     "type": "auth",
                     "properties": {
                         "rules": [
@@ -343,6 +382,13 @@ export const schema = {
                         "targetName": "chatRoomUserUserId"
                     }
                 },
+                "typing": {
+                    "name": "typing",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -374,6 +420,17 @@ export const schema = {
                     "type": "model",
                     "properties": {
                         "queries": null
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byChatRoomUser",
+                        "queryField": "ChatRoomUserByChatRoomUserUserId",
+                        "fields": [
+                            "chatRoomUserUserId",
+                            "id"
+                        ]
                     }
                 },
                 {
@@ -532,15 +589,20 @@ export const schema = {
         }
     },
     "enums": {
+        "UserType": {
+            "name": "UserType",
+            "values": [
+                "USER"
+            ]
+        },
         "MessageStatus": {
             "name": "MessageStatus",
             "values": [
                 "SENT",
-                "DELIVERED",
                 "READ"
             ]
         }
     },
     "nonModels": {},
-    "version": "2d72e24685cdf8eb3bdc36b159c24656"
+    "version": "ff4cde3059584052c74855a0480e1e96"
 };

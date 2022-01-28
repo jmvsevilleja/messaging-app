@@ -18,6 +18,19 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
       items {
           id
           content
+          type
+          image {
+            name
+            path
+          }
+          audio {
+            name
+            path
+          }
+          file {
+            name
+            path
+          }
           status
           userMessageId
           createdAt
