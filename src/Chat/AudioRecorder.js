@@ -86,7 +86,8 @@ function AudioRecorder({handleAudioUpload}) {
             console.log(recorderState.audio);
             handleAudioUpload(recorderState.audio);
         }
-    }, [recorderState.audio, handleAudioUpload]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [recorderState.audio]);
 
     useEffect(() => {
         const recorder = recorderState.mediaRecorder;
