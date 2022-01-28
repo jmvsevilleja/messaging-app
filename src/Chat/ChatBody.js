@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-
 import {API, graphqlOperation} from "aws-amplify";
 import {
     createMessage,
@@ -10,6 +9,8 @@ import Avatar from "react-avatar";
 
 import Message from "./message";
 import Image from "./image";
+import AudioRecorder from "./AudioRecorder";
+import AudioPlayer from "./AudioPlayer";
 
 import ConvoLogo from '../logo.svg';
 import axios from "axios";
@@ -48,6 +49,7 @@ function ChatBody({
     const [recordedAudio, setRecordedAudio] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
 
+
     const messageInput = React.useRef(null);
     const fileRef = React.useRef();
     const imageRef = React.useRef();
@@ -64,7 +66,7 @@ function ChatBody({
             type: "TEXT",
         }
         // check if its a link message
-        const has_url = messageText.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        const has_url = messageText.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g);
         if (has_url !== null) {
             input.type = "LINK";
         }
@@ -123,10 +125,25 @@ function ChatBody({
 
         if (recordedAudio) {
             input.type = "AUDIO";
-            input.audio = {
-                name: 'audiofile.wma',
-                path: "path"
-            }
+            setIsUploading(true);
+            const filename = 'audio-file-' + Date.now() + '.mp3';
+            input.audio = await axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
+                filename: filename
+            }, {headers: {"X-ROUTE": "public"}}).then(async res => {
+                if (res.status === 200) {
+                    const {presigned_url, public_url} = res.data.message;
+                    console.log('Uploading ... ', filename);
+                    return await axios.put(presigned_url, recordedAudio, {headers: {"Content-Type": recordedAudio.type}}).then(async res => {
+                        if (res.status === 200) {
+                            console.log("Upload Success", filename, public_url);
+                            return {
+                                name: filename,
+                                path: public_url
+                            }
+                        }
+                    });
+                }
+            });
         }
 
         try {
@@ -156,13 +173,18 @@ function ChatBody({
         imageRef.current.value = null;
         fileRef.current.value = null;
     }
-
+    const handleAudioUpload = (audio) => {
+        setSelectedImages([]);
+        setSelectedFiles([]);
+        setRecordedAudio(null);
+        messageInput.current.required = false;
+        setRecordedAudio(audio);
+    };
     const handleFileUpload = (e) => {
         if (e.target.files.length === 0) return;
         setSelectedImages([]);
         setRecordedAudio(null);
         messageInput.current.required = false;
-        imageRef.current.value = null;
         setSelectedFiles([...e.target.files]);
     };
     const handleImageUpload = async (e) => {
@@ -192,6 +214,11 @@ function ChatBody({
         }
         setSelectedImages(new_files);
     }
+    const handleDeleteAudioUpload = (e) => {
+        messageInput.current.required = true;
+        setRecordedAudio(null);
+    }
+
     const handleTyping = async (focused) => {
         if (focused) {
             if (!isTyping) {
@@ -400,7 +427,7 @@ function ChatBody({
                             )
                         })}
                     </div>}
-                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center  absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
+                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
                         {selectedImages.map((file, index) => {
                             const objectURL = URL.createObjectURL(file);
                             return (
@@ -427,6 +454,9 @@ function ChatBody({
                                 </div>
                             )
                         })}
+                    </div>}
+                    {recordedAudio && <div className="absolute inset-x-0 bottom-16 bg-white bg-opacity-90 p-2">
+                        <AudioPlayer recordedAudio={recordedAudio} isUploading={isUploading} handleDeleteAudioUpload={handleDeleteAudioUpload} />
                     </div>}
                     <form
                         onSubmit={(e) => {
@@ -498,8 +528,8 @@ function ChatBody({
                                 handleTyping(true);
                             }
                             }
-                            aria-placeholder="Write message..."
-                            placeholder="Write message..."
+                            aria-placeholder="Write a message..."
+                            placeholder="Write a message..."
                             className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100  border-none outline-0 focus:text-gray-700"
                             type="text"
                             id="message"
@@ -511,17 +541,7 @@ function ChatBody({
                                 handleTyping(false);
                             }}
                         ></input>
-                        <button
-                            className="outline-none focus:outline-none mr-2"
-                            type="button"
-                            title="Record"
-                        >
-                            <div className=" bg-primary hover:bg-secondary text-white rounded-full text-center p-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                                </svg>
-                            </div>
-                        </button>
+                        <AudioRecorder handleAudioUpload={handleAudioUpload} />
                         <button
                             className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
                             type="submit"
