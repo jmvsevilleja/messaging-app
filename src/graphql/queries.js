@@ -161,7 +161,7 @@ export const listMessages = /* GraphQL */ `
 `;
 export const messageByMessageType = /* GraphQL */ `
   query MessageByMessageType(
-    $type: MessageType
+    $type: MessageType!
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelMessageFilterInput
@@ -232,7 +232,7 @@ export const messageByMessageType = /* GraphQL */ `
 `;
 export const messageByChatRoomMessagesId = /* GraphQL */ `
   query MessageByChatRoomMessagesId(
-    $chatRoomMessagesId: ID
+    $chatRoomMessagesId: ID!
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelMessageFilterInput
@@ -572,7 +572,7 @@ export const listUsers = /* GraphQL */ `
 `;
 export const userByClinicaID = /* GraphQL */ `
   query UserByClinicaID(
-    $clinicaID: String
+    $clinicaID: String!
     $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -630,7 +630,7 @@ export const userByClinicaID = /* GraphQL */ `
 `;
 export const userByName = /* GraphQL */ `
   query UserByName(
-    $name: String
+    $name: String!
     $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -688,7 +688,7 @@ export const userByName = /* GraphQL */ `
 `;
 export const userByType = /* GraphQL */ `
   query UserByType(
-    $type: UserType
+    $type: UserType!
     $name: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -746,7 +746,7 @@ export const userByType = /* GraphQL */ `
 `;
 export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
   query ChatRoomUserByChatRoomUserUserId(
-    $chatRoomUserUserId: ID
+    $chatRoomUserUserId: ID!
     $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelChatRoomUserFilterInput
