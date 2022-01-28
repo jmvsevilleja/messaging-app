@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import {API, graphqlOperation} from "aws-amplify";
 import {
@@ -16,6 +16,18 @@ function CreateRoom({user, userList, handleChatRoomID}) {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [loading, setLoading] = useState(false);
+    const [searchUserList, setSearchUserList] = useState([]);
+
+    useEffect(() => {
+        setSearchUserList(userList);
+    }, [userList]);
+
+    useEffect(() => {
+        setSearchUserList(userList.filter(item =>
+            item.name.toLowerCase().includes(searchText.toLowerCase())
+        ));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchText]);
 
     const handleSelectedUsers = async (e, user) => {
         //console.log('handleSelectedUsers', e.target.checked, item);
@@ -163,8 +175,8 @@ function CreateRoom({user, userList, handleChatRoomID}) {
 
                             <ul className="pt-2 mt-2 scrollable pr-5 overflow-x-hidden overflow-y-auto h-80">
 
-                                {user &&
-                                    userList
+                                {user && searchUserList.length !== 0 &&
+                                    searchUserList
                                         .filter((item) => {
                                             return item.id !== user.id;
                                         })
