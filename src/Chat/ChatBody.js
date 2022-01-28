@@ -155,6 +155,7 @@ function ChatBody({
             });
             console.log("Created Message", created_message, chatRoom);
             handleResetChat();
+            setMessageText("");
             if (messageText) {
                 messageInput.current.focus();
             }
@@ -165,7 +166,6 @@ function ChatBody({
 
     const handleResetChat = () => {
         setIsUploading(false);
-        setMessageText("");
         setSelectedFiles([]);
         setSelectedImages([]);
         setRecordedAudio(null);

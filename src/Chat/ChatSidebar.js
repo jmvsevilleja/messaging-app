@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Avatar from "react-avatar";
 
 import User from "./user";
@@ -16,6 +16,28 @@ function ChatSidebar({
     handleChatRoomID,
     handleCreateChat
 }) {
+
+    const [searchText, setSearchText] = useState("");
+    const [searchUserList, setSearchUserList] = useState([]);
+    const [searchChatRoomList, setSearchChatRoomList] = useState([]);
+
+    useEffect(() => {
+        setSearchUserList(userList);
+        setSearchChatRoomList(chatRoomList);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userList, chatRoomList]);
+
+    useEffect(() => {
+        setSearchUserList(userList.filter(item =>
+            item.name.toLowerCase().includes(searchText.toLowerCase())
+        ));
+
+        setSearchChatRoomList(chatRoomList.filter(item =>
+            item.chatroom.name.toLowerCase().includes(searchText.toLowerCase())
+        ));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchText]);
+
     return (
         <div
             id="messages-sidebar"
@@ -76,6 +98,9 @@ function ChatSidebar({
                         name="search"
                         required
                         autoComplete="off"
+                        onChange={(e) => {
+                            setSearchText(e.target.value);
+                        }}
                     />
                 </div>
             </div>
@@ -97,8 +122,8 @@ function ChatSidebar({
                     </div>
 
 
-                    {user &&
-                        chatRoomList
+                    {user && searchChatRoomList.length !== 0 &&
+                        searchChatRoomList
                             .sort((a, b) =>
                                 b.chatroom.updatedAt.localeCompare(a.chatroom.updatedAt)
                             )
@@ -116,8 +141,8 @@ function ChatSidebar({
 
                 <ul className="border-t border-gray-200 pt-2 mt-2">
 
-                    {user &&
-                        userList
+                    {user && searchUserList.length !== 0 &&
+                        searchUserList
                             .filter((item) => {
                                 return item.id !== user.id;
                             })
