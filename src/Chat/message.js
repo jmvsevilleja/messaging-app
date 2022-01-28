@@ -39,7 +39,12 @@ function Message({user_id, message, chatroom}) {
             }
         >
             {!isme && <p className="text-xs text-primary font-medium">{name}</p>}
-            {message.image &&
+            {message.type === 'AUDIO' && message.audio &&
+                <div className={"flex w-full " + (isme ? "justify-end items-end" : "justify-start items-start")}>
+                    <audio className="my-2 inline-flex" src={message.audio.path} controls controlsList="nodownload noplaybackrate" />
+                </div>
+            }
+            {message.type === 'IMAGE' && message.image &&
                 <div>
                     {message.image.map((file, index) => {
                         return (file.name && file.path &&
@@ -52,7 +57,7 @@ function Message({user_id, message, chatroom}) {
                                 >
                                     <div className="sr-only">Download</div>
 
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>
                                 </button>
@@ -62,7 +67,7 @@ function Message({user_id, message, chatroom}) {
                     })}
                 </div>
             }
-            {message.file &&
+            {message.type === 'FILE' && message.file &&
                 <div>
                     {message.file.map((file, index) => {
                         return (file.name && file.path &&

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-
 import {API, graphqlOperation} from "aws-amplify";
 import {
     createMessage,
@@ -10,6 +9,8 @@ import Avatar from "react-avatar";
 
 import Message from "./message";
 import Image from "./image";
+import AudioRecorder from "./AudioRecorder";
+import AudioPlayer from "./AudioPlayer";
 
 import ConvoLogo from '../logo.svg';
 import axios from "axios";
@@ -48,6 +49,7 @@ function ChatBody({
     const [recordedAudio, setRecordedAudio] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
 
+
     const messageInput = React.useRef(null);
     const fileRef = React.useRef();
     const imageRef = React.useRef();
@@ -61,10 +63,18 @@ function ChatBody({
             chatRoomMessagesId: chatRoom.id,
             userMessageId: user.id, // this is the id of the current user
             status: "SENT",
+            type: "TEXT",
         }
+        // check if its a link message
+        const has_url = messageText.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g);
+        if (has_url !== null) {
+            input.type = "LINK";
+        }
+
         // prepare needed attachments
         if (selectedImages.length !== 0) {
             // Upload file before submitting
+            input.type = "IMAGE";
             input.image = await Promise.all(selectedImages.map(async (file, key) => {
                 console.log("Image file", file, file.type);
                 setIsUploading(true);
@@ -89,6 +99,7 @@ function ChatBody({
         }
 
         if (selectedFiles.length !== 0) {
+            input.type = "FILE";
             input.file = await Promise.all(selectedFiles.map(async (file, key) => {
                 console.log("Document file", file, file.type);
                 setIsUploading(true);
@@ -113,10 +124,26 @@ function ChatBody({
         }
 
         if (recordedAudio) {
-            input.audio = {
-                name: 'audiofile.wma',
-                path: "path"
-            }
+            input.type = "AUDIO";
+            setIsUploading(true);
+            const filename = 'audio-file-' + Date.now() + '.mp3';
+            input.audio = await axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
+                filename: filename
+            }, {headers: {"X-ROUTE": "public"}}).then(async res => {
+                if (res.status === 200) {
+                    const {presigned_url, public_url} = res.data.message;
+                    console.log('Uploading ... ', filename);
+                    return await axios.put(presigned_url, recordedAudio, {headers: {"Content-Type": recordedAudio.type}}).then(async res => {
+                        if (res.status === 200) {
+                            console.log("Upload Success", filename, public_url);
+                            return {
+                                name: filename,
+                                path: public_url
+                            }
+                        }
+                    });
+                }
+            });
         }
 
         try {
@@ -146,13 +173,18 @@ function ChatBody({
         imageRef.current.value = null;
         fileRef.current.value = null;
     }
-
+    const handleAudioUpload = (audio) => {
+        setSelectedImages([]);
+        setSelectedFiles([]);
+        setRecordedAudio(null);
+        messageInput.current.required = false;
+        setRecordedAudio(audio);
+    };
     const handleFileUpload = (e) => {
         if (e.target.files.length === 0) return;
         setSelectedImages([]);
         setRecordedAudio(null);
         messageInput.current.required = false;
-        imageRef.current.value = null;
         setSelectedFiles([...e.target.files]);
     };
     const handleImageUpload = async (e) => {
@@ -170,6 +202,7 @@ function ChatBody({
         const new_files = selectedFiles.filter((item, i) => i !== index);
         if (!Boolean(new_files.length)) {
             fileRef.current.value = null;
+            messageInput.current.required = true;
         }
         setSelectedFiles(new_files);
     }
@@ -177,9 +210,15 @@ function ChatBody({
         const new_files = selectedImages.filter((item, i) => i !== index);
         if (!Boolean(new_files.length)) {
             imageRef.current.value = null;
+            messageInput.current.required = true;
         }
         setSelectedImages(new_files);
     }
+    const handleDeleteAudioUpload = (e) => {
+        messageInput.current.required = true;
+        setRecordedAudio(null);
+    }
+
     const handleTyping = async (focused) => {
         if (focused) {
             if (!isTyping) {
@@ -388,7 +427,7 @@ function ChatBody({
                             )
                         })}
                     </div>}
-                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center  absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
+                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
                         {selectedImages.map((file, index) => {
                             const objectURL = URL.createObjectURL(file);
                             return (
@@ -416,6 +455,9 @@ function ChatBody({
                             )
                         })}
                     </div>}
+                    {recordedAudio && <div className="absolute inset-x-0 bottom-16 bg-white bg-opacity-90 p-2">
+                        <AudioPlayer recordedAudio={recordedAudio} isUploading={isUploading} handleDeleteAudioUpload={handleDeleteAudioUpload} />
+                    </div>}
                     <form
                         onSubmit={(e) => {
                             handleSubmitMessage(e, messageText);
@@ -431,7 +473,9 @@ function ChatBody({
                             onChange={handleImageUpload} />
                         <button className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
                             onClick={() => imageRef.current.click()}
-                            type="button">
+                            type="button"
+                            title="Attach Image"
+                        >
                             <svg
                                 className=" h-6 w-6"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -458,6 +502,7 @@ function ChatBody({
                             className="outline-none focus:outline-none ml-1 text-gray-400 hover:text-gray-500"
                             onClick={() => fileRef.current.click()}
                             type="button"
+                            title="Attach File"
                         >
 
                             <svg
@@ -483,8 +528,8 @@ function ChatBody({
                                 handleTyping(true);
                             }
                             }
-                            aria-placeholder="Write message..."
-                            placeholder="Write message..."
+                            aria-placeholder="Write a message..."
+                            placeholder="Write a message..."
                             className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100  border-none outline-0 focus:text-gray-700"
                             type="text"
                             id="message"
@@ -496,12 +541,13 @@ function ChatBody({
                                 handleTyping(false);
                             }}
                         ></input>
-
+                        <AudioRecorder handleAudioUpload={handleAudioUpload} />
                         <button
                             className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
                             type="submit"
-                            title="Submit"
+                            title="Send"
                         >
+
                             <svg
                                 className="h-7 w-7 origin-center transform rotate-90"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -510,6 +556,7 @@ function ChatBody({
                             >
                                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
                             </svg>
+
                         </button>
                     </form>
                 </div>

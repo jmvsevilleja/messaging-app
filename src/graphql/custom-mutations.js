@@ -7,6 +7,7 @@ mutation CreateMessage(
   createMessage(input: $input, condition: $condition) {
     id
     content
+    type
     image {
         name
         path

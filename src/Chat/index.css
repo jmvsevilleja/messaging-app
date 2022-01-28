@@ -12,12 +12,6 @@
 #chat::-webkit-scrollbar-thumb,
 .scrollable::-webkit-scrollbar-thumb {
     cursor: pointer;
-    background-color: #dcdcdc;
-    border-radius: 10px;
-}
-
-.scrollable::-webkit-scrollbar-thumb {
-    cursor: pointer;
-    background-color: #ececec;
+    background-color: #9ca3af;
     border-radius: 10px;
 }

@@ -8,6 +8,7 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
     ) {
       id
       content
+      type
       image {
         name
         path
@@ -94,6 +95,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
         items {
           id
           content
+          type
           image {
             name
             path

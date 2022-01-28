@@ -7,6 +7,14 @@ enum MessageStatus {
     READ
 }
 
+enum MessageType {
+    TEXT
+    LINK
+    AUDIO
+    IMAGE
+    FILE
+}
+
 enum UserType {
     USER
 }
@@ -24,6 +32,12 @@ type Message @model @auth(rules: [{ allow: public }]) {
     image: [File]
     audio: File
     file: [File]
+    type: MessageType
+        @index(
+            name: "byMessageType"
+            queryField: "MessageByMessageType"
+            sortKeyFields: ["createdAt"]
+        )
     status: MessageStatus
     replyToMessageID: ID
     forUserId: ID

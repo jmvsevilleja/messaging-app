@@ -89,6 +89,7 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
         name
         path
       }
+      type
       status
       replyToMessageID
       forUserId
@@ -187,6 +188,7 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
         name
         path
       }
+      type
       status
       replyToMessageID
       forUserId
@@ -453,6 +455,7 @@ export const onCreateMessage = /* GraphQL */ `
         name
         path
       }
+      type
       status
       replyToMessageID
       forUserId
@@ -549,6 +552,7 @@ export const onUpdateMessage = /* GraphQL */ `
         name
         path
       }
+      type
       status
       replyToMessageID
       forUserId
@@ -645,6 +649,7 @@ export const onDeleteMessage = /* GraphQL */ `
         name
         path
       }
+      type
       status
       replyToMessageID
       forUserId
@@ -665,6 +670,7 @@ export const onCreateChatRoom = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -742,6 +748,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -819,6 +826,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -899,6 +907,7 @@ export const onCreateUser = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -998,6 +1007,7 @@ export const onUpdateUser = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
@@ -1097,6 +1107,7 @@ export const onDeleteUser = /* GraphQL */ `
         items {
           id
           content
+          type
           status
           replyToMessageID
           forUserId
