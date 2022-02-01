@@ -17,7 +17,7 @@ import {
     updateChatRoom,
 } from "../graphql/custom-mutations";
 import {
-    onCreateUser,
+    //onCreateUser,
     onUpdateUser,
     onUpdateChatRoom,
     onCreateChatRoomUserByChatRoomUserUserId,
@@ -28,6 +28,8 @@ import {
 
 import ChatSidebar from "./ChatSidebar";
 import ChatBody from "./ChatBody";
+import ChatInfo from "./ChatInfo";
+
 import axios from "axios";
 import "./index.css";
 
@@ -48,6 +50,7 @@ const Chat = () => {
     const [user, setUser] = useState(null);
     const [chatRoom, setChatRoom] = useState({});
     const [openChat, setOpenChat] = useState(false); // set the chat room open
+
     const [forceOpenChat, setForceOpenChat] = useState(false); // force to open the chat room
     const [chatRoomID, setChatRoomID] = useState(null);
     let navigate = useNavigate();
@@ -67,22 +70,28 @@ const Chat = () => {
                 subs[item].unsubscribe();
             }
         }
+        handleUserOnline(false);
+        navigate(`/`);
+    };
+
+    const handleUserOnline = (online) => {
+        if (!user) return;
         // update offline status
         API.graphql(
             graphqlOperation(updateUser, {
                 input: {
                     id: user.id,
-                    online: false,
+                    online: online,
                     //typing: false
                 },
             })
         );
-        navigate(`/`);
     };
 
     const handleCreateChat = async (selected_user) => {
         console.log("handleCreateChat", chatRoomList, user.id, selected_user.id);
 
+        // TODO: find in DB instead in the list
         // check if user logged and selected_user is already in chat room
         const found_user = chatRoomList.find((room) => {
             if (!Boolean(room.chatroom.group)) { // not group chat
@@ -452,22 +461,18 @@ const Chat = () => {
         console.log("USER: ", user.id);
 
         // update online status
-        API.graphql(
-            graphqlOperation(updateUser, {
-                input: {
-                    id: user.id,
-                    online: true,
-                },
-            })
-        );
+        //setInterval(function () {
+        handleUserOnline(true);
+        //}, 300 * 1000);
+
 
         fetchChatRooms(user.id).then((result) => {
             console.log('fetchChatRooms', result);
             namedChatRoom(result);
 
-            fetchUsers(user.id).then((result) => {
-                setUserList([...result]);
-            });
+            // fetchUsers(user.id).then((result) => {
+            //     setUserList([...result]);
+            // });
         });
 
         console.log("Subscribe to onCreateChatRoomUserByChatRoomUserUserId");
@@ -496,12 +501,12 @@ const Chat = () => {
                 console.log("onUpdateUser", value);
                 //TODO: optimize to find
                 // update online in user list
-                setUserList((list) => list.map((item) => item.id === value.data.onUpdateUser.id
-                    ? {
-                        ...item,
-                        online: value.data.onUpdateUser.online
-                    }
-                    : item));
+                // setUserList((list) => list.map((item) => item.id === value.data.onUpdateUser.id
+                //     ? {
+                //         ...item,
+                //         online: value.data.onUpdateUser.online
+                //     }
+                //     : item));
                 // update online in chatroom list
                 setChatRoomList((list) => list.map((item) => {
                     const items = item.chatroom.chatRoomUsers.items.map((item) =>
@@ -578,12 +583,12 @@ const Chat = () => {
     useEffect(() => {
 
         // Subscribe to creation of user
-        subs.subCreateUser = API.graphql(graphqlOperation(onCreateUser)).subscribe({
-            next: ({provider, value}) => {
-                setUserList((list) => [...list, value.data.onCreateUser]);
-            },
-            error: (error) => console.warn(error),
-        });
+        // subs.subCreateUser = API.graphql(graphqlOperation(onCreateUser)).subscribe({
+        //     next: ({provider, value}) => {
+        //         setUserList((list) => [...list, value.data.onCreateUser]);
+        //     },
+        //     error: (error) => console.warn(error),
+        // });
         // Subscribe to update of chatroom
         subs.subUpdateChatRoom = API.graphql(
             graphqlOperation(onUpdateChatRoom)
@@ -606,6 +611,7 @@ const Chat = () => {
             error: (error) => console.warn(error),
         });
 
+        // TODO: offline when on browser close
         return () => {
             console.log('UNMOUNTED');
             //unsubscribe
@@ -642,7 +648,8 @@ const Chat = () => {
     return (
         <div className="bg-white flex h-screen overflow-hidden">
             {/* Content area */}
-            <div className="relative flex flex-col flex-1 overflow-hidden" x-ref="contentarea">
+            <div className="relative flex flex-col flex-1 overflow-hidden">
+
                 <main>
                     <div className="relative flex">
                         {/* Messages sidebar */}
@@ -670,6 +677,7 @@ const Chat = () => {
                     </div>
                 </main>
             </div>
+            <ChatInfo />
         </div>
     );
 };

@@ -42,7 +42,7 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
 export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
   query ChatRoomUserByChatRoomUserUserId(
     $chatRoomUserUserId: ID
-    $id: ModelIDKeyConditionInput
+    $updatedAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelChatRoomUserFilterInput
     $limit: Int
@@ -50,7 +50,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
   ) {
     ChatRoomUserByChatRoomUserUserId(
       chatRoomUserUserId: $chatRoomUserUserId
-      id: $id
+      updatedAt: $updatedAt
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit

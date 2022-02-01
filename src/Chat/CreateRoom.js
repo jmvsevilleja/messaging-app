@@ -103,9 +103,11 @@ function CreateRoom({user, userList, handleChatRoomID}) {
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
+                title="Create Group Chat"
             >
+
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
             </button>
             <Dialog
@@ -173,7 +175,7 @@ function CreateRoom({user, userList, handleChatRoomID}) {
                                 </div>
                             </label>
 
-                            <ul className="pt-2 mt-2 scrollable pr-5 overflow-x-hidden overflow-y-auto h-80">
+                            <ul className="pt-2 mt-2 scrollable overflow-x-hidden overflow-y-auto h-80">
 
                                 {user && searchUserList.length !== 0 &&
                                     searchUserList

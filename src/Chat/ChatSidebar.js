@@ -1,9 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import Avatar from "react-avatar";
 
 import User from "./user";
 import ChatRoom from "./chatroom";
 import CreateRoom from "./CreateRoom";
+import InviteUser from "./InviteUser";
+
+import ChatProfile from "./ChatProfile";
 
 function ChatSidebar({
     user,
@@ -18,63 +21,130 @@ function ChatSidebar({
 }) {
 
     const [searchText, setSearchText] = useState("");
-    const [searchUserList, setSearchUserList] = useState([]);
+    // const [searchUserList, setSearchUserList] = useState([]);
     const [searchChatRoomList, setSearchChatRoomList] = useState([]);
+    const [openProfile, setOpenProfile] = useState(false);
+    const [openSetting, setOpenSetting] = useState(true);
+    const [dropdown, setDropdown] = useState(false);
+    const dropdownMenu = useRef(null)
+
+    // Open chat toggle
+    const handleCloseProfile = async () => {
+        setOpenProfile(false);
+    }
+    const handleCloseDropdown = async (e) => {
+        if (dropdownMenu.current && !dropdownMenu.current.contains(e.target)) {
+            setDropdown(false);
+        }
+    }
 
     useEffect(() => {
-        setSearchUserList(userList);
+        //setSearchUserList(userList);
         setSearchChatRoomList(chatRoomList);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userList, chatRoomList]);
 
     useEffect(() => {
-        setSearchUserList(userList.filter(item =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
-        ));
+        // setSearchUserList(userList.filter(item =>
+        //     item.name.toLowerCase().includes(searchText.toLowerCase())
+        // ));
 
         setSearchChatRoomList(chatRoomList.filter(item =>
             item.chatroom.name.toLowerCase().includes(searchText.toLowerCase())
         ));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchText]);
-
+    useEffect(() => {
+        document.addEventListener('click', handleCloseDropdown);
+        return () => {
+            document.removeEventListener("click", handleCloseDropdown);
+        };
+    }, []);
     return (
         <div
             id="messages-sidebar"
-            className={" bg-white absolute z-20 pl-5 top-0 bottom-0 w-full md:w-auto md:static md:top-auto md:bottom-auto -mr-px md:translate-x-0 transform transition-transform duration-200 ease-in-out border-r border-gray-200"
+            className={" bg-white absolute z-20 pl-5 top-0 bottom-0 w-full md:w-auto md:static md:top-auto md:bottom-auto -mr-px md:translate-x-0 transform transition-transform duration-200 ease-in-out"
                 + (!openChat ? " translate-x-0" : " -translate-x-full")}
 
         >
+            {user && <ChatProfile
+                user={user}
+                openProfile={openProfile}
+                handleCloseProfile={handleCloseProfile} />}
             <div className="my-3 pr-5">
-                <div className="flex justify-between item-center p-3 px-0 mb-3">
-                    <span className="flex items-center">
-                        {user && (
-                            <div className="relative">
-                                <Avatar
-                                    size="40"
-                                    round={true}
-                                    name={user.name}
-                                />
-                                <div className={"absolute bottom-0 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"}></div>
-                            </div>
-                        )}
+                <div className="flex relative justify-between item-center p-3 px-0 mb-6 pb-0 ">
+                    <div
+                        className="grow flex"
 
-                        <span className="block ml-2 font-bold text-base text-gray-600">
-                            {user && user.name}
-                        </span>
+                    >   <div className="flex cursor-pointer items-center" onMouseDown={() => {
+                        setDropdown(true);
+                    }}
+                        ref={dropdownMenu}>
+                            {user && (
+                                <div className="relative">
+                                    <Avatar
+                                        size="40"
+                                        round={true}
+                                        name={user.name}
+                                    />
+                                    <div className={"absolute bottom-0 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"}></div>
+                                </div>
+                            )}
 
-                    </span>
-                    <span className="flex items-center">
-                        <button
-                            onClick={handleLogout}
-                            title="Logout"
-                            className="outline-none focus:outline-none"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            <span className="block ml-2 font-bold text-base text-gray-600">
+                                {user && user.name}
+                            </span>
+                            <svg className="w-3 h-3 shrink-0 ml-1 mb-1 fill-current text-gray-400" viewBox="0 0 12 12">
+                                <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
                             </svg>
-                        </button>
-                    </span>
+
+                            {dropdown &&
+                                <div
+                                    className="origin-top-right z-50 absolute top-full left-0 bg-white border border-gray-200 p-1.5  rounded shadow-lg overflow-hidden mt-1 w-full md:w-1/2"
+                                >
+                                    <ul>
+                                        <li>
+                                            <button className="w-full font-medium text-sm text-gray-600 hover:bg-gray-100 px-3 py-1.5 text-left"
+                                                onClick={() => {
+                                                    setOpenProfile(true);
+                                                    setDropdown(false);
+                                                }}
+                                            >Profile</button>
+                                        </li>
+                                        <li>
+                                            <button className="w-full font-medium text-sm text-gray-600 hover:bg-gray-100 px-3 py-1.5 text-left"
+                                                onClick={() => {
+                                                    setOpenSetting(true);
+                                                    setDropdown(false);
+                                                }}
+                                            >Settings</button>
+                                        </li>
+                                        <li>
+                                            <button className="w-full font-medium text-sm text-gray-600 hover:bg-gray-100 px-3 py-1.5 text-left"
+                                                onClick={handleLogout}
+                                            >Sign Out</button>
+                                        </li>
+                                    </ul>
+                                </div>}
+
+                        </div>
+
+                    </div>
+                    <div className="flex items-center">
+                        {user && < InviteUser
+                            user={user}
+                            handleChatRoomID={handleChatRoomID}
+                        />}
+                    </div>
+
+                    <div className="flex items-center">
+                        {user && < CreateRoom
+                            user={user}
+                            userList={userList}
+                            handleChatRoomID={handleChatRoomID}
+                        />}
+                    </div>
+
                 </div>
                 <div className="relative text-gray-600 focus-within:text-gray-400">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -107,21 +177,6 @@ function ChatSidebar({
 
             <div className="scrollable pr-5 overflow-x-hidden overflow-y-auto shrink-0 md:w-80 xl:w-96 h-[calc(100vh-130px)]">
                 <ul>
-                    <div className="flex justify-between item-center my-3">
-                        <h2 className=" text-gray-600 text-lg">
-                            Chat
-                        </h2>
-                        <div className="flex items-center">
-                            {user &&
-                                userList.length !== 0 && < CreateRoom
-                                    user={user}
-                                    userList={userList}
-                                    handleChatRoomID={handleChatRoomID}
-                                />}
-                        </div>
-                    </div>
-
-
                     {user && searchChatRoomList.length !== 0 &&
                         searchChatRoomList
                             .sort((a, b) =>
@@ -139,7 +194,7 @@ function ChatSidebar({
                             ))}
                 </ul>
 
-                <ul className="border-t border-gray-200 pt-2 mt-2">
+                {/* <ul className="border-t border-gray-200 pt-2 mt-2">
 
                     {user && searchUserList.length !== 0 &&
                         searchUserList
@@ -157,9 +212,9 @@ function ChatSidebar({
                                     key={item.id}
                                 />
                             ))}
-                </ul>
+                </ul> */}
             </div>
-        </div>
+        </div >
     )
 }
 
