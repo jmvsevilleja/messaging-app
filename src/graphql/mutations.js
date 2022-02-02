@@ -1138,48 +1138,45 @@ export const deleteChatRoomUser = /* GraphQL */ `
     }
   }
 `;
-export const createUserTest = /* GraphQL */ `
-  mutation CreateUserTest($input: CreateUserTestInput!) {
-    createUserTest(input: $input) {
+export const createUserAccount = /* GraphQL */ `
+  mutation CreateUserAccount($input: CreateUserAccountInput!) {
+    createUserAccount(input: $input) {
       id
       code
       email
       first_name
-      gender
       last_name
-      phones
       user_type
       photo
+      phones
     }
   }
 `;
-export const updateUserTest = /* GraphQL */ `
-  mutation UpdateUserTest($input: UpdateUserTestInput!) {
-    updateUserTest(input: $input) {
+export const updateUserAccount = /* GraphQL */ `
+  mutation UpdateUserAccount($input: UpdateUserAccountInput!) {
+    updateUserAccount(input: $input) {
       id
       code
       email
       first_name
-      gender
       last_name
-      phones
       user_type
       photo
+      phones
     }
   }
 `;
-export const deleteUserTest = /* GraphQL */ `
-  mutation DeleteUserTest($input: DeleteUserTestInput!) {
-    deleteUserTest(input: $input) {
+export const deleteUserAccount = /* GraphQL */ `
+  mutation DeleteUserAccount($input: DeleteUserAccountInput!) {
+    deleteUserAccount(input: $input) {
       id
       code
       email
       first_name
-      gender
       last_name
-      phones
       user_type
       photo
+      phones
     }
   }
 `;

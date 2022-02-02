@@ -83,9 +83,13 @@
             "name" : "type",
             "description" : null,
             "type" : {
-              "kind" : "ENUM",
-              "name" : "MessageType",
-              "ofType" : null
+              "kind" : "NON_NULL",
+              "name" : null,
+              "ofType" : {
+                "kind" : "ENUM",
+                "name" : "MessageType",
+                "ofType" : null
+              }
             },
             "defaultValue" : null
           }, {
@@ -148,9 +152,13 @@
             "name" : "chatRoomMessagesId",
             "description" : null,
             "type" : {
-              "kind" : "SCALAR",
-              "name" : "ID",
-              "ofType" : null
+              "kind" : "NON_NULL",
+              "name" : null,
+              "ofType" : {
+                "kind" : "SCALAR",
+                "name" : "ID",
+                "ofType" : null
+              }
             },
             "defaultValue" : null
           }, {
@@ -337,9 +345,13 @@
             "name" : "clinicaID",
             "description" : null,
             "type" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
+              "kind" : "NON_NULL",
+              "name" : null,
+              "ofType" : {
+                "kind" : "SCALAR",
+                "name" : "String",
+                "ofType" : null
+              }
             },
             "defaultValue" : null
           }, {
@@ -402,9 +414,13 @@
             "name" : "name",
             "description" : null,
             "type" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
+              "kind" : "NON_NULL",
+              "name" : null,
+              "ofType" : {
+                "kind" : "SCALAR",
+                "name" : "String",
+                "ofType" : null
+              }
             },
             "defaultValue" : null
           }, {
@@ -467,9 +483,13 @@
             "name" : "type",
             "description" : null,
             "type" : {
-              "kind" : "ENUM",
-              "name" : "UserType",
-              "ofType" : null
+              "kind" : "NON_NULL",
+              "name" : null,
+              "ofType" : {
+                "kind" : "ENUM",
+                "name" : "UserType",
+                "ofType" : null
+              }
             },
             "defaultValue" : null
           }, {
@@ -532,9 +552,13 @@
             "name" : "chatRoomUserUserId",
             "description" : null,
             "type" : {
-              "kind" : "SCALAR",
-              "name" : "ID",
-              "ofType" : null
+              "kind" : "NON_NULL",
+              "name" : null,
+              "ofType" : {
+                "kind" : "SCALAR",
+                "name" : "ID",
+                "ofType" : null
+              }
             },
             "defaultValue" : null
           }, {
@@ -591,7 +615,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "getUserTest",
+          "name" : "getUserAccount",
           "description" : null,
           "args" : [ {
             "name" : "id",
@@ -609,20 +633,20 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTest",
+            "name" : "UserAccount",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "listUserTests",
+          "name" : "listUserAccounts",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "TableUserTestFilterInput",
+              "name" : "TableUserAccountFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
@@ -647,13 +671,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTestConnection",
+            "name" : "UserAccountConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "queryUserTestsByCodeIndex",
+          "name" : "queryUserAccountsByCodeIndex",
           "description" : null,
           "args" : [ {
             "name" : "code",
@@ -689,13 +713,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTestConnection",
+            "name" : "UserAccountConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "queryUserTestsByUserTypeIndex",
+          "name" : "queryUserAccountsByUserTypeIndex",
           "description" : null,
           "args" : [ {
             "name" : "user_type",
@@ -731,13 +755,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTestConnection",
+            "name" : "UserAccountConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "queryUserTestsByLastNameIndex",
+          "name" : "queryUserAccountsByLastNameIndex",
           "description" : null,
           "args" : [ {
             "name" : "last_name",
@@ -773,55 +797,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTestConnection",
+            "name" : "UserAccountConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "queryUserTestsByPhonesIndex",
-          "description" : null,
-          "args" : [ {
-            "name" : "phones",
-            "description" : null,
-            "type" : {
-              "kind" : "NON_NULL",
-              "name" : null,
-              "ofType" : {
-                "kind" : "SCALAR",
-                "name" : "String",
-                "ofType" : null
-              }
-            },
-            "defaultValue" : null
-          }, {
-            "name" : "first",
-            "description" : null,
-            "type" : {
-              "kind" : "SCALAR",
-              "name" : "Int",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          }, {
-            "name" : "after",
-            "description" : null,
-            "type" : {
-              "kind" : "SCALAR",
-              "name" : "String",
-              "ofType" : null
-            },
-            "defaultValue" : null
-          } ],
-          "type" : {
-            "kind" : "OBJECT",
-            "name" : "UserTestConnection",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "queryUserTestsByGenderIndex",
+          "name" : "queryUserAccountsByGenderIndex",
           "description" : null,
           "args" : [ {
             "name" : "gender",
@@ -831,7 +813,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "SCALAR",
-                "name" : "String",
+                "name" : "ID",
                 "ofType" : null
               }
             },
@@ -857,13 +839,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTestConnection",
+            "name" : "UserAccountConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "queryUserTestsByEmailIndex",
+          "name" : "queryUserAccountsByEmailIndex",
           "description" : null,
           "args" : [ {
             "name" : "email",
@@ -899,13 +881,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTestConnection",
+            "name" : "UserAccountConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "queryUserTestsByFirstNameIndex",
+          "name" : "queryUserAccountsByFirstNameIndex",
           "description" : null,
           "args" : [ {
             "name" : "first_name",
@@ -941,7 +923,7 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTestConnection",
+            "name" : "UserAccountConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -3344,7 +3326,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "UserTest",
+        "name" : "UserAccount",
         "description" : null,
         "fields" : [ {
           "name" : "id",
@@ -3395,29 +3377,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "gender",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
           "name" : "last_name",
-          "description" : null,
-          "args" : [ ],
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
-          "name" : "phones",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -3449,6 +3409,17 @@
           },
           "isDeprecated" : false,
           "deprecationReason" : null
+        }, {
+          "name" : "phones",
+          "description" : null,
+          "args" : [ ],
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
         } ],
         "inputFields" : null,
         "interfaces" : [ ],
@@ -3456,7 +3427,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "UserTestConnection",
+        "name" : "UserAccountConnection",
         "description" : null,
         "fields" : [ {
           "name" : "items",
@@ -3467,7 +3438,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "OBJECT",
-              "name" : "UserTest",
+              "name" : "UserAccount",
               "ofType" : null
             }
           },
@@ -3491,7 +3462,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "TableUserTestFilterInput",
+        "name" : "TableUserAccountFilterInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -3531,25 +3502,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "gender",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "TableStringFilterInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
           "name" : "last_name",
-          "description" : null,
-          "type" : {
-            "kind" : "INPUT_OBJECT",
-            "name" : "TableStringFilterInput",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "phones",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -3568,6 +3521,15 @@
           "defaultValue" : null
         }, {
           "name" : "photo",
+          "description" : null,
+          "type" : {
+            "kind" : "INPUT_OBJECT",
+            "name" : "TableStringFilterInput",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "phones",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -4083,7 +4045,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "createUserTest",
+          "name" : "createUserAccount",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -4093,7 +4055,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "CreateUserTestInput",
+                "name" : "CreateUserAccountInput",
                 "ofType" : null
               }
             },
@@ -4101,13 +4063,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTest",
+            "name" : "UserAccount",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "updateUserTest",
+          "name" : "updateUserAccount",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -4117,7 +4079,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "UpdateUserTestInput",
+                "name" : "UpdateUserAccountInput",
                 "ofType" : null
               }
             },
@@ -4125,13 +4087,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTest",
+            "name" : "UserAccount",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "deleteUserTest",
+          "name" : "deleteUserAccount",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -4141,7 +4103,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "DeleteUserTestInput",
+                "name" : "DeleteUserAccountInput",
                 "ofType" : null
               }
             },
@@ -4149,7 +4111,7 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTest",
+            "name" : "UserAccount",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -5512,7 +5474,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "CreateUserTestInput",
+        "name" : "CreateUserAccountInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -5556,25 +5518,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "gender",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
           "name" : "last_name",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "phones",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -5600,13 +5544,22 @@
             "ofType" : null
           },
           "defaultValue" : null
+        }, {
+          "name" : "phones",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
         } ],
         "interfaces" : null,
         "enumValues" : null,
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "UpdateUserTestInput",
+        "name" : "UpdateUserAccountInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -5650,25 +5603,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "gender",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
           "name" : "last_name",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "phones",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -5694,13 +5629,22 @@
             "ofType" : null
           },
           "defaultValue" : null
+        }, {
+          "name" : "phones",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : null
         } ],
         "interfaces" : null,
         "enumValues" : null,
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "DeleteUserTestInput",
+        "name" : "DeleteUserAccountInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -5937,7 +5881,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onCreateUserTest",
+          "name" : "onCreateUserAccount",
           "description" : null,
           "args" : [ {
             "name" : "id",
@@ -5976,7 +5920,7 @@
             },
             "defaultValue" : null
           }, {
-            "name" : "gender",
+            "name" : "last_name",
             "description" : null,
             "type" : {
               "kind" : "SCALAR",
@@ -5987,13 +5931,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTest",
+            "name" : "UserAccount",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onUpdateUserTest",
+          "name" : "onUpdateUserAccount",
           "description" : null,
           "args" : [ {
             "name" : "id",
@@ -6032,7 +5976,7 @@
             },
             "defaultValue" : null
           }, {
-            "name" : "gender",
+            "name" : "last_name",
             "description" : null,
             "type" : {
               "kind" : "SCALAR",
@@ -6043,13 +5987,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTest",
+            "name" : "UserAccount",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onDeleteUserTest",
+          "name" : "onDeleteUserAccount",
           "description" : null,
           "args" : [ {
             "name" : "id",
@@ -6088,7 +6032,7 @@
             },
             "defaultValue" : null
           }, {
-            "name" : "gender",
+            "name" : "last_name",
             "description" : null,
             "type" : {
               "kind" : "SCALAR",
@@ -6099,7 +6043,7 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "UserTest",
+            "name" : "UserAccount",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -6214,100 +6158,6 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "TableIntFilterInput",
-        "description" : null,
-        "fields" : null,
-        "inputFields" : [ {
-          "name" : "ne",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "eq",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "le",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "lt",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "ge",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "gt",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "contains",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "notContains",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "between",
-          "description" : null,
-          "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "Int",
-              "ofType" : null
-            }
-          },
-          "defaultValue" : null
-        } ],
-        "interfaces" : null,
-        "enumValues" : null,
-        "possibleTypes" : null
-      }, {
-        "kind" : "INPUT_OBJECT",
         "name" : "TableIDFilterInput",
         "description" : null,
         "fields" : null,
@@ -6411,6 +6261,127 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
+        "name" : "TableIntFilterInput",
+        "description" : null,
+        "fields" : null,
+        "inputFields" : [ {
+          "name" : "ne",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "eq",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "le",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "lt",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "ge",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "gt",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "contains",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "notContains",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "between",
+          "description" : null,
+          "type" : {
+            "kind" : "LIST",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "Int",
+              "ofType" : null
+            }
+          },
+          "defaultValue" : null
+        } ],
+        "interfaces" : null,
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
+        "kind" : "INPUT_OBJECT",
+        "name" : "TableBooleanFilterInput",
+        "description" : null,
+        "fields" : null,
+        "inputFields" : [ {
+          "name" : "ne",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "eq",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Boolean",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        } ],
+        "interfaces" : null,
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
+        "kind" : "INPUT_OBJECT",
         "name" : "TableFloatFilterInput",
         "description" : null,
         "fields" : null,
@@ -6497,33 +6468,6 @@
               "name" : "Float",
               "ofType" : null
             }
-          },
-          "defaultValue" : null
-        } ],
-        "interfaces" : null,
-        "enumValues" : null,
-        "possibleTypes" : null
-      }, {
-        "kind" : "INPUT_OBJECT",
-        "name" : "TableBooleanFilterInput",
-        "description" : null,
-        "fields" : null,
-        "inputFields" : [ {
-          "name" : "ne",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Boolean",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "eq",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Boolean",
-            "ofType" : null
           },
           "defaultValue" : null
         } ],
@@ -7314,23 +7258,6 @@
         "onFragment" : false,
         "onField" : true
       }, {
-        "name" : "deprecated",
-        "description" : null,
-        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
-        "args" : [ {
-          "name" : "reason",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : "\"No longer supported\""
-        } ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
         "name" : "aws_lambda",
         "description" : "Tells the service this field/object has access authorized by a Lambda Authorizer.",
         "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
@@ -7443,6 +7370,23 @@
         "description" : "Tells the service this field/object has access authorized by an API key.",
         "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
         "args" : [ ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "deprecated",
+        "description" : null,
+        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
+        "args" : [ {
+          "name" : "reason",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : "\"No longer supported\""
+        } ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false

@@ -1,6 +1,6 @@
 export const messageByChatRoomMessagesId = /* GraphQL */ `
   query MessageByChatRoomMessagesId(
-    $chatRoomMessagesId: ID
+    $chatRoomMessagesId: ID!
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelMessageFilterInput
@@ -41,7 +41,7 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
 `;
 export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
   query ChatRoomUserByChatRoomUserUserId(
-    $chatRoomUserUserId: ID
+    $chatRoomUserUserId: ID!
     $updatedAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelChatRoomUserFilterInput

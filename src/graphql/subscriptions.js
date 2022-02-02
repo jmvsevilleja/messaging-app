@@ -1480,84 +1480,81 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
     }
   }
 `;
-export const onCreateUserTest = /* GraphQL */ `
-  subscription OnCreateUserTest(
+export const onCreateUserAccount = /* GraphQL */ `
+  subscription OnCreateUserAccount(
     $id: String
     $code: String
     $email: String
     $first_name: String
-    $gender: String
+    $last_name: String
   ) {
-    onCreateUserTest(
+    onCreateUserAccount(
       id: $id
       code: $code
       email: $email
       first_name: $first_name
-      gender: $gender
+      last_name: $last_name
     ) {
       id
       code
       email
       first_name
-      gender
       last_name
-      phones
       user_type
       photo
+      phones
     }
   }
 `;
-export const onUpdateUserTest = /* GraphQL */ `
-  subscription OnUpdateUserTest(
+export const onUpdateUserAccount = /* GraphQL */ `
+  subscription OnUpdateUserAccount(
     $id: String
     $code: String
     $email: String
     $first_name: String
-    $gender: String
+    $last_name: String
   ) {
-    onUpdateUserTest(
+    onUpdateUserAccount(
       id: $id
       code: $code
       email: $email
       first_name: $first_name
-      gender: $gender
+      last_name: $last_name
     ) {
       id
       code
       email
       first_name
-      gender
       last_name
-      phones
       user_type
       photo
+      phones
     }
   }
 `;
-export const onDeleteUserTest = /* GraphQL */ `
-  subscription OnDeleteUserTest(
+export const onDeleteUserAccount = /* GraphQL */ `
+  subscription OnDeleteUserAccount(
     $id: String
     $code: String
     $email: String
     $first_name: String
-    $gender: String
+    $last_name: String
   ) {
-    onDeleteUserTest(
+    onDeleteUserAccount(
       id: $id
       code: $code
       email: $email
       first_name: $first_name
-      gender: $gender
+      last_name: $last_name
     ) {
       id
       code
       email
       first_name
-      gender
       last_name
-      phones
       user_type
       photo
+      phones
     }
   }
 `;

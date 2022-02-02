@@ -166,7 +166,7 @@ export const listMessages = /* GraphQL */ `
 `;
 export const messageByMessageType = /* GraphQL */ `
   query MessageByMessageType(
-    $type: MessageType
+    $type: MessageType!
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelMessageFilterInput
@@ -239,7 +239,7 @@ export const messageByMessageType = /* GraphQL */ `
 `;
 export const messageByChatRoomMessagesId = /* GraphQL */ `
   query MessageByChatRoomMessagesId(
-    $chatRoomMessagesId: ID
+    $chatRoomMessagesId: ID!
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelMessageFilterInput
@@ -589,7 +589,7 @@ export const listUsers = /* GraphQL */ `
 `;
 export const userByClinicaID = /* GraphQL */ `
   query UserByClinicaID(
-    $clinicaID: String
+    $clinicaID: String!
     $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -648,7 +648,7 @@ export const userByClinicaID = /* GraphQL */ `
 `;
 export const userByName = /* GraphQL */ `
   query UserByName(
-    $name: String
+    $name: String!
     $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -707,7 +707,7 @@ export const userByName = /* GraphQL */ `
 `;
 export const userByType = /* GraphQL */ `
   query UserByType(
-    $type: UserType
+    $type: UserType!
     $name: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -766,7 +766,7 @@ export const userByType = /* GraphQL */ `
 `;
 export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
   query ChatRoomUserByChatRoomUserUserId(
-    $chatRoomUserUserId: ID
+    $chatRoomUserUserId: ID!
     $updatedAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelChatRoomUserFilterInput
@@ -820,68 +820,69 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
     }
   }
 `;
-export const getUserTest = /* GraphQL */ `
-  query GetUserTest($id: String!) {
-    getUserTest(id: $id) {
+export const getUserAccount = /* GraphQL */ `
+  query GetUserAccount($id: String!) {
+    getUserAccount(id: $id) {
       id
       code
       email
       first_name
-      gender
       last_name
-      phones
       user_type
       photo
+      phones
     }
   }
 `;
-export const listUserTests = /* GraphQL */ `
-  query ListUserTests(
-    $filter: TableUserTestFilterInput
+export const listUserAccounts = /* GraphQL */ `
+  query ListUserAccounts(
+    $filter: TableUserAccountFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listUserTests(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listUserAccounts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         code
         email
         first_name
-        gender
         last_name
-        phones
         user_type
         photo
+        phones
       }
       nextToken
     }
   }
 `;
-export const queryUserTestsByCodeIndex = /* GraphQL */ `
-  query QueryUserTestsByCodeIndex($code: String!, $first: Int, $after: String) {
-    queryUserTestsByCodeIndex(code: $code, first: $first, after: $after) {
+export const queryUserAccountsByCodeIndex = /* GraphQL */ `
+  query QueryUserAccountsByCodeIndex(
+    $code: String!
+    $first: Int
+    $after: String
+  ) {
+    queryUserAccountsByCodeIndex(code: $code, first: $first, after: $after) {
       items {
         id
         code
         email
         first_name
-        gender
         last_name
-        phones
         user_type
         photo
+        phones
       }
       nextToken
     }
   }
 `;
-export const queryUserTestsByUserTypeIndex = /* GraphQL */ `
-  query QueryUserTestsByUserTypeIndex(
+export const queryUserAccountsByUserTypeIndex = /* GraphQL */ `
+  query QueryUserAccountsByUserTypeIndex(
     $user_type: String!
     $first: Int
     $after: String
   ) {
-    queryUserTestsByUserTypeIndex(
+    queryUserAccountsByUserTypeIndex(
       user_type: $user_type
       first: $first
       after: $after
@@ -891,23 +892,22 @@ export const queryUserTestsByUserTypeIndex = /* GraphQL */ `
         code
         email
         first_name
-        gender
         last_name
-        phones
         user_type
         photo
+        phones
       }
       nextToken
     }
   }
 `;
-export const queryUserTestsByLastNameIndex = /* GraphQL */ `
-  query QueryUserTestsByLastNameIndex(
+export const queryUserAccountsByLastNameIndex = /* GraphQL */ `
+  query QueryUserAccountsByLastNameIndex(
     $last_name: String!
     $first: Int
     $after: String
   ) {
-    queryUserTestsByLastNameIndex(
+    queryUserAccountsByLastNameIndex(
       last_name: $last_name
       first: $first
       after: $after
@@ -917,89 +917,68 @@ export const queryUserTestsByLastNameIndex = /* GraphQL */ `
         code
         email
         first_name
-        gender
         last_name
-        phones
         user_type
         photo
+        phones
       }
       nextToken
     }
   }
 `;
-export const queryUserTestsByPhonesIndex = /* GraphQL */ `
-  query QueryUserTestsByPhonesIndex(
-    $phones: String!
+export const queryUserAccountsByGenderIndex = /* GraphQL */ `
+  query QueryUserAccountsByGenderIndex(
+    $gender: ID!
     $first: Int
     $after: String
   ) {
-    queryUserTestsByPhonesIndex(phones: $phones, first: $first, after: $after) {
+    queryUserAccountsByGenderIndex(
+      gender: $gender
+      first: $first
+      after: $after
+    ) {
       items {
         id
         code
         email
         first_name
-        gender
         last_name
-        phones
         user_type
         photo
+        phones
       }
       nextToken
     }
   }
 `;
-export const queryUserTestsByGenderIndex = /* GraphQL */ `
-  query QueryUserTestsByGenderIndex(
-    $gender: String!
-    $first: Int
-    $after: String
-  ) {
-    queryUserTestsByGenderIndex(gender: $gender, first: $first, after: $after) {
-      items {
-        id
-        code
-        email
-        first_name
-        gender
-        last_name
-        phones
-        user_type
-        photo
-      }
-      nextToken
-    }
-  }
-`;
-export const queryUserTestsByEmailIndex = /* GraphQL */ `
-  query QueryUserTestsByEmailIndex(
+export const queryUserAccountsByEmailIndex = /* GraphQL */ `
+  query QueryUserAccountsByEmailIndex(
     $email: String!
     $first: Int
     $after: String
   ) {
-    queryUserTestsByEmailIndex(email: $email, first: $first, after: $after) {
+    queryUserAccountsByEmailIndex(email: $email, first: $first, after: $after) {
       items {
         id
         code
         email
         first_name
-        gender
         last_name
-        phones
         user_type
         photo
+        phones
       }
       nextToken
     }
   }
 `;
-export const queryUserTestsByFirstNameIndex = /* GraphQL */ `
-  query QueryUserTestsByFirstNameIndex(
+export const queryUserAccountsByFirstNameIndex = /* GraphQL */ `
+  query QueryUserAccountsByFirstNameIndex(
     $first_name: String!
     $first: Int
     $after: String
   ) {
-    queryUserTestsByFirstNameIndex(
+    queryUserAccountsByFirstNameIndex(
       first_name: $first_name
       first: $first
       after: $after
@@ -1009,11 +988,10 @@ export const queryUserTestsByFirstNameIndex = /* GraphQL */ `
         code
         email
         first_name
-        gender
         last_name
-        phones
         user_type
         photo
+        phones
       }
       nextToken
     }
