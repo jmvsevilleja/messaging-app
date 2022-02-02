@@ -25,7 +25,8 @@ const SSO = (props) => {
                 }
             })
                 .then((response) => {
-                    if (response.status === 200) {
+                    console.log('Conva', response);
+                    if (response.status === 200 && response.data.message.length !== 0) {
                         const accessToken = {
                             id: response.data.message[0].id,
                             id_token: response.data.message[0].id_token,

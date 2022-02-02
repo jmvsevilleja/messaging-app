@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from "aws-amplify";
-import {userByClinicaID} from "../graphql/queries";
+import {userByClinicaID, getUserAccount} from "../graphql/queries";
 import {
     messageByChatRoomMessagesId,
     chatRoomUserByChatRoomUserUserId
@@ -28,7 +28,7 @@ import {
 import ChatBody from "./ChatBody";
 import ChatInfo from "./ChatInfo";
 
-import axios from "axios";
+//import axios from "axios";
 import "./index.css";
 
 let subs = {
@@ -82,6 +82,24 @@ const Chat = () => {
                     //typing: false
                 },
             })
+        );
+    };
+
+    const handleCreateUser = async (user_id) => {
+        return fetchUserAccount(user_id).then(async (user_detail) => {
+            if (user_detail) {
+                const name = user_detail.first_name + " " + user_detail.last_name;
+                console.log("user not found create to users table", user_id, name);
+                return addUser(user_id, name).then((result) => {
+                    //console.log('user created', result);
+                    return {
+                        id: result.id,
+                        clinicaID: user_id,
+                        name: name,
+                    };
+                });
+            }
+        }
         );
     };
 
@@ -361,7 +379,21 @@ const Chat = () => {
             console.log(e);
         }
     };
-
+    const fetchUserAccount = async (user_id) => {
+        console.log('fetchUserAccount', user_id);
+        if (!user_id) return;
+        try {
+            // get logged user from User Table to get status.
+            const item = await API.graphql(
+                graphqlOperation(getUserAccount, {id: user_id})
+            );
+            if (item.data.getUserAccount) {
+                return item.data.getUserAccount;
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
     const addUser = async (user_id, name) => {
         if (!user_id || !name) return;
         try {
@@ -386,36 +418,22 @@ const Chat = () => {
     useEffect(() => {
         if (user) return;
         const user_id = localStorage.getItem("user_id");
-        const auth_token = localStorage.getItem("auth_token");
-        const refresh_token = localStorage.getItem("refresh_token");
+        // const auth_token = localStorage.getItem("auth_token");
+        // const refresh_token = localStorage.getItem("refresh_token");
 
         // TODO: check user auth token if valid
-        fetchUser(user_id).then((user_list) => {
-            setUser(user_list);
-            if (user_id && auth_token && refresh_token) {
+        fetchUser(user_id).then((user_found) => {
+            setUser(user_found);
+            if (user_id) {
                 // check if logged user is in  users table. create if not found and query user details.
-                if (!user_list) {
-                    fetchUserDetails(user_id, auth_token, refresh_token).then(
-                        (user_detail) => {
-                            const name =
-                                user_detail.first_name +
-                                " " +
-                                user_detail.last_name;
-                            console.log(
-                                "user not found create to users table",
-                                user_id,
-                                name
-                            );
-                            addUser(user_id, name).then((result) => {
-                                //console.log('user created', result);
-                                setUser({
-                                    id: result.id,
-                                    clinicaID: user_id,
-                                    name: name,
-                                });
-                            });
-                        }
-                    );
+                if (!user_found) {
+                    handleCreateUser(user_id).then((created_user) => {
+                        setUser({
+                            id: created_user.id,
+                            clinicaID: created_user.user_id,
+                            name: created_user.name,
+                        });
+                    });
                 }
                 // 'user found proceed to chat'
             } else {
@@ -438,16 +456,47 @@ const Chat = () => {
         handleUserOnline(true);
         //}, 300 * 1000);
 
+        const to = localStorage.getItem("to");
         fetchChatRooms(user.id).then((chat_room_list) => {
-            if (chat_room_list.length === 0) return;
-            console.log('fetchChatRooms', chat_room_list);
+            if (chat_room_list.length === 0) {
+                // no chatroom found
+                fetchUser(to).then((user_found) => {
+                    // TODO: user not found then create user
+                    console.log('fetchUser to', to, user_found);
+                    if (!user_found) {
+                        handleCreateUser(to).then((created_user) => {
+                            // user created now create chat room
+                            if (created_user) {
+                                handleCreateChat([], created_user).then(() => {
+                                    // get chatroom list
+                                    fetchChatRooms(user.id).then((chat_room_list) => {
+                                        // set chatroom list
+                                        updateChatRoomList(chat_room_list);
+                                    });
+                                })
+                            }
+
+                        });
+                    }
+                    // create chatroom
+                    if (user_found) {
+                        handleCreateChat([], user_found).then(() => {
+                            // get chatroom list
+                            fetchChatRooms(user.id).then((chat_room_list) => {
+                                // set chatroom list
+                                updateChatRoomList(chat_room_list);
+                            });
+                        })
+                    }
+                });
+                return;
+            }
+            console.log('fetchChatRooms chat_room_list', chat_room_list);
             // set chatroom list
             updateChatRoomList(chat_room_list);
-
-            const to = localStorage.getItem("to");
-            fetchUser(to).then((other_user) => {
+            fetchUser(to).then((user_found) => {
                 // create/open chat
-                handleCreateChat(chat_room_list, other_user);
+                handleCreateChat(chat_room_list, user_found);
             });
 
         });
@@ -583,27 +632,6 @@ const Chat = () => {
             }
         };
     }, []);
-
-    const fetchUserDetails = async (user_id, auth_token, refresh_token) => {
-        if (!user_id || !auth_token || !refresh_token) return;
-        try {
-            return await axios({
-                url: `https://n0mkkv2gg1.execute-api.ap-southeast-2.amazonaws.com/api/user-account`,
-                method: "GET",
-                params: {userID: user_id},
-                headers: {
-                    Authorization: `Bearer ${auth_token}`,
-                    "X-REFRESH-TOKEN": refresh_token,
-                },
-            }).then((response) => {
-                if (response.status === 200) {
-                    return response.data.message;
-                }
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     //console.log('Rendering index.js');
     return (

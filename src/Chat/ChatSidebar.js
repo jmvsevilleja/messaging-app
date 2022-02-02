@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useRef} from "react";
 import Avatar from "react-avatar";
 
-import User from "./user";
 import ChatRoom from "./chatroom";
 import CreateRoom from "./CreateRoom";
 import InviteUser from "./InviteUser";
@@ -70,14 +69,15 @@ function ChatSidebar({
         >
 
             {!user && <div className="my-3 pr-5">
-                <AvatarWithText height={80} width={200} className="border-b-2 border-gray-200" />
+                <AvatarWithText height={80} width={200} className="-mb-3" />
             </div>}
             {user && <ChatProfile
                 user={user}
                 openProfile={openProfile}
                 handleCloseProfile={handleCloseProfile} />}
-            {user &&
-                < div className="my-3 pr-5">
+
+            < div className="my-3 pr-5">
+                {user &&
                     <div className="flex relative justify-between item-center p-3 px-0 mb-6 pb-0 ">
                         <div
                             className="grow flex"
@@ -151,35 +151,35 @@ function ChatSidebar({
                             />}
                         </div>
 
-                    </div>
-                    <div className="relative text-gray-600 focus-within:text-gray-400">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-2">
-                            <svg
-                                fill="none"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                viewBox="0 0 24 24"
-                                className="w-6 h-6 text-gray-500"
-                            >
-                                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </span>
-                        <input
-                            aria-placeholder="Search"
-                            placeholder="Search"
-                            className="py-2 pl-10 pr-2 block w-full rounded bg-gray-100 border-none outline-0 focus:text-gray-700"
-                            type="search"
-                            name="search"
-                            required
-                            autoComplete="off"
-                            onChange={(e) => {
-                                setSearchText(e.target.value);
-                            }}
-                        />
-                    </div>
-                </div>}
+                    </div>}
+                <div className="relative text-gray-600 focus-within:text-gray-400">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-2">
+                        <svg
+                            fill="none"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            className="w-6 h-6 text-gray-500"
+                        >
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </span>
+                    <input
+                        aria-placeholder="Search"
+                        placeholder="Search"
+                        className="py-2 pl-10 pr-2 block w-full rounded bg-gray-100 border-none outline-0 focus:text-gray-700"
+                        type="search"
+                        name="search"
+                        required
+                        autoComplete="off"
+                        onChange={(e) => {
+                            setSearchText(e.target.value);
+                        }}
+                    />
+                </div>
+            </div>
 
             <div className="scrollable pr-5 overflow-x-hidden overflow-y-auto shrink-0 md:w-80 xl:w-96 h-[calc(100vh-130px)]">
                 {!user && <ListingWithThumbnail height={300} width={200} />}

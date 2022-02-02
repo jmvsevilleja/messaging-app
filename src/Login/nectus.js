@@ -11,6 +11,7 @@ const Nectus = (props) => {
 
     let navigate = useNavigate();
     useEffect(() => {
+
         const Auth = async (authToken) => {
 
             await axios({
@@ -22,7 +23,8 @@ const Nectus = (props) => {
                 }
             })
                 .then((response) => {
-                    if (response.status === 200) {
+                    console.log('Nectus', response);
+                    if (response.status === 200 && response.data.message.length !== 0) {
                         const accessToken = {
                             id: response.data.message[0].id,
                             id_token: response.data.message[0].id_token,
