@@ -22,14 +22,14 @@ function App() {
             </>
           }>
           </Route>
-          <Route exact path="/nectus-login" element={
+          <Route path="nectus-login/*" element={
             <>
               <NectusLogin />
             </>
           }></Route>
           <Route path="chat/*" element={
             <>
-              <Chat nectus={true} />
+              <Chat />
             </>
           }>
           </Route>
