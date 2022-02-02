@@ -649,6 +649,7 @@ const Chat = () => {
 
                         {/* Messages body */}
                         <ChatBody
+                            nectus={false}
                             user={user}
                             openChat={openChat}
                             chatRoom={chatRoom}

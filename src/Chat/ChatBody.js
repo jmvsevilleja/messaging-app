@@ -279,7 +279,14 @@ function ChatBody({
         <div
             className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden  border-0 md:border-l-2 border-gray-200"
         >
-            {!nectus || !(openChat || Object.keys(chatRoom).length !== 0) && (
+            {nectus && !(openChat) && (
+                <div className="h-screen w-full flex flex-col justify-center items-center p-2">
+                    <div className="">
+                        <img className=" w-96" src={ConvoLogo} alt="Conva" />
+                    </div>
+                </div>
+            )}
+            {!nectus && !(openChat || Object.keys(chatRoom).length !== 0) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
                     <div className="">
                         <img className=" w-96" src={ConvoLogo} alt="Conva" />
