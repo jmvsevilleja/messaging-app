@@ -33,6 +33,7 @@ const resizeFile = (file) =>
     });
 
 function ChatBody({
+    nectus,
     user,
     chatRoom,
     openChat,
@@ -276,18 +277,18 @@ function ChatBody({
         <div
             className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden  border-0 md:border-l-2 border-gray-200"
         >
-            {!(openChat || Object.keys(chatRoom).length !== 0) && (
-                <div className="h-screen w-full flex flex-col justify-center items-center">
+            {!(openChat) && (
+                <div className="h-screen w-full flex flex-col justify-center items-center p-2">
                     <div className="">
-                        <img className="h-96 w-96" src={ConvoLogo} alt="Convo" />
+                        <img className="h-96 w-96" src={ConvoLogo} alt="Conva" />
                     </div>
                 </div>
             )}
             {Object.keys(chatRoom).length !== 0 && (
                 <div className="w-full h-full flex flex-col overflow-hidden">
-                    <div className="justify-between item-center border-b border-gray-300 p-5">
+                    <div className="justify-between item-center border-b border-gray-300 p-3 xs:p-5">
                         <span className="flex items-center overflow-hidden">
-                            <button
+                            {!nectus && <button
                                 className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
                                 onClick={handleCloseChat}
                             >
@@ -301,7 +302,7 @@ function ChatBody({
                                         d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z"
                                     />
                                 </svg>
-                            </button>
+                            </button>}
                             {chatRoom && (
                                 <div className="relative">
                                     <Avatar
@@ -530,7 +531,7 @@ function ChatBody({
                             }
                             aria-placeholder="Write a message..."
                             placeholder="Write a message..."
-                            className="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100  border-none outline-0 focus:text-gray-700"
+                            className="py-2 mx-3 pl-5 block w-full text-sm xs:text-normal rounded-full bg-gray-100  border-none outline-0 focus:text-gray-700"
                             type="text"
                             id="message"
                             name="message"
@@ -543,7 +544,7 @@ function ChatBody({
                         ></input>
                         <AudioRecorder handleAudioUpload={handleAudioUpload} />
                         <button
-                            className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
+                            className="hidden xs:block outline-none focus:outline-none text-gray-400 hover:text-gray-500"
                             type="submit"
                             title="Send"
                         >

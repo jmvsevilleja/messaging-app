@@ -1,7 +1,9 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import SSO from './Login/sso'
+import NectusLogin from './Login/nectus'
 import Login from './Login';
 import Chat from './Chat';
+import NectusChat from './Chat/Nectus';
 
 function App() {
   return (
@@ -20,15 +22,26 @@ function App() {
             </>
           }>
           </Route>
+          <Route exact path="/nectus-login" element={
+            <>
+              <NectusLogin />
+            </>
+          }></Route>
           <Route path="chat/*" element={
             <>
-              <Chat />
+              <Chat nectus={true} />
+            </>
+          }>
+          </Route>
+          <Route path="nectus-chat/*" element={
+            <>
+              <NectusChat />
             </>
           }>
           </Route>
         </Routes>
       </Router>
-    </div>
+    </div >
   );
 }
 
