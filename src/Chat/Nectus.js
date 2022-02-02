@@ -495,6 +495,24 @@ const Chat = () => {
             // set chatroom list
             updateChatRoomList(chat_room_list);
             fetchUser(to).then((user_found) => {
+                console.log('fetchUser', to, user_found);
+                // create user if not found
+                if (!user_found) {
+                    handleCreateUser(to).then((created_user) => {
+                        // user created now create chat room
+                        if (created_user) {
+                            handleCreateChat([], created_user).then(() => {
+                                // get chatroom list
+                                fetchChatRooms(user.id).then((chat_room_list) => {
+                                    // set chatroom list
+                                    updateChatRoomList(chat_room_list);
+                                });
+                            })
+                        }
+
+                    });
+                    return;
+                }
                 // create/open chat
                 handleCreateChat(chat_room_list, user_found);
             });
