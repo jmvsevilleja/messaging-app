@@ -1,0 +1,217 @@
+import React, {useEffect, useState} from "react";
+
+import {API, graphqlOperation} from "aws-amplify";
+import {
+    createChatRoom,
+    createChatRoomUser
+} from "../graphql/mutations";
+
+import {Dialog} from "@headlessui/react";
+
+function InviteUser({user, userList, handleChatRoomID}) {
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [userEmail, setUserEmail] = useState("");
+    const [userPhone, setUserPhone] = useState("");
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("test");
+
+    // useEffect(() => {
+    //     setSearchUserList(userList);
+    // }, [userList]);
+
+    useEffect(() => {
+        // setSearchUserList(userList.filter(item =>
+        //     item.name.toLowerCase().includes(searchText.toLowerCase())
+        // ));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // const handleSelectedUsers = async (e, user) => {
+    //     //console.log('handleSelectedUsers', e.target.checked, item);
+    //     if (e.target.checked) {
+    //         setSelectedUsers([
+    //             ...selectedUsers,
+    //             {id: user.id}
+    //         ]);
+
+    //     } else {
+    //         setSelectedUsers(selectedUsers.filter((item) => item.id !== user.id));
+    //     }
+    // }
+
+    const handleInviteUserSubmit = async (event) => {
+        event.preventDefault();
+        console.log('handleInviteUserSubmit', userEmail, selectedUsers);
+        // prevent double submit
+        if (loading) return;
+        setLoading(true);
+        // Creating Chat Room
+        // const room = await API.graphql(
+        //     graphqlOperation(createChatRoom, {
+        //         input: {
+        //             name: userEmail,
+        //             chatRoomAdminId: user.id,
+        //             group: true,
+        //         },
+        //     })
+        // );
+        // console.log("createChatRoom", room, room.data.createChatRoom.id);
+        //Creating Chat Room User
+        // selectedUsers.map(async (item) => {
+        //     await API.graphql(
+        //         graphqlOperation(createChatRoomUser, {
+        //             input: {
+        //                 chatRoomUserUserId: item.id,
+        //                 chatRoomChatRoomUsersId:
+        //                     room.data.createChatRoom.id,
+        //             },
+        //         })
+        //     );
+        // });
+        //Creating Chat Room Admin
+        // await API.graphql(
+        //     graphqlOperation(createChatRoomUser, {
+        //         input: {
+        //             chatRoomUserUserId: user.id,
+        //             chatRoomChatRoomUsersId: room.data.createChatRoom.id,
+        //         },
+        //     })
+        // );
+        // console.log('createChatRoomUser', room.data.createChatRoom.id);
+        // Open ChatRoom with this Id
+        // handleChatRoomID(room.data.createChatRoom.id).then(() => {
+        //     setUserEmail("");
+        //     setSearchText("");
+        //     setSelectedUsers([]);
+        //     setIsOpen(false);
+        //     setLoading(false);
+        // });
+
+        //setUserEmail("");
+        // setIsOpen(false);
+        // setLoading(false);
+
+    };
+
+    // useEffect(() => {
+    //     console.log('useEffect Create Room');
+    //     // if (userList) {
+    //     //     console.log('Create Room User list', userList);
+    //     // }
+    // }, []);
+
+    return (
+        <>
+            <button
+                type="button"
+                onClick={() => setIsOpen(true)}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-5 w-5 text-gray-400 hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+            </button>
+            <Dialog
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
+                className="fixed z-30 inset-0 overflow-y-auto"
+            >
+                <div className="flex items-center justify-center min-h-screen">
+                    <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+
+                    <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl m-5">
+                        <Dialog.Title
+                            as="h3"
+                            className="mb-3 text-lg font-medium leading-6 text-gray-600"
+                        >
+                            Add Contact
+                        </Dialog.Title>
+                        {error &&
+                            <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">
+                                <div className="flex w-full justify-between items-start">
+                                    <div className="flex">
+                                        <svg className="w-4 h-4 shrink-0 fill-current opacity-80 mt-[3px] mr-3" viewBox="0 0 16 16">
+                                            <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm3.5 10.1l-1.4 1.4L8 9.4l-2.1 2.1-1.4-1.4L6.6 8 4.5 5.9l1.4-1.4L8 6.6l2.1-2.1 1.4 1.4L9.4 8l2.1 2.1z" />
+                                        </svg>
+                                        <div>Contact not found!</div>
+                                    </div>
+                                    <button className="opacity-70 hover:opacity-80 ml-3 mt-[3px]"
+                                        onClick={() => {
+                                            setError("");
+                                        }}>
+                                        <div className="sr-only">Close</div>
+                                        <svg className="w-4 h-4 fill-current">
+                                            <path d="M7.95 6.536l4.242-4.243a1 1 0 111.415 1.414L9.364 7.95l4.243 4.242a1 1 0 11-1.415 1.415L7.95 9.364l-4.243 4.243a1 1 0 01-1.414-1.415L6.536 7.95 2.293 3.707a1 1 0 011.414-1.414L7.95 6.536z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>}
+                        <form
+                            onSubmit={(e) => {
+                                handleInviteUserSubmit(e);
+                            }}
+                        >
+                            <div className="relative text-gray-600 focus-within:text-gray-400">
+                                <input
+                                    aria-placeholder="Email"
+                                    placeholder="Email"
+                                    type="text"
+                                    className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                    onChange={(e) => {
+                                        setUserEmail(e.target.value);
+                                    }}
+                                    value={userEmail}
+                                />
+                            </div>
+                            <div className="flex justify-center -my-2"><span className="text-sm text-primary">or</span></div>
+                            <div className="relative text-gray-600 focus-within:text-gray-400">
+                                <input
+                                    aria-placeholder="Phone"
+                                    placeholder="Phone"
+                                    type="text"
+                                    className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                    onChange={(e) => {
+                                        setUserPhone(e.target.value);
+                                    }}
+                                    value={userPhone}
+                                />
+                            </div>
+                            <div className="flex justify-center -mt-2 mb-1"><span className="text-sm text-primary">or</span></div>
+                            <div className="flex justify-center">
+                                <button
+                                    type="button"
+                                    className="bg-primary hover:bg-secondary text-white font-base w-24 px-4 rounded">
+                                    <span className="py-2">Scan QR</span>
+                                </button>
+                            </div>
+                            <div className="mt-4 flex flex-col">
+                                <div className="flex self-end">
+                                    <button className="hover:text-gray-600 text-gray-500 font-base py-2 px-4" onClick={() => {
+                                        setIsOpen(false);
+                                    }}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="bg-primary hover:bg-secondary text-white font-base w-24 px-4 rounded">
+
+                                        {loading && <svg fill='none' className="w-10 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                                            <path clipRule='evenodd'
+                                                d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                                                fill='currentColor' fillRule='evenodd' />
+                                        </svg>}
+                                        {!loading && <span className="py-2">Add</span>}
+                                    </button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </Dialog >
+        </>
+    )
+}
+
+export default InviteUser

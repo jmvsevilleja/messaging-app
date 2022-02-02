@@ -165,7 +165,7 @@ function AudioRecorder({handleAudioUpload}) {
                     </div>
                 ) : (
                     <button
-                        className="outline-none focus:outline-none mr-2"
+                        className="outline-none focus:outline-none mr-0 xs:mr-2 "
                         type="button"
                         title="Start recording"
                         onClick={startRecording}

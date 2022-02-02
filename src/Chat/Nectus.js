@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from "aws-amplify";
 import {userByClinicaID, getUserAccount} from "../graphql/queries";
-
 import {
     messageByChatRoomMessagesId,
     chatRoomUserByChatRoomUserUserId
@@ -21,13 +20,11 @@ import {
     //onCreateUser,
     onUpdateUser,
     onUpdateChatRoom,
-    onCreateChatRoomUserByChatRoomUserUserId,
     onCreateMessageByChatRoomMessagesId,
     onUpdateMessageByChatRoomMessagesId,
     onUpdateChatRoomUserByChatRoomChatRoomUsersId,
 } from "../graphql/custom-subscriptions";
 
-import ChatSidebar from "./ChatSidebar";
 import ChatBody from "./ChatBody";
 import ChatInfo from "./ChatInfo";
 
@@ -46,7 +43,6 @@ let subs = {
 
 const Chat = () => {
     const [messageList, setMessageList] = useState([]);
-    const [userList, setUserList] = useState([]);
     const [chatRoomList, setChatRoomList] = useState([]);
     const [user, setUser] = useState(null);
     const [chatRoom, setChatRoom] = useState({});
@@ -57,23 +53,23 @@ const Chat = () => {
     let navigate = useNavigate();
 
     // HANDLE FUNCTIONS
-    const handleLogout = async () => {
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("auth_login");
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("access_token");
-        document.cookie = "auth_login=; Max-Age=-99999999;";
-        document.cookie = "token=; Max-Age=-99999999;";
-        // unsubscribe
-        for (const item in subs) {
-            if (subs[item]) {
-                subs[item].unsubscribe();
-            }
-        }
-        handleUserOnline(false);
-        navigate(`/`);
-    };
+    // const handleLogout = async () => {
+    //     localStorage.removeItem("user_id");
+    //     localStorage.removeItem("auth_login");
+    //     localStorage.removeItem("auth_token");
+    //     localStorage.removeItem("refresh_token");
+    //     localStorage.removeItem("access_token");
+    //     document.cookie = "auth_login=; Max-Age=-99999999;";
+    //     document.cookie = "token=; Max-Age=-99999999;";
+    //     // unsubscribe
+    //     for (const item in subs) {
+    //         if (subs[item]) {
+    //             subs[item].unsubscribe();
+    //         }
+    //     }
+    //     handleUserOnline(false);
+    //     navigate(`/`);
+    // };
 
     const handleUserOnline = (online) => {
         if (!user) return;
@@ -90,29 +86,28 @@ const Chat = () => {
     };
 
     const handleCreateUser = async (user_id) => {
-        fetchUserAccount(user_id).then((user_detail) => {
+        return fetchUserAccount(user_id).then(async (user_detail) => {
             if (user_detail) {
                 const name = user_detail.first_name + " " + user_detail.last_name;
                 console.log("user not found create to users table", user_id, name);
-                addUser(user_id, name).then((result) => {
+                return addUser(user_id, name).then((result) => {
                     //console.log('user created', result);
-                    setUser({
+                    return {
                         id: result.id,
                         clinicaID: user_id,
                         name: name,
-                    });
+                    };
                 });
             }
         }
         );
     };
 
-    const handleCreateChat = async (selected_user) => {
+    const handleCreateChat = async (chat_room_list, selected_user) => {
         console.log("handleCreateChat", chatRoomList, user.id, selected_user.id);
 
-        // TODO: find in DB instead in the list
         // check if user logged and selected_user is already in chat room
-        const found_user = chatRoomList.find((room) => {
+        const found_user = chat_room_list.find((room) => {
             if (!Boolean(room.chatroom.group)) { // not group chat
                 let needle = [user.id, selected_user.id];
                 var haystack = room.chatroom.chatRoomUsers.items.map(item => item.user.id);
@@ -340,7 +335,7 @@ const Chat = () => {
         setOpenChat(true);
     }
     // OTHER FUNCTIONS
-    const namedChatRoom = async (chatroom) => {
+    const updateChatRoomList = async (chatroom) => {
         const name_chatroom = chatroom.map((room) => {
             if (!Boolean(room.chatroom.group)) {
                 // Change name to the one you are chatting with
@@ -353,7 +348,7 @@ const Chat = () => {
             }
             return room;
         });
-        console.log('namedChatRoom', name_chatroom);
+        console.log('updateChatRoomList', name_chatroom);
         setChatRoomList([...name_chatroom]);
     };
     const fetchChatRooms = async (user_id) => {
@@ -384,17 +379,6 @@ const Chat = () => {
             console.log(e);
         }
     };
-    // const fetchChatRoom = async () => {
-    //     if (!user) return;
-    //     //console.log('fetchChatRoom', user);
-    //     try {
-    //         const result = await API.graphql({query: listChatRooms});
-    //         console.log('fetchChatRoom', result.data.listChatRooms.items, user.id);
-    //         //filterChatRoom(result.data.listChatRooms.items);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
     const fetchUserAccount = async (user_id) => {
         console.log('fetchUserAccount', user_id);
         if (!user_id) return;
@@ -438,13 +422,18 @@ const Chat = () => {
         // const refresh_token = localStorage.getItem("refresh_token");
 
         // TODO: check user auth token if valid
-
         fetchUser(user_id).then((user_found) => {
             setUser(user_found);
             if (user_id) {
                 // check if logged user is in  users table. create if not found and query user details.
                 if (!user_found) {
-                    handleCreateUser(user_id);
+                    handleCreateUser(user_id).then((created_user) => {
+                        setUser({
+                            id: created_user.id,
+                            clinicaID: created_user.user_id,
+                            name: created_user.name,
+                        });
+                    });
                 }
                 // 'user found proceed to chat'
             } else {
@@ -467,33 +456,51 @@ const Chat = () => {
         handleUserOnline(true);
         //}, 300 * 1000);
 
+        const to = localStorage.getItem("to");
+        fetchChatRooms(user.id).then((chat_room_list) => {
+            if (chat_room_list.length === 0) {
+                // no chatroom found
+                fetchUser(to).then((user_found) => {
+                    // TODO: user not found then create user
+                    console.log('fetchUser to', to, user_found);
+                    if (!user_found) {
+                        handleCreateUser(to).then((created_user) => {
+                            // user created now create chat room
+                            if (created_user) {
+                                handleCreateChat([], created_user).then(() => {
+                                    // get chatroom list
+                                    fetchChatRooms(user.id).then((chat_room_list) => {
+                                        // set chatroom list
+                                        updateChatRoomList(chat_room_list);
+                                    });
+                                })
+                            }
 
-        fetchChatRooms(user.id).then((result) => {
-            console.log('fetchChatRooms', result);
-            namedChatRoom(result);
-
-            // fetchUsers(user.id).then((result) => {
-            //     setUserList([...result]);
-            // });
-        });
-
-        console.log("Subscribe to onCreateChatRoomUserByChatRoomUserUserId");
-        subs.subCreateChatRoomUser = API.graphql(
-            graphqlOperation(onCreateChatRoomUserByChatRoomUserUserId, {
-                chatRoomUserUserId: user.id,
-            })
-        ).subscribe({
-            next: ({provider, value}) => {
-                console.log("onCreateChatRoomUserByChatRoomUserUserId", value);
-                fetchChatRooms(user.id).then((result) => {
-                    namedChatRoom(result);
-                    if (value.data.onCreateChatRoomUserByChatRoomUserUserId.chatRoomUserUserId !== user.id) {
-                        handleChatRoomID(value.data.onCreateChatRoomUserByChatRoomUserUserId.chatRoomChatRoomUsersId);
+                        });
+                    }
+                    // create chatroom
+                    if (user_found) {
+                        handleCreateChat([], user_found).then(() => {
+                            // get chatroom list
+                            fetchChatRooms(user.id).then((chat_room_list) => {
+                                // set chatroom list
+                                updateChatRoomList(chat_room_list);
+                            });
+                        })
                     }
                 });
-            },
-            error: (error) => console.warn(error),
+                return;
+            }
+            console.log('fetchChatRooms chat_room_list', chat_room_list);
+            // set chatroom list
+            updateChatRoomList(chat_room_list);
+            fetchUser(to).then((user_found) => {
+                // create/open chat
+                handleCreateChat(chat_room_list, user_found);
+            });
+
         });
+
 
         console.log("Subscribe to onUpdateUser");
         subs.subUpdateUser = API.graphql(
@@ -571,11 +578,12 @@ const Chat = () => {
                 const user_found = chatRoomList.find(
                     (item) => item.chatroom.id === chatRoomID
                 );
-                //console.log('useEffect handleChatRoom Found', user_found);
+                console.log('useEffect handleChatRoom Found', user_found);
                 if (user_found) {
                     console.log('useEffect handleChatRoom Found', chatRoomID);
                     handleChatRoom(user_found.chatroom);
                     setForceOpenChat(false);
+
                 }
             }
         }
@@ -633,22 +641,11 @@ const Chat = () => {
 
                 <main>
                     <div className="relative flex">
-                        {/* Messages sidebar */}
-                        <ChatSidebar
-                            user={user}
-                            chatRoomID={chatRoomID}
-                            openChat={openChat}
-                            setOpenChat={setOpenChat}
-                            userList={userList}
-                            chatRoomList={chatRoomList}
-                            handleLogout={handleLogout}
-                            handleChatRoom={handleChatRoom}
-                            handleChatRoomID={handleChatRoomID}
-                            handleCreateChat={handleCreateChat}
-                        />
+
 
                         {/* Messages body */}
                         <ChatBody
+                            nectus={true}
                             user={user}
                             openChat={openChat}
                             chatRoom={chatRoom}

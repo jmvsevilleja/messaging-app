@@ -21,9 +21,9 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -33,6 +33,7 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -73,6 +74,7 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -95,6 +97,7 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
       forUserId
       createdAt
       chatRoomMessagesId
+      bookmark
       updatedAt
       userMessageId
     }
@@ -120,9 +123,9 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -132,6 +135,7 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -172,6 +176,7 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -194,6 +199,7 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
       forUserId
       createdAt
       chatRoomMessagesId
+      bookmark
       updatedAt
       userMessageId
     }
@@ -235,6 +241,7 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -252,9 +259,9 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -264,6 +271,7 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -277,9 +285,9 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         userChatRoomUserId
       }
       typing
+      updatedAt
       chatRoomUserUserId
       createdAt
-      updatedAt
       chatRoomChatRoomUsersId
     }
   }
@@ -320,6 +328,7 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -337,9 +346,9 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -349,6 +358,7 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -362,9 +372,9 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
         userChatRoomUserId
       }
       typing
+      updatedAt
       chatRoomUserUserId
       createdAt
-      updatedAt
       chatRoomChatRoomUsersId
     }
   }
@@ -387,9 +397,9 @@ export const onCreateMessage = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -399,6 +409,7 @@ export const onCreateMessage = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -439,6 +450,7 @@ export const onCreateMessage = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -461,6 +473,7 @@ export const onCreateMessage = /* GraphQL */ `
       forUserId
       createdAt
       chatRoomMessagesId
+      bookmark
       updatedAt
       userMessageId
     }
@@ -484,9 +497,9 @@ export const onUpdateMessage = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -496,6 +509,7 @@ export const onUpdateMessage = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -536,6 +550,7 @@ export const onUpdateMessage = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -558,6 +573,7 @@ export const onUpdateMessage = /* GraphQL */ `
       forUserId
       createdAt
       chatRoomMessagesId
+      bookmark
       updatedAt
       userMessageId
     }
@@ -581,9 +597,9 @@ export const onDeleteMessage = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -593,6 +609,7 @@ export const onDeleteMessage = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -633,6 +650,7 @@ export const onDeleteMessage = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -655,6 +673,7 @@ export const onDeleteMessage = /* GraphQL */ `
       forUserId
       createdAt
       chatRoomMessagesId
+      bookmark
       updatedAt
       userMessageId
     }
@@ -676,6 +695,7 @@ export const onCreateChatRoom = /* GraphQL */ `
           forUserId
           createdAt
           chatRoomMessagesId
+          bookmark
           updatedAt
           userMessageId
         }
@@ -685,9 +705,9 @@ export const onCreateChatRoom = /* GraphQL */ `
         items {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         nextToken
@@ -705,9 +725,9 @@ export const onCreateChatRoom = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -717,6 +737,7 @@ export const onCreateChatRoom = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -732,6 +753,7 @@ export const onCreateChatRoom = /* GraphQL */ `
       name
       group
       imageUri
+      pin
       createdAt
       updatedAt
       chatRoomAdminId
@@ -754,6 +776,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
           forUserId
           createdAt
           chatRoomMessagesId
+          bookmark
           updatedAt
           userMessageId
         }
@@ -763,9 +786,9 @@ export const onUpdateChatRoom = /* GraphQL */ `
         items {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         nextToken
@@ -783,9 +806,9 @@ export const onUpdateChatRoom = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -795,6 +818,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -810,6 +834,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
       name
       group
       imageUri
+      pin
       createdAt
       updatedAt
       chatRoomAdminId
@@ -832,6 +857,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
           forUserId
           createdAt
           chatRoomMessagesId
+          bookmark
           updatedAt
           userMessageId
         }
@@ -841,9 +867,9 @@ export const onDeleteChatRoom = /* GraphQL */ `
         items {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         nextToken
@@ -861,9 +887,9 @@ export const onDeleteChatRoom = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -873,6 +899,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -888,6 +915,7 @@ export const onDeleteChatRoom = /* GraphQL */ `
       name
       group
       imageUri
+      pin
       createdAt
       updatedAt
       chatRoomAdminId
@@ -913,6 +941,7 @@ export const onCreateUser = /* GraphQL */ `
           forUserId
           createdAt
           chatRoomMessagesId
+          bookmark
           updatedAt
           userMessageId
         }
@@ -927,6 +956,7 @@ export const onCreateUser = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -947,9 +977,9 @@ export const onCreateUser = /* GraphQL */ `
           userChatRoomUserId
         }
         typing
+        updatedAt
         chatRoomUserUserId
         createdAt
-        updatedAt
         chatRoomChatRoomUsersId
       }
       chatRoom {
@@ -980,6 +1010,7 @@ export const onCreateUser = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -1013,6 +1044,7 @@ export const onUpdateUser = /* GraphQL */ `
           forUserId
           createdAt
           chatRoomMessagesId
+          bookmark
           updatedAt
           userMessageId
         }
@@ -1027,6 +1059,7 @@ export const onUpdateUser = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -1047,9 +1080,9 @@ export const onUpdateUser = /* GraphQL */ `
           userChatRoomUserId
         }
         typing
+        updatedAt
         chatRoomUserUserId
         createdAt
-        updatedAt
         chatRoomChatRoomUsersId
       }
       chatRoom {
@@ -1080,6 +1113,7 @@ export const onUpdateUser = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -1113,6 +1147,7 @@ export const onDeleteUser = /* GraphQL */ `
           forUserId
           createdAt
           chatRoomMessagesId
+          bookmark
           updatedAt
           userMessageId
         }
@@ -1127,6 +1162,7 @@ export const onDeleteUser = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -1147,9 +1183,9 @@ export const onDeleteUser = /* GraphQL */ `
           userChatRoomUserId
         }
         typing
+        updatedAt
         chatRoomUserUserId
         createdAt
-        updatedAt
         chatRoomChatRoomUsersId
       }
       chatRoom {
@@ -1180,6 +1216,7 @@ export const onDeleteUser = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -1226,6 +1263,7 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -1243,9 +1281,9 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -1255,6 +1293,7 @@ export const onCreateChatRoomUser = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -1268,9 +1307,9 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         userChatRoomUserId
       }
       typing
+      updatedAt
       chatRoomUserUserId
       createdAt
-      updatedAt
       chatRoomChatRoomUsersId
     }
   }
@@ -1307,6 +1346,7 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -1324,9 +1364,9 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -1336,6 +1376,7 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -1349,9 +1390,9 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         userChatRoomUserId
       }
       typing
+      updatedAt
       chatRoomUserUserId
       createdAt
-      updatedAt
       chatRoomChatRoomUsersId
     }
   }
@@ -1388,6 +1429,7 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         name
         group
         imageUri
+        pin
         createdAt
         updatedAt
         chatRoomAdminId
@@ -1405,9 +1447,9 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         chatRoomUser {
           id
           typing
+          updatedAt
           chatRoomUserUserId
           createdAt
-          updatedAt
           chatRoomChatRoomUsersId
         }
         chatRoom {
@@ -1417,6 +1459,7 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
           name
           group
           imageUri
+          pin
           createdAt
           updatedAt
           chatRoomAdminId
@@ -1430,10 +1473,88 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         userChatRoomUserId
       }
       typing
+      updatedAt
       chatRoomUserUserId
       createdAt
-      updatedAt
       chatRoomChatRoomUsersId
+    }
+  }
+`;
+export const onCreateUserAccount = /* GraphQL */ `
+  subscription OnCreateUserAccount(
+    $id: String
+    $code: String
+    $email: String
+    $first_name: String
+    $last_name: String
+  ) {
+    onCreateUserAccount(
+      id: $id
+      code: $code
+      email: $email
+      first_name: $first_name
+      last_name: $last_name
+    ) {
+      id
+      code
+      email
+      first_name
+      last_name
+      user_type
+      photo
+      phones
+    }
+  }
+`;
+export const onUpdateUserAccount = /* GraphQL */ `
+  subscription OnUpdateUserAccount(
+    $id: String
+    $code: String
+    $email: String
+    $first_name: String
+    $last_name: String
+  ) {
+    onUpdateUserAccount(
+      id: $id
+      code: $code
+      email: $email
+      first_name: $first_name
+      last_name: $last_name
+    ) {
+      id
+      code
+      email
+      first_name
+      last_name
+      user_type
+      photo
+      phones
+    }
+  }
+`;
+export const onDeleteUserAccount = /* GraphQL */ `
+  subscription OnDeleteUserAccount(
+    $id: String
+    $code: String
+    $email: String
+    $first_name: String
+    $last_name: String
+  ) {
+    onDeleteUserAccount(
+      id: $id
+      code: $code
+      email: $email
+      first_name: $first_name
+      last_name: $last_name
+    ) {
+      id
+      code
+      email
+      first_name
+      last_name
+      user_type
+      photo
+      phones
     }
   }
 `;
