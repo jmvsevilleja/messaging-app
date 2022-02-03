@@ -1,106 +1,82 @@
 import React, {useEffect, useState} from "react";
-
-import {API, graphqlOperation} from "aws-amplify";
-import {
-    createChatRoom,
-    createChatRoomUser
-} from "../graphql/mutations";
-
 import {Dialog} from "@headlessui/react";
+import {getUserById, getChatRooms, getAccountByEmail} from "../api/queries";
+import {addUser, addChatRoom, addChatRoomUser} from "../api/mutations";
 
-function InviteUser({user, userList, handleChatRoomID}) {
+function InviteUser({user, handleChatRoomID}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [userEmail, setUserEmail] = useState("");
-    const [userPhone, setUserPhone] = useState("");
-    const [selectedUsers, setSelectedUsers] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("test");
+    const [error, setError] = useState("");
 
-    // useEffect(() => {
-    //     setSearchUserList(userList);
-    // }, [userList]);
+    const handleCreateChat = async (selected_user) => {
+        console.log("handleCreateChat", user.id, selected_user.id);
+        // check if user logged and selected_user is already in chat room
+        getChatRooms(user.id).then((chatroom_list) => {
+            const found_user = chatroom_list.find((room) => {
+                if (!Boolean(room.chatroom.group)) { // not a group chat
+                    let needle = [user.id, selected_user.id];
+                    var haystack = room.chatroom.chatRoomUsers.items.map(item => item.user.id);
+                    return needle.every(item => haystack.includes(item));
+                }
+                return false;
+            });
 
-    useEffect(() => {
-        // setSearchUserList(userList.filter(item =>
-        //     item.name.toLowerCase().includes(searchText.toLowerCase())
-        // ));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+            console.log('handleCreateChat Found', found_user);
+            if (!Boolean(found_user)) {
+                // Creating Chat Room
+                const chatroom_name = user.name + " - " + selected_user.name;
+                addChatRoom(user.id, chatroom_name).then((chatroom) => {
+                    addChatRoomUser(selected_user.id, chatroom.id).then(() => {
+                        addChatRoomUser(user.id, chatroom.id).then(() => {
+                            handleChatRoomID(chatroom.id);
+                            setLoading(false);
+                            setIsOpen(false);
+                            setUserEmail("");
+                        });
+                    });
+                });
 
-    // const handleSelectedUsers = async (e, user) => {
-    //     //console.log('handleSelectedUsers', e.target.checked, item);
-    //     if (e.target.checked) {
-    //         setSelectedUsers([
-    //             ...selectedUsers,
-    //             {id: user.id}
-    //         ]);
-
-    //     } else {
-    //         setSelectedUsers(selectedUsers.filter((item) => item.id !== user.id));
-    //     }
-    // }
+            } else {
+                // open chatroom from users list
+                handleChatRoomID(found_user.chatroom.id);
+                setLoading(false);
+                setIsOpen(false);
+                setUserEmail("");
+            }
+        });
+    };
 
     const handleInviteUserSubmit = async (event) => {
         event.preventDefault();
-        console.log('handleInviteUserSubmit', userEmail, selectedUsers);
+        console.log('handleInviteUserSubmit', userEmail);
         // prevent double submit
-        if (loading) return;
+        if (loading || error) return;
         setLoading(true);
-        // Creating Chat Room
-        // const room = await API.graphql(
-        //     graphqlOperation(createChatRoom, {
-        //         input: {
-        //             name: userEmail,
-        //             chatRoomAdminId: user.id,
-        //             group: true,
-        //         },
-        //     })
-        // );
-        // console.log("createChatRoom", room, room.data.createChatRoom.id);
-        //Creating Chat Room User
-        // selectedUsers.map(async (item) => {
-        //     await API.graphql(
-        //         graphqlOperation(createChatRoomUser, {
-        //             input: {
-        //                 chatRoomUserUserId: item.id,
-        //                 chatRoomChatRoomUsersId:
-        //                     room.data.createChatRoom.id,
-        //             },
-        //         })
-        //     );
-        // });
-        //Creating Chat Room Admin
-        // await API.graphql(
-        //     graphqlOperation(createChatRoomUser, {
-        //         input: {
-        //             chatRoomUserUserId: user.id,
-        //             chatRoomChatRoomUsersId: room.data.createChatRoom.id,
-        //         },
-        //     })
-        // );
-        // console.log('createChatRoomUser', room.data.createChatRoom.id);
-        // Open ChatRoom with this Id
-        // handleChatRoomID(room.data.createChatRoom.id).then(() => {
-        //     setUserEmail("");
-        //     setSearchText("");
-        //     setSelectedUsers([]);
-        //     setIsOpen(false);
-        //     setLoading(false);
-        // });
 
-        //setUserEmail("");
-        // setIsOpen(false);
-        // setLoading(false);
-
+        getAccountByEmail(userEmail).then((account_found) => {
+            if (account_found) {
+                if (account_found.id !== user.id) {
+                    getUserById(account_found.id).then((user_found) => {
+                        if (user_found) {
+                            handleCreateChat(user_found);
+                        }
+                        if (!user_found) {
+                            const name = account_found.first_name + " " + account_found.last_name;
+                            console.log("user not found create to users table", account_found.id, name);
+                            addUser(account_found.id, name).then((user_created) => {
+                                handleCreateChat(user_created);
+                            });
+                        }
+                    });
+                    return;
+                }
+            }
+            setError("Contact not found!");
+            setLoading(false);
+        });
     };
-
-    // useEffect(() => {
-    //     console.log('useEffect Create Room');
-    //     // if (userList) {
-    //     //     console.log('Create Room User list', userList);
-    //     // }
-    // }, []);
 
     return (
         <>
@@ -134,7 +110,7 @@ function InviteUser({user, userList, handleChatRoomID}) {
                                         <svg className="w-4 h-4 shrink-0 fill-current opacity-80 mt-[3px] mr-3" viewBox="0 0 16 16">
                                             <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm3.5 10.1l-1.4 1.4L8 9.4l-2.1 2.1-1.4-1.4L6.6 8 4.5 5.9l1.4-1.4L8 6.6l2.1-2.1 1.4 1.4L9.4 8l2.1 2.1z" />
                                         </svg>
-                                        <div>Contact not found!</div>
+                                        <div>{error}</div>
                                     </div>
                                     <button className="opacity-70 hover:opacity-80 ml-3 mt-[3px]"
                                         onClick={() => {
@@ -159,13 +135,15 @@ function InviteUser({user, userList, handleChatRoomID}) {
                                     type="text"
                                     className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                     onChange={(e) => {
+                                        setError("");
                                         setUserEmail(e.target.value);
                                     }}
+                                    required
                                     value={userEmail}
                                 />
                             </div>
-                            <div className="flex justify-center -my-2"><span className="text-sm text-primary">or</span></div>
-                            <div className="relative text-gray-600 focus-within:text-gray-400">
+                            {/* <div className="flex justify-center -my-2"><span className="text-sm text-primary">or</span></div> */}
+                            {/* <div className="relative text-gray-600 focus-within:text-gray-400">
                                 <input
                                     aria-placeholder="Phone"
                                     placeholder="Phone"
@@ -176,7 +154,7 @@ function InviteUser({user, userList, handleChatRoomID}) {
                                     }}
                                     value={userPhone}
                                 />
-                            </div>
+                            </div> */}
                             <div className="flex justify-center -mt-2 mb-1"><span className="text-sm text-primary">or</span></div>
                             <div className="flex justify-center">
                                 <button

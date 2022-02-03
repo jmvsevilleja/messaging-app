@@ -2,12 +2,8 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from "aws-amplify";
 import {getUserById, getAccountById, getChatRooms, getMessages} from "../api/queries";
+import {addUser} from "../api/mutations";
 
-import {
-    createUser,
-    createChatRoom,
-    createChatRoomUser
-} from "../graphql/mutations";
 import {
     updateUser,
     updateMessage,
@@ -101,62 +97,6 @@ const Chat = () => {
             }
         }
         );
-    };
-
-    const handleCreateChat = async (selected_user) => {
-        console.log("handleCreateChat", chatRoomList, user.id, selected_user.id);
-
-        // TODO: find in DB instead in the list
-        // check if user logged and selected_user is already in chat room
-        const found_user = chatRoomList.find((room) => {
-            if (!Boolean(room.chatroom.group)) { // not group chat
-                let needle = [user.id, selected_user.id];
-                var haystack = room.chatroom.chatRoomUsers.items.map(item => item.user.id);
-                return needle.every(item => haystack.includes(item));
-            }
-            return false;
-        });
-
-        console.log('handleCreateChat Found', found_user);
-        if (!Boolean(found_user)) {
-            // Creating Chat Room
-            const room = await API.graphql(
-                graphqlOperation(createChatRoom, {
-                    input: {
-                        name: user.name + " - " + selected_user.name,
-                        chatRoomAdminId: user.id, // Creator of the Chatroom
-                        group: false,
-                    },
-                })
-            );
-            console.log("createChatRoom", room, room.data.createChatRoom.id);
-            //Creating Chat Room User
-            await API.graphql(
-                graphqlOperation(createChatRoomUser, {
-                    input: {
-                        chatRoomUserUserId: selected_user.id,
-                        chatRoomChatRoomUsersId:
-                            room.data.createChatRoom.id,
-                    },
-                })
-            );
-            //Creating Chat Room Admin
-            await API.graphql(
-                graphqlOperation(createChatRoomUser, {
-                    input: {
-                        chatRoomUserUserId: user.id,
-                        chatRoomChatRoomUsersId: room.data.createChatRoom.id,
-                    },
-                })
-            );
-            console.log('createChatRoomUser', room.data.createChatRoom.id);
-            // Open ChatRoom with this Id
-            handleChatRoomID(room.data.createChatRoom.id);
-            // }
-        } else {
-            // open chatroom from users list
-            handleChatRoomID(found_user.chatroom.id);
-        }
     };
 
     const handleChatRoom = async (chatroom) => {
@@ -345,26 +285,6 @@ const Chat = () => {
         });
         console.log('updateChatRoomList', name_chatroom);
         setChatRoomList([...name_chatroom]);
-    };
-
-    const addUser = async (user_id, name) => {
-        if (!user_id || !name) return;
-        try {
-            const item = await API.graphql({
-                query: createUser,
-                variables: {
-                    input: {
-                        id: user_id,
-                        name: name,
-                        status: "Hi there! I'm using Conva",
-                        type: "USER"
-                    },
-                },
-            });
-            return item.data.createUser;
-        } catch (err) {
-            console.error(err);
-        }
     };
 
     // USE EFFECTS
@@ -577,7 +497,6 @@ const Chat = () => {
                             handleLogout={handleLogout}
                             handleChatRoom={handleChatRoom}
                             handleChatRoomID={handleChatRoomID}
-                            handleCreateChat={handleCreateChat}
                         />
 
                         {/* Messages body */}

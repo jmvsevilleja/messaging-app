@@ -18,7 +18,6 @@ function ChatSidebar({
     handleLogout,
     handleChatRoom,
     handleChatRoomID,
-    handleCreateChat
 }) {
 
     const [searchText, setSearchText] = useState("");
