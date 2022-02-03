@@ -6,6 +6,7 @@ import CreateRoom from "./CreateRoom";
 import InviteUser from "./InviteUser";
 
 import ChatProfile from "./ChatProfile";
+import ChatSetting from "./ChatSetting";
 import AvatarWithText from "./loader/AvatarWithText";
 import ListingWithThumbnail from "./loader/ListingWithThumbnail";
 
@@ -22,13 +23,16 @@ function ChatSidebar({
     const [searchText, setSearchText] = useState("");
     const [searchChatRoomList, setSearchChatRoomList] = useState([]);
     const [openProfile, setOpenProfile] = useState(false);
-    const [openSetting, setOpenSetting] = useState(true);
+    const [openSetting, setOpenSetting] = useState(false);
     const [dropdown, setDropdown] = useState(false);
     const dropdownMenu = useRef(null)
 
     // Open chat toggle
     const handleCloseProfile = async () => {
         setOpenProfile(false);
+    }
+    const handleCloseSetting = async () => {
+        setOpenSetting(false);
     }
     const handleCloseDropdown = async (e) => {
         if (dropdownMenu.current && !dropdownMenu.current.contains(e.target)) {
@@ -72,6 +76,11 @@ function ChatSidebar({
                 user={user}
                 openProfile={openProfile}
                 handleCloseProfile={handleCloseProfile} />}
+
+            {user && <ChatSetting
+                user={user}
+                openSetting={openSetting}
+                handleCloseSetting={handleCloseSetting} />}
 
             < div className="my-3 pr-5">
                 {user &&

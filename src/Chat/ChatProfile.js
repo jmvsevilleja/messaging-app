@@ -54,8 +54,8 @@ function ChatProfile({
                     <div className="mb-5 relative text-gray-600 ">
                         <label className="text-base">Your Name:
                             <input
-                                aria-placeholder="Group Name"
-                                placeholder="Group Name"
+                                aria-placeholder=""
+                                placeholder=""
                                 type="text"
                                 className="p-2 block w-full rounded bg-gray-100 border-none ring-0 outline-none"
                                 required
@@ -69,8 +69,8 @@ function ChatProfile({
                     <div className="relative text-gray-600">
                         <label className="text-base">About:
                             <input
-                                aria-placeholder="Group Name"
-                                placeholder="Group Name"
+                                aria-placeholder=""
+                                placeholder=""
                                 type="text"
                                 className="p-2 block w-full rounded bg-gray-100 border-none ring-0 outline-none"
                                 required

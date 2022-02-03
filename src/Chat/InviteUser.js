@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import {getUserById, getChatRooms, getAccountByEmail} from "../api/queries";
+import {getUserById, getChatRooms, getAccountById, getAccountByEmail} from "../api/queries";
 import {addUser, addChatRoom, addChatRoomUser} from "../api/mutations";
+import QrReader from 'react-qr-reader'
 
 function InviteUser({user, handleChatRoomID}) {
 
@@ -9,6 +10,25 @@ function InviteUser({user, handleChatRoomID}) {
     const [userEmail, setUserEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [readQR, setreadQR] = useState(false);
+
+    const handleScan = data => {
+        if (data) {
+            handleQRSubmit(data);
+        }
+    }
+
+    const handleError = err => {
+        setError("QR Reader is not working on your device!");
+        console.log(err);
+    }
+
+    const handleReset = () => {
+        setLoading(false);
+        setIsOpen(false);
+        setUserEmail("");
+        setreadQR(false);
+    }
 
     const handleCreateChat = async (selected_user) => {
         console.log("handleCreateChat", user.id, selected_user.id);
@@ -31,9 +51,7 @@ function InviteUser({user, handleChatRoomID}) {
                     addChatRoomUser(selected_user.id, chatroom.id).then(() => {
                         addChatRoomUser(user.id, chatroom.id).then(() => {
                             handleChatRoomID(chatroom.id).then(() => {
-                                setLoading(false);
-                                setIsOpen(false);
-                                setUserEmail("");
+                                handleReset();
                             });
                         });
                     });
@@ -42,9 +60,7 @@ function InviteUser({user, handleChatRoomID}) {
             } else {
                 // open chatroom from users list
                 handleChatRoomID(found_user.chatroom.id).then(() => {
-                    setLoading(false);
-                    setIsOpen(false);
-                    setUserEmail("");
+                    handleReset();
                 });
             }
         });
@@ -80,6 +96,34 @@ function InviteUser({user, handleChatRoomID}) {
         });
     };
 
+    const handleQRSubmit = async (qr_code) => {
+        console.log('handleQRSubmit', qr_code);
+        // prevent double submit
+        if (loading) return;
+        setLoading(true);
+
+        getAccountById(qr_code).then((account_found) => {
+            if (account_found) {
+                if (account_found.id !== user.id) {
+                    getUserById(account_found.id).then((user_found) => {
+                        if (user_found) {
+                            handleCreateChat(user_found);
+                        }
+                        if (!user_found) {
+                            const name = account_found.first_name + " " + account_found.last_name;
+                            console.log("user not found create to users table", account_found.id, name);
+                            addUser(account_found.id, name).then((user_created) => {
+                                handleCreateChat(user_created);
+                            });
+                        }
+                    });
+                    return;
+                }
+            }
+            setError("Contact not found!");
+            setLoading(false);
+        });
+    };
     return (
         <>
             <button
@@ -93,7 +137,10 @@ function InviteUser({user, handleChatRoomID}) {
             </button>
             <Dialog
                 open={isOpen}
-                onClose={() => setIsOpen(false)}
+                onClose={() => {
+                    setreadQR(false);
+                    setIsOpen(false);
+                }}
                 className="fixed z-30 inset-0 overflow-y-auto"
             >
                 <div className="flex items-center justify-center min-h-screen">
@@ -106,6 +153,8 @@ function InviteUser({user, handleChatRoomID}) {
                         >
                             Add Contact
                         </Dialog.Title>
+
+
                         {error &&
                             <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">
                                 <div className="flex w-full justify-between items-start">
@@ -126,12 +175,29 @@ function InviteUser({user, handleChatRoomID}) {
                                     </button>
                                 </div>
                             </div>}
+
+                        {readQR && <div className="py-2">
+                            {!loading &&
+                                <QrReader
+                                    facingMode={"environment"}
+                                    delay={300}
+                                    onError={handleError}
+                                    onScan={handleScan}
+                                    style={{width: '100%'}}
+                                />}
+                            {loading && <svg fill='none' className="animate-spin m-auto opacity-20" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                                <path clipRule='evenodd'
+                                    d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                                    fill='currentColor' fillRule='evenodd' />
+                            </svg>}
+                        </div>}
+
                         <form
                             onSubmit={(e) => {
                                 handleInviteUserSubmit(e);
                             }}
                         >
-                            <div className="relative text-gray-600 focus-within:text-gray-400">
+                            {!readQR && <><div className="relative text-gray-600 focus-within:text-gray-400">
                                 <input
                                     aria-placeholder="Email"
                                     placeholder="Email"
@@ -145,8 +211,8 @@ function InviteUser({user, handleChatRoomID}) {
                                     value={userEmail}
                                 />
                             </div>
-                            {/* <div className="flex justify-center -my-2"><span className="text-sm text-primary">or</span></div> */}
-                            {/* <div className="relative text-gray-600 focus-within:text-gray-400">
+                                {/* <div className="flex justify-center -my-2"><span className="text-sm text-primary">or</span></div> */}
+                                {/* <div className="relative text-gray-600 focus-within:text-gray-400">
                                 <input
                                     aria-placeholder="Phone"
                                     placeholder="Phone"
@@ -158,19 +224,38 @@ function InviteUser({user, handleChatRoomID}) {
                                     value={userPhone}
                                 />
                             </div> */}
-                            <div className="flex justify-center -mt-2 mb-1"><span className="text-sm text-primary">or</span></div>
-                            <div className="flex justify-center">
-                                <button
-                                    type="button"
-                                    className="bg-primary hover:bg-secondary text-white font-base w-24 px-4 rounded">
-                                    <span className="py-2">Scan QR</span>
-                                </button>
-                            </div>
-                            <div className="mt-4 flex flex-col">
+                                <div className="flex justify-center -mt-2 mb-1"><span className="text-sm text-primary">or</span></div>
+                                <div className="flex justify-center">
+                                    <button
+                                        type="button"
+                                        className="bg-primary hover:bg-secondary text-white font-base w-24 px-4 rounded"
+                                        onClick={() => {
+                                            setError("");
+                                            setreadQR(true);
+                                        }}>
+                                        <span className="py-2">Scan QR</span>
+                                    </button>
+                                </div>
+                            </>
+                            }
+                            {readQR &&
+                                <div className="flex justify-center mt-2">
+                                    <button
+                                        type="button"
+                                        className="bg-primary hover:bg-secondary text-white font-base w-24 px-4 rounded"
+                                        onClick={() => {
+                                            setError("");
+                                            setreadQR(false);
+                                        }}>
+                                        <span className="py-2">Cancel</span>
+                                    </button>
+                                </div>}
+                            {!readQR && <div className="mt-4 flex flex-col">
                                 <div className="flex self-end">
-                                    <button className="hover:text-gray-600 text-gray-500 font-base py-2 px-4" onClick={() => {
-                                        setIsOpen(false);
-                                    }}>
+                                    <button className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
+                                        onClick={() => {
+                                            setIsOpen(false);
+                                        }}>
                                         Cancel
                                     </button>
                                     <button
@@ -186,7 +271,7 @@ function InviteUser({user, handleChatRoomID}) {
                                     </button>
 
                                 </div>
-                            </div>
+                            </div>}
                         </form>
                     </div>
                 </div>
