@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from "aws-amplify";
-import {getUser, getAccount, getChatRooms, getMessages} from "../api/queries";
+import {getUserById, getAccountById, getChatRooms, getMessages} from "../api/queries";
 
 import {
     createUser,
@@ -86,7 +86,7 @@ const Chat = () => {
     };
 
     const handleCreateUser = async (user_id) => {
-        getAccount(user_id).then((user_detail) => {
+        getAccountById(user_id).then((user_detail) => {
             if (user_detail) {
                 const name = user_detail.first_name + " " + user_detail.last_name;
                 console.log("user not found create to users table", user_id, name);
@@ -94,8 +94,8 @@ const Chat = () => {
                     //console.log('user created', result);
                     setUser({
                         id: result.id,
-                        clinicaID: user_id,
                         name: name,
+                        status: result.status
                     });
                 });
             }
@@ -354,7 +354,7 @@ const Chat = () => {
                 query: createUser,
                 variables: {
                     input: {
-                        clinicaID: user_id,
+                        id: user_id,
                         name: name,
                         status: "Hi there! I'm using Conva",
                         type: "USER"
@@ -374,7 +374,7 @@ const Chat = () => {
         // const auth_token = localStorage.getItem("auth_token");
         // const refresh_token = localStorage.getItem("refresh_token");
 
-        getUser(user_id).then((user_found) => {
+        getUserById(user_id).then((user_found) => {
             setUser(user_found);
             if (user_id) {
                 // check if logged user is in  users table. create if not found and query user details.

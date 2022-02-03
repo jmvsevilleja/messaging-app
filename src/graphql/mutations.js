@@ -11,7 +11,6 @@ export const createMessage = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -59,7 +58,6 @@ export const createMessage = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -114,7 +112,6 @@ export const updateMessage = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -162,7 +159,6 @@ export const updateMessage = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -217,7 +213,6 @@ export const deleteMessage = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -265,7 +260,6 @@ export const deleteMessage = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -348,7 +342,6 @@ export const createChatRoom = /* GraphQL */ `
       }
       admin {
         id
-        clinicaID
         name
         type
         imageUri
@@ -432,7 +425,6 @@ export const updateChatRoom = /* GraphQL */ `
       }
       admin {
         id
-        clinicaID
         name
         type
         imageUri
@@ -516,7 +508,6 @@ export const deleteChatRoom = /* GraphQL */ `
       }
       admin {
         id
-        clinicaID
         name
         type
         imageUri
@@ -569,7 +560,6 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       id
-      clinicaID
       name
       type
       imageUri
@@ -606,7 +596,6 @@ export const createUser = /* GraphQL */ `
         }
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -637,7 +626,6 @@ export const createUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -675,7 +663,6 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
-      clinicaID
       name
       type
       imageUri
@@ -712,7 +699,6 @@ export const updateUser = /* GraphQL */ `
         }
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -743,7 +729,6 @@ export const updateUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -781,7 +766,6 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       id
-      clinicaID
       name
       type
       imageUri
@@ -818,7 +802,6 @@ export const deleteUser = /* GraphQL */ `
         }
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -849,7 +832,6 @@ export const deleteUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -899,7 +881,6 @@ export const createChatRoomUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -922,7 +903,6 @@ export const createChatRoomUser = /* GraphQL */ `
       }
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -985,7 +965,6 @@ export const updateChatRoomUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1008,7 +987,6 @@ export const updateChatRoomUser = /* GraphQL */ `
       }
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -1071,7 +1049,6 @@ export const deleteChatRoomUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1094,7 +1071,6 @@ export const deleteChatRoomUser = /* GraphQL */ `
       }
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -1145,10 +1121,9 @@ export const createUserAccount = /* GraphQL */ `
       code
       email
       first_name
+      gender
       last_name
       user_type
-      photo
-      phones
     }
   }
 `;
@@ -1159,10 +1134,9 @@ export const updateUserAccount = /* GraphQL */ `
       code
       email
       first_name
+      gender
       last_name
       user_type
-      photo
-      phones
     }
   }
 `;
@@ -1173,10 +1147,9 @@ export const deleteUserAccount = /* GraphQL */ `
       code
       email
       first_name
+      gender
       last_name
       user_type
-      photo
-      phones
     }
   }
 `;

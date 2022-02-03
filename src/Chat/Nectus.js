@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from "aws-amplify";
-import {getUser, getAccount, getChatRooms, getMessages} from "../api/queries";
+import {getUserById, getAccountById, getChatRooms, getMessages} from "../api/queries";
 
 import {
     createUser,
@@ -83,7 +83,7 @@ const Chat = () => {
     };
 
     const handleCreateUser = async (user_id) => {
-        return getAccount(user_id).then(async (user_detail) => {
+        return getAccountById(user_id).then(async (user_detail) => {
             if (user_detail) {
                 const name = user_detail.first_name + " " + user_detail.last_name;
                 console.log("user not found create to users table", user_id, name);
@@ -91,8 +91,8 @@ const Chat = () => {
                     //console.log('user created', result);
                     return {
                         id: result.id,
-                        clinicaID: user_id,
                         name: name,
+                        status: result.status
                     };
                 });
             }
@@ -351,7 +351,7 @@ const Chat = () => {
                 query: createUser,
                 variables: {
                     input: {
-                        clinicaID: user_id,
+                        id: user_id,
                         name: name,
                         status: "Hi there! I'm using Conva",
                         type: "USER"
@@ -372,7 +372,7 @@ const Chat = () => {
         // const refresh_token = localStorage.getItem("refresh_token");
 
         // TODO: check user auth token if valid
-        getUser(user_id).then((user_found) => {
+        getUserById(user_id).then((user_found) => {
             setUser(user_found);
             if (user_id) {
                 // check if logged user is in  users table. create if not found and query user details.
@@ -380,8 +380,8 @@ const Chat = () => {
                     handleCreateUser(user_id).then((created_user) => {
                         setUser({
                             id: created_user.id,
-                            clinicaID: created_user.user_id,
                             name: created_user.name,
+                            status: created_user.status,
                         });
                     });
                 }
@@ -410,7 +410,7 @@ const Chat = () => {
         getChatRooms(user.id).then((chat_room_list) => {
             if (chat_room_list.length === 0) {
                 // no chatroom found
-                getUser(to).then((user_found) => {
+                getUserById(to).then((user_found) => {
                     // TODO: user not found then create user
                     console.log('fetchUser to', to, user_found);
                     if (!user_found) {
@@ -444,7 +444,7 @@ const Chat = () => {
             console.log('fetchChatRooms chat_room_list', chat_room_list);
             // set chatroom list
             updateChatRoomList(chat_room_list);
-            getUser(to).then((user_found) => {
+            getUserById(to).then((user_found) => {
                 // create user if not found
                 if (!user_found) {
                     handleCreateUser(to).then((created_user) => {

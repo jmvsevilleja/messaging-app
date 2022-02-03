@@ -1,11 +1,11 @@
 import {API, graphqlOperation} from 'aws-amplify'
-import {userByClinicaID, getUserAccount} from "../graphql/queries";
+import {getUser, getUserAccount} from "../graphql/queries";
 import {
     messageByChatRoomMessagesId,
     chatRoomUserByChatRoomUserUserId
 } from "../graphql/custom-queries";
 
-export const getAccount = async (user_id) => {
+export const getAccountById = async (user_id) => {
     if (!user_id) return;
     try {
         return await API.graphql(
@@ -19,14 +19,29 @@ export const getAccount = async (user_id) => {
     }
 }
 
-export const getUser = async (user_id) => {
+export const getAccountByEmail = async (email) => {
+    if (!email) return;
+    try {
+        return await API.graphql(
+            graphqlOperation(getUserAccount, {email: email})
+        ).then(({data: {getUserAccount}}) => {
+            console.log('GET ACCOUNT', getUserAccount);
+            return getUserAccount;
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+
+export const getUserById = async (user_id) => {
     if (!user_id) return;
     try {
         return await API.graphql(
-            graphqlOperation(userByClinicaID, {clinicaID: user_id})
-        ).then(({data: {userByClinicaID}}) => {
-            console.log('GET USER', userByClinicaID);
-            return userByClinicaID.items[0];
+            graphqlOperation(getUser, {id: user_id})
+        ).then(({data: {getUser}}) => {
+            console.log('GET USER', getUser);
+            return getUser;
         });
     } catch (e) {
         console.log(e);
