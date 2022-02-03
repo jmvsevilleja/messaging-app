@@ -1,26 +1,29 @@
 import React, {useEffect, useState} from "react";
-
-import {API, graphqlOperation} from "aws-amplify";
-import {
-    createChatRoom,
-    createChatRoomUser
-} from "../graphql/mutations";
+import {addChatRoom, addChatRoomUser} from "../api/mutations";
 
 import {Dialog} from "@headlessui/react";
 import UserSelect from "./userselect";
 
-function CreateRoom({user, userList, handleChatRoomID}) {
+function CreateRoom({user, chatRoomList, handleChatRoomID}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [groupName, setGroupName] = useState("");
+    const [userList, setUserList] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [loading, setLoading] = useState(false);
     const [searchUserList, setSearchUserList] = useState([]);
 
     useEffect(() => {
-        setSearchUserList(userList);
-    }, [userList]);
+        // get non group users from the chatroom list
+        if (chatRoomList.length !== 0) {
+            const user_list = chatRoomList.filter((item) => (!item.chatroom.group)).map((item) => {
+                return item.chatroom.chatRoomUsers.items.filter((item) => (user.id != item.user.id))[0].user;
+            });
+            setUserList(user_list);
+            setSearchUserList(user_list);
+        }
+    }, [chatRoomList]);
 
     useEffect(() => {
         setSearchUserList(userList.filter(item =>
@@ -47,56 +50,25 @@ function CreateRoom({user, userList, handleChatRoomID}) {
         // prevent double submit
         if (loading) return;
         setLoading(true);
-        // Creating Chat Room
-        const room = await API.graphql(
-            graphqlOperation(createChatRoom, {
-                input: {
-                    name: groupName,
-                    chatRoomAdminId: user.id,
-                    group: true,
-                },
-            })
-        );
-        console.log("createChatRoom", room, room.data.createChatRoom.id);
-        //Creating Chat Room User
-        selectedUsers.map(async (item) => {
-            await API.graphql(
-                graphqlOperation(createChatRoomUser, {
-                    input: {
-                        chatRoomUserUserId: item.id,
-                        chatRoomChatRoomUsersId:
-                            room.data.createChatRoom.id,
-                    },
+
+        addChatRoom(user.id, groupName, true).then(async (chatroom) => {
+            await Promise.all(
+                selectedUsers.map(async (item) => {
+                    await addChatRoomUser(item.id, chatroom.id);
                 })
             );
-        });
-        //Creating Chat Room Admin
-        await API.graphql(
-            graphqlOperation(createChatRoomUser, {
-                input: {
-                    chatRoomUserUserId: user.id,
-                    chatRoomChatRoomUsersId: room.data.createChatRoom.id,
-                },
-            })
-        );
-        console.log('createChatRoomUser', room.data.createChatRoom.id);
-        // Open ChatRoom with this Id
-        handleChatRoomID(room.data.createChatRoom.id).then(() => {
-            setGroupName("");
-            setSearchText("");
-            setSelectedUsers([]);
-            setIsOpen(false);
-            setLoading(false);
-        });
 
+            addChatRoomUser(user.id, chatroom.id).then(() => {
+                handleChatRoomID(chatroom.id).then(() => {
+                    setGroupName("");
+                    setSearchText("");
+                    setSelectedUsers([]);
+                    setIsOpen(false);
+                    setLoading(false);
+                });
+            });
+        });
     };
-
-    // useEffect(() => {
-    //     console.log('useEffect Create Room');
-    //     // if (userList) {
-    //     //     console.log('Create Room User list', userList);
-    //     // }
-    // }, []);
 
     return (
         <>
@@ -104,6 +76,7 @@ function CreateRoom({user, userList, handleChatRoomID}) {
                 type="button"
                 onClick={() => setIsOpen(true)}
                 title="Create Group Chat"
+                className="outline-none focus:outline-none"
             >
 
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor">

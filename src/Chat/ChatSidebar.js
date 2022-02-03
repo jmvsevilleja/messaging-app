@@ -13,7 +13,6 @@ function ChatSidebar({
     user,
     chatRoomID,
     openChat,
-    userList,
     chatRoomList,
     handleLogout,
     handleChatRoom,
@@ -21,7 +20,6 @@ function ChatSidebar({
 }) {
 
     const [searchText, setSearchText] = useState("");
-    // const [searchUserList, setSearchUserList] = useState([]);
     const [searchChatRoomList, setSearchChatRoomList] = useState([]);
     const [openProfile, setOpenProfile] = useState(false);
     const [openSetting, setOpenSetting] = useState(true);
@@ -42,7 +40,7 @@ function ChatSidebar({
         //setSearchUserList(userList);
         setSearchChatRoomList(chatRoomList);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userList, chatRoomList]);
+    }, [chatRoomList]);
 
     useEffect(() => {
         // setSearchUserList(userList.filter(item =>
@@ -145,7 +143,7 @@ function ChatSidebar({
                         <div className="flex items-center">
                             {user && < CreateRoom
                                 user={user}
-                                userList={userList}
+                                chatRoomList={chatRoomList}
                                 handleChatRoomID={handleChatRoomID}
                             />}
                         </div>

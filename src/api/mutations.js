@@ -29,7 +29,7 @@ export const addUser = async (user_id, user_name) => {
     }
 };
 
-export const addChatRoom = async (user_id, chatroom_name) => {
+export const addChatRoom = async (user_id, chatroom_name, is_group = false) => {
     if (!user_id || !chatroom_name) return;
     try {
         return await API.graphql(
@@ -37,7 +37,7 @@ export const addChatRoom = async (user_id, chatroom_name) => {
                 input: {
                     name: chatroom_name,
                     chatRoomAdminId: user_id,
-                    group: false,
+                    group: is_group,
                 }
             })
         ).then(({data: {createChatRoom}}) => {
