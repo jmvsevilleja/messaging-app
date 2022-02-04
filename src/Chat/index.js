@@ -38,7 +38,6 @@ let subs = {
 
 const Chat = () => {
     const [messageList, setMessageList] = useState([]);
-    const [userList, setUserList] = useState([]);
     const [chatRoomList, setChatRoomList] = useState([]);
     const [user, setUser] = useState(null);
     const [chatRoom, setChatRoom] = useState({});
@@ -325,9 +324,6 @@ const Chat = () => {
 
         getChatRooms(user.id).then((result) => {
             updateChatRoomList(result);
-            // fetchUsers(user.id).then((result) => {
-            //     setUserList([...result]);
-            // });
         });
 
         console.log("Subscribe to onCreateChatRoomUserByChatRoomUserUserId");
@@ -354,15 +350,6 @@ const Chat = () => {
         ).subscribe({
             next: ({provider, value}) => {
                 console.log("onUpdateUser", value);
-                //TODO: optimize to find
-                // update online in user list
-                // setUserList((list) => list.map((item) => item.id === value.data.onUpdateUser.id
-                //     ? {
-                //         ...item,
-                //         online: value.data.onUpdateUser.online
-                //     }
-                //     : item));
-                // update online in chatroom list
                 setChatRoomList((list) => list.map((item) => {
                     const items = item.chatroom.chatRoomUsers.items.map((item) =>
                         (item.user.id === value.data.onUpdateUser.id) ? {
@@ -436,14 +423,6 @@ const Chat = () => {
     }, [chatRoomID, forceOpenChat, chatRoomList]);
 
     useEffect(() => {
-
-        // Subscribe to creation of user
-        // subs.subCreateUser = API.graphql(graphqlOperation(onCreateUser)).subscribe({
-        //     next: ({provider, value}) => {
-        //         setUserList((list) => [...list, value.data.onCreateUser]);
-        //     },
-        //     error: (error) => console.warn(error),
-        // });
         // Subscribe to update of chatroom
         subs.subUpdateChatRoom = API.graphql(
             graphqlOperation(onUpdateChatRoom)
@@ -492,7 +471,6 @@ const Chat = () => {
                             chatRoomID={chatRoomID}
                             openChat={openChat}
                             setOpenChat={setOpenChat}
-                            userList={userList}
                             chatRoomList={chatRoomList}
                             handleLogout={handleLogout}
                             handleChatRoom={handleChatRoom}

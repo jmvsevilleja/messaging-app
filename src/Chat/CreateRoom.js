@@ -18,12 +18,12 @@ function CreateRoom({user, chatRoomList, handleChatRoomID}) {
         // get non group users from the chatroom list
         if (chatRoomList.length !== 0) {
             const user_list = chatRoomList.filter((item) => (!item.chatroom.group)).map((item) => {
-                return item.chatroom.chatRoomUsers.items.filter((item) => (user.id != item.user.id))[0].user;
+                return item.chatroom.chatRoomUsers.items.filter((item) => (user.id !== item.user.id))[0].user;
             });
             setUserList(user_list);
             setSearchUserList(user_list);
         }
-    }, [chatRoomList]);
+    }, [chatRoomList, user]);
 
     useEffect(() => {
         setSearchUserList(userList.filter(item =>

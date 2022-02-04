@@ -7,6 +7,7 @@ import InviteUser from "./InviteUser";
 
 import ChatProfile from "./ChatProfile";
 import ChatSetting from "./ChatSetting";
+import ChatSettingQR from "./ChatSettingQR";
 import AvatarWithText from "./loader/AvatarWithText";
 import ListingWithThumbnail from "./loader/ListingWithThumbnail";
 
@@ -24,17 +25,24 @@ function ChatSidebar({
     const [searchChatRoomList, setSearchChatRoomList] = useState([]);
     const [openProfile, setOpenProfile] = useState(false);
     const [openSetting, setOpenSetting] = useState(false);
+    const [openSettingQR, setOpenSettingQR] = useState(false);
     const [dropdown, setDropdown] = useState(false);
     const dropdownMenu = useRef(null)
 
     // Open chat toggle
-    const handleCloseProfile = async () => {
+    const handleCloseProfile = () => {
         setOpenProfile(false);
     }
-    const handleCloseSetting = async () => {
+    const handleCloseSetting = () => {
         setOpenSetting(false);
     }
-    const handleCloseDropdown = async (e) => {
+    const handleOpenSettingQR = () => {
+        setOpenSettingQR(true);
+    }
+    const handleCloseSettingQR = () => {
+        setOpenSettingQR(false);
+    }
+    const handleCloseDropdown = (e) => {
         if (dropdownMenu.current && !dropdownMenu.current.contains(e.target)) {
             setDropdown(false);
         }
@@ -80,7 +88,14 @@ function ChatSidebar({
             {user && <ChatSetting
                 user={user}
                 openSetting={openSetting}
-                handleCloseSetting={handleCloseSetting} />}
+                handleCloseSetting={handleCloseSetting}
+                handleOpenSettingQR={handleOpenSettingQR}
+            />}
+
+            {user && <ChatSettingQR
+                user={user}
+                openSettingQR={openSettingQR}
+                handleCloseSettingQR={handleCloseSettingQR} />}
 
             < div className="my-3 pr-5">
                 {user &&

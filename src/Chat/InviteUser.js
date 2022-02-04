@@ -124,6 +124,12 @@ function InviteUser({user, handleChatRoomID}) {
             setLoading(false);
         });
     };
+
+    useEffect(() => {
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <>
             <button
@@ -138,8 +144,7 @@ function InviteUser({user, handleChatRoomID}) {
             <Dialog
                 open={isOpen}
                 onClose={() => {
-                    setreadQR(false);
-                    setIsOpen(false);
+                    handleReset();
                 }}
                 className="fixed z-30 inset-0 overflow-y-auto"
             >
