@@ -63,7 +63,6 @@ export const updateChatRoom = /* GraphQL */ `
       lastMessage
       admin {
         id
-        clinicaID
         name
         imageUri
         status

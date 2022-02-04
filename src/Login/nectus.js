@@ -1,21 +1,19 @@
 import React from "react"
 import axios from "axios";
-import {useState, useEffect} from "react";
+import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
 
-const REDIRECT_LOGIN_URL = "https://www.clinica-sso.com.au/login/?redirect=";
-const RETURN_URL_DEV = "https://develop.dtx7zjrnqqy6a.amplifyapp.com/login/?";
-const RETURN_URL_TEST = "https://test.dtx7zjrnqqy6a.amplifyapp.com/login/?";
-const RETURN_URL_PROD = "https://master.dtx7zjrnqqy6a.amplifyapp.com/login/?";
+const Nectus = (props) => {
+    const [searchParams, setSearchParams] = useSearchParams();
 
-const SSO = (props) => {
-    const [headerMessage, setHeaderMessage] = useState(null);
+    if (false) {setSearchParams();}
 
     let navigate = useNavigate();
-
     useEffect(() => {
 
         const Auth = async (authToken) => {
+
             await axios({
                 url: `https://w2kbuc7s59.execute-api.ap-southeast-2.amazonaws.com/api/token`,
                 method: 'GET',
@@ -25,7 +23,7 @@ const SSO = (props) => {
                 }
             })
                 .then((response) => {
-                    console.log('Conva', response);
+                    console.log('Nectus', response);
                     if (response.status === 200 && response.data.message.length !== 0) {
                         const accessToken = {
                             id: response.data.message[0].id,
@@ -39,51 +37,37 @@ const SSO = (props) => {
                         localStorage.setItem("refresh_token", accessToken.refresh_token);
                         localStorage.setItem("access_token", accessToken.access_token);
                         localStorage.setItem("user_id", accessToken.id);
+                        localStorage.setItem("to", authToken.to);
 
-                        navigate(`/chat`);
+                        navigate(`/nectus-chat`);
                     }
                 })
         }
 
-        let returnurl = RETURN_URL_PROD;
-        if (window.location.hostname === "localhost") {
-            returnurl = "http://localhost:3000/login?";
-        }
-        if (window.location.hostname === 'develop.dtx7zjrnqqy6a.amplifyapp.com') {
-            returnurl = RETURN_URL_DEV;
-        }
-        if (window.location.hostname === 'test.dtx7zjrnqqy6a.amplifyapp.com') {
-            returnurl = RETURN_URL_TEST;
-        }
-        let query = window.location.search;
 
-        let c = query.replace("?", "");
-
-        // SSO
-        var result = c.split("/");
         const authToken = {
-            code: result[result.length - 1],
-            ip: result[result.length - 2],
-            id: result[result.length - 3],
+            code: searchParams.get("code"),
+            ip: searchParams.get("ip"),
+            id: searchParams.get("id"),
+            to: searchParams.get("to"),
         };
+
         if (authToken.code) {
             Auth(authToken);
-        } else {
-            setHeaderMessage("Redirect to login page...");
-            setTimeout(() => {
-                window.location.href = REDIRECT_LOGIN_URL + returnurl;
-            }, 1500);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
-        <div className="w-full h-screen bg-gray-50 flex flex-col justify-center items-center pt-6 sm:pt-0">
-            <div className="w-full sm:max-w-md p-5 mx-auto text-center">
-                <h3 className="text-font">{headerMessage}</h3>
-            </div>
+        <div className="h-screen w-full flex flex-col justify-center items-center p-2">
+            <div className=" text-primary opacity-50"><svg fill='none' className="w-40 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                <path clipRule='evenodd'
+                    d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                    fill='currentColor' fillRule='evenodd' />
+            </svg></div>
+
         </div>
     );
 }
 
-export default SSO
+export default Nectus
