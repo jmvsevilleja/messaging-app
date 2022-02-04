@@ -130,7 +130,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
       }
       admin {
         id
-        clinicaID
         name
         imageUri
         status

@@ -10,35 +10,11 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route exact path="/*" element={
-            <>
-              <Login />
-            </>
-          }>
-          </Route>
-          <Route exact path="/login" element={
-            <>
-              <SSO />
-            </>
-          }>
-          </Route>
-          <Route exact path="/nectus-login" element={
-            <>
-              <NectusLogin />
-            </>
-          }></Route>
-          <Route path="chat/*" element={
-            <>
-              <Chat nectus={true} />
-            </>
-          }>
-          </Route>
-          <Route path="nectus-chat/*" element={
-            <>
-              <NectusChat />
-            </>
-          }>
-          </Route>
+          <Route exact path="/login" element={<SSO />}></Route>
+          <Route exact path="/nectus-login" element={<NectusLogin />}></Route>
+          <Route exact path="/chat" element={<Chat />}></Route>
+          <Route exact path="/nectus-chat" element={<NectusChat />}></Route>
+          <Route exact path="/*" element={<Login />}></Route>
         </Routes>
       </Router>
     </div >

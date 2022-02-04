@@ -164,7 +164,9 @@ function ChatBody({
             console.error(err);
         }
     };
-
+    const handleDeleteChat = () => {
+        console.log('Delete Chat');
+    }
     const handleResetChat = () => {
         setIsUploading(false);
         setSelectedFiles([]);
@@ -277,15 +279,17 @@ function ChatBody({
         <div
             className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden  border-0 md:border-l-2 border-gray-200"
         >
-            {!(openChat) && (
+            {nectus && !(openChat) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
                     <div className="">
                         <img className=" w-96" src={ConvoLogo} alt="Conva" />
-                        {nectus && <div className=" text-primary"><svg fill='none' className="w-20 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
-                            <path clipRule='evenodd'
-                                d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
-                                fill='currentColor' fillRule='evenodd' />
-                        </svg></div>}
+                    </div>
+                </div>
+            )}
+            {!nectus && !(openChat || Object.keys(chatRoom).length !== 0) && (
+                <div className="h-screen w-full flex flex-col justify-center items-center p-2">
+                    <div className="">
+                        <img className=" w-96" src={ConvoLogo} alt="Conva" />
                     </div>
                 </div>
             )}
@@ -334,6 +338,16 @@ function ChatBody({
                                                 item.user.name
                                             )).join(", ")}
                                     </span>}
+                            </div>
+                            <div className="flex"
+                                onClick={() => {
+                                    handleDeleteChat();
+                                }}>
+                                <button className="text-gray-400 hover:text-gray-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                    </svg>
+                                </button>
                             </div>
                         </span>
                     </div>

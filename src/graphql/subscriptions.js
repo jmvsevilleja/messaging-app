@@ -10,7 +10,6 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -58,7 +57,6 @@ export const onCreateMessageByChatRoomMessagesId = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -112,7 +110,6 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -160,7 +157,6 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -225,7 +221,6 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -248,7 +243,6 @@ export const onCreateChatRoomUserByChatRoomUserUserId = /* GraphQL */ `
       }
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -312,7 +306,6 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -335,7 +328,6 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
       }
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -386,7 +378,6 @@ export const onCreateMessage = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -434,7 +425,6 @@ export const onCreateMessage = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -486,7 +476,6 @@ export const onUpdateMessage = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -534,7 +523,6 @@ export const onUpdateMessage = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -586,7 +574,6 @@ export const onDeleteMessage = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -634,7 +621,6 @@ export const onDeleteMessage = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -714,7 +700,6 @@ export const onCreateChatRoom = /* GraphQL */ `
       }
       admin {
         id
-        clinicaID
         name
         type
         imageUri
@@ -795,7 +780,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
       }
       admin {
         id
-        clinicaID
         name
         type
         imageUri
@@ -876,7 +860,6 @@ export const onDeleteChatRoom = /* GraphQL */ `
       }
       admin {
         id
-        clinicaID
         name
         type
         imageUri
@@ -926,7 +909,6 @@ export const onCreateUser = /* GraphQL */ `
   subscription OnCreateUser {
     onCreateUser {
       id
-      clinicaID
       name
       type
       imageUri
@@ -963,7 +945,6 @@ export const onCreateUser = /* GraphQL */ `
         }
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -994,7 +975,6 @@ export const onCreateUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1029,7 +1009,6 @@ export const onUpdateUser = /* GraphQL */ `
   subscription OnUpdateUser {
     onUpdateUser {
       id
-      clinicaID
       name
       type
       imageUri
@@ -1066,7 +1045,6 @@ export const onUpdateUser = /* GraphQL */ `
         }
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1097,7 +1075,6 @@ export const onUpdateUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1132,7 +1109,6 @@ export const onDeleteUser = /* GraphQL */ `
   subscription OnDeleteUser {
     onDeleteUser {
       id
-      clinicaID
       name
       type
       imageUri
@@ -1169,7 +1145,6 @@ export const onDeleteUser = /* GraphQL */ `
         }
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1200,7 +1175,6 @@ export const onDeleteUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1247,7 +1221,6 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1270,7 +1243,6 @@ export const onCreateChatRoomUser = /* GraphQL */ `
       }
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -1330,7 +1302,6 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1353,7 +1324,6 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
       }
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -1413,7 +1383,6 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -1436,7 +1405,6 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
       }
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -1486,23 +1454,22 @@ export const onCreateUserAccount = /* GraphQL */ `
     $code: String
     $email: String
     $first_name: String
-    $last_name: String
+    $gender: String
   ) {
     onCreateUserAccount(
       id: $id
       code: $code
       email: $email
       first_name: $first_name
-      last_name: $last_name
+      gender: $gender
     ) {
       id
       code
       email
       first_name
+      gender
       last_name
       user_type
-      photo
-      phones
     }
   }
 `;
@@ -1512,23 +1479,22 @@ export const onUpdateUserAccount = /* GraphQL */ `
     $code: String
     $email: String
     $first_name: String
-    $last_name: String
+    $gender: String
   ) {
     onUpdateUserAccount(
       id: $id
       code: $code
       email: $email
       first_name: $first_name
-      last_name: $last_name
+      gender: $gender
     ) {
       id
       code
       email
       first_name
+      gender
       last_name
       user_type
-      photo
-      phones
     }
   }
 `;
@@ -1538,23 +1504,22 @@ export const onDeleteUserAccount = /* GraphQL */ `
     $code: String
     $email: String
     $first_name: String
-    $last_name: String
+    $gender: String
   ) {
     onDeleteUserAccount(
       id: $id
       code: $code
       email: $email
       first_name: $first_name
-      last_name: $last_name
+      gender: $gender
     ) {
       id
       code
       email
       first_name
+      gender
       last_name
       user_type
-      photo
-      phones
     }
   }
 `;

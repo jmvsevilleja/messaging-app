@@ -8,7 +8,6 @@ export const getMessage = /* GraphQL */ `
       content
       user {
         id
-        clinicaID
         name
         type
         imageUri
@@ -56,7 +55,6 @@ export const getMessage = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -113,7 +111,6 @@ export const listMessages = /* GraphQL */ `
         content
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -166,7 +163,7 @@ export const listMessages = /* GraphQL */ `
 `;
 export const messageByMessageType = /* GraphQL */ `
   query MessageByMessageType(
-    $type: MessageType!
+    $type: MessageType
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelMessageFilterInput
@@ -186,7 +183,6 @@ export const messageByMessageType = /* GraphQL */ `
         content
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -239,7 +235,7 @@ export const messageByMessageType = /* GraphQL */ `
 `;
 export const messageByChatRoomMessagesId = /* GraphQL */ `
   query MessageByChatRoomMessagesId(
-    $chatRoomMessagesId: ID!
+    $chatRoomMessagesId: ID
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelMessageFilterInput
@@ -259,7 +255,6 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
         content
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -345,7 +340,6 @@ export const getChatRoom = /* GraphQL */ `
       }
       admin {
         id
-        clinicaID
         name
         type
         imageUri
@@ -410,7 +404,6 @@ export const listChatRooms = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -439,7 +432,6 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
-      clinicaID
       name
       type
       imageUri
@@ -476,7 +468,6 @@ export const getUser = /* GraphQL */ `
         }
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -507,7 +498,6 @@ export const getUser = /* GraphQL */ `
         }
         admin {
           id
-          clinicaID
           name
           type
           imageUri
@@ -547,66 +537,6 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        clinicaID
-        name
-        type
-        imageUri
-        status
-        message {
-          nextToken
-        }
-        chatRoomUser {
-          id
-          typing
-          updatedAt
-          chatRoomUserUserId
-          createdAt
-          chatRoomChatRoomUsersId
-        }
-        chatRoom {
-          id
-          newMessages
-          lastMessage
-          name
-          group
-          imageUri
-          pin
-          createdAt
-          updatedAt
-          chatRoomAdminId
-        }
-        lastOnlineAt
-        online
-        publicKey
-        createdAt
-        updatedAt
-        userChatRoomId
-        userChatRoomUserId
-      }
-      nextToken
-    }
-  }
-`;
-export const userByClinicaID = /* GraphQL */ `
-  query UserByClinicaID(
-    $clinicaID: String!
-    $id: ModelIDKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelUserFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    userByClinicaID(
-      clinicaID: $clinicaID
-      id: $id
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        clinicaID
         name
         type
         imageUri
@@ -648,7 +578,7 @@ export const userByClinicaID = /* GraphQL */ `
 `;
 export const userByName = /* GraphQL */ `
   query UserByName(
-    $name: String!
+    $name: String
     $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -665,7 +595,6 @@ export const userByName = /* GraphQL */ `
     ) {
       items {
         id
-        clinicaID
         name
         type
         imageUri
@@ -707,7 +636,7 @@ export const userByName = /* GraphQL */ `
 `;
 export const userByType = /* GraphQL */ `
   query UserByType(
-    $type: UserType!
+    $type: UserType
     $name: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelUserFilterInput
@@ -724,7 +653,6 @@ export const userByType = /* GraphQL */ `
     ) {
       items {
         id
-        clinicaID
         name
         type
         imageUri
@@ -766,7 +694,7 @@ export const userByType = /* GraphQL */ `
 `;
 export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
   query ChatRoomUserByChatRoomUserUserId(
-    $chatRoomUserUserId: ID!
+    $chatRoomUserUserId: ID
     $updatedAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelChatRoomUserFilterInput
@@ -797,7 +725,6 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         }
         user {
           id
-          clinicaID
           name
           type
           imageUri
@@ -827,10 +754,9 @@ export const getUserAccount = /* GraphQL */ `
       code
       email
       first_name
+      gender
       last_name
       user_type
-      photo
-      phones
     }
   }
 `;
@@ -846,10 +772,9 @@ export const listUserAccounts = /* GraphQL */ `
         code
         email
         first_name
+        gender
         last_name
         user_type
-        photo
-        phones
       }
       nextToken
     }
@@ -867,10 +792,9 @@ export const queryUserAccountsByCodeIndex = /* GraphQL */ `
         code
         email
         first_name
+        gender
         last_name
         user_type
-        photo
-        phones
       }
       nextToken
     }
@@ -892,10 +816,9 @@ export const queryUserAccountsByUserTypeIndex = /* GraphQL */ `
         code
         email
         first_name
+        gender
         last_name
         user_type
-        photo
-        phones
       }
       nextToken
     }
@@ -917,10 +840,9 @@ export const queryUserAccountsByLastNameIndex = /* GraphQL */ `
         code
         email
         first_name
+        gender
         last_name
         user_type
-        photo
-        phones
       }
       nextToken
     }
@@ -928,7 +850,7 @@ export const queryUserAccountsByLastNameIndex = /* GraphQL */ `
 `;
 export const queryUserAccountsByGenderIndex = /* GraphQL */ `
   query QueryUserAccountsByGenderIndex(
-    $gender: ID!
+    $gender: String!
     $first: Int
     $after: String
   ) {
@@ -942,10 +864,9 @@ export const queryUserAccountsByGenderIndex = /* GraphQL */ `
         code
         email
         first_name
+        gender
         last_name
         user_type
-        photo
-        phones
       }
       nextToken
     }
@@ -963,10 +884,9 @@ export const queryUserAccountsByEmailIndex = /* GraphQL */ `
         code
         email
         first_name
+        gender
         last_name
         user_type
-        photo
-        phones
       }
       nextToken
     }
@@ -988,10 +908,9 @@ export const queryUserAccountsByFirstNameIndex = /* GraphQL */ `
         code
         email
         first_name
+        gender
         last_name
         user_type
-        photo
-        phones
       }
       nextToken
     }

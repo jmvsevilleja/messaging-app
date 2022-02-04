@@ -1,17 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from "aws-amplify";
-import {userByClinicaID, getUserAccount} from "../graphql/queries";
+import {getUserById, getAccountById, getChatRooms, getMessages} from "../api/queries";
+import {addUser} from "../api/mutations";
 
-import {
-    messageByChatRoomMessagesId,
-    chatRoomUserByChatRoomUserUserId
-} from "../graphql/custom-queries";
-import {
-    createUser,
-    createChatRoom,
-    createChatRoomUser
-} from "../graphql/mutations";
 import {
     updateUser,
     updateMessage,
@@ -46,7 +38,6 @@ let subs = {
 
 const Chat = () => {
     const [messageList, setMessageList] = useState([]);
-    const [userList, setUserList] = useState([]);
     const [chatRoomList, setChatRoomList] = useState([]);
     const [user, setUser] = useState(null);
     const [chatRoom, setChatRoom] = useState({});
@@ -90,7 +81,7 @@ const Chat = () => {
     };
 
     const handleCreateUser = async (user_id) => {
-        fetchUserAccount(user_id).then((user_detail) => {
+        getAccountById(user_id).then((user_detail) => {
             if (user_detail) {
                 const name = user_detail.first_name + " " + user_detail.last_name;
                 console.log("user not found create to users table", user_id, name);
@@ -98,69 +89,13 @@ const Chat = () => {
                     //console.log('user created', result);
                     setUser({
                         id: result.id,
-                        clinicaID: user_id,
                         name: name,
+                        status: result.status
                     });
                 });
             }
         }
         );
-    };
-
-    const handleCreateChat = async (selected_user) => {
-        console.log("handleCreateChat", chatRoomList, user.id, selected_user.id);
-
-        // TODO: find in DB instead in the list
-        // check if user logged and selected_user is already in chat room
-        const found_user = chatRoomList.find((room) => {
-            if (!Boolean(room.chatroom.group)) { // not group chat
-                let needle = [user.id, selected_user.id];
-                var haystack = room.chatroom.chatRoomUsers.items.map(item => item.user.id);
-                return needle.every(item => haystack.includes(item));
-            }
-            return false;
-        });
-
-        console.log('handleCreateChat Found', found_user);
-        if (!Boolean(found_user)) {
-            // Creating Chat Room
-            const room = await API.graphql(
-                graphqlOperation(createChatRoom, {
-                    input: {
-                        name: user.name + " - " + selected_user.name,
-                        chatRoomAdminId: user.id, // Creator of the Chatroom
-                        group: false,
-                    },
-                })
-            );
-            console.log("createChatRoom", room, room.data.createChatRoom.id);
-            //Creating Chat Room User
-            await API.graphql(
-                graphqlOperation(createChatRoomUser, {
-                    input: {
-                        chatRoomUserUserId: selected_user.id,
-                        chatRoomChatRoomUsersId:
-                            room.data.createChatRoom.id,
-                    },
-                })
-            );
-            //Creating Chat Room Admin
-            await API.graphql(
-                graphqlOperation(createChatRoomUser, {
-                    input: {
-                        chatRoomUserUserId: user.id,
-                        chatRoomChatRoomUsersId: room.data.createChatRoom.id,
-                    },
-                })
-            );
-            console.log('createChatRoomUser', room.data.createChatRoom.id);
-            // Open ChatRoom with this Id
-            handleChatRoomID(room.data.createChatRoom.id);
-            // }
-        } else {
-            // open chatroom from users list
-            handleChatRoomID(found_user.chatroom.id);
-        }
     };
 
     const handleChatRoom = async (chatroom) => {
@@ -272,31 +207,25 @@ const Chat = () => {
         });
 
         // TODO: load the next 100 messages on scroll
-        const result = await API.graphql(
-            graphqlOperation(messageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id, sortDirection: "DESC", limit: 100})
-        );
-        console.log('messageByChatRoomMessagesId', result.data.MessageByChatRoomMessagesId);
-        //fetchMessages(chatroom.id);
-        setMessageList(result.data.MessageByChatRoomMessagesId.items);
-
-        // Set All message to READ
-        result.data.MessageByChatRoomMessagesId.items.forEach((item) => {
-            if (item.userMessageId !== user.id && item.status !== "READ") {
-                //console.log('handleUnreadMessage', item);
-                handleUnreadMessage(item.id);
-            }
+        getMessages(chatroom.id).then((messages) => {
+            setMessageList(messages);
+            // Set All message to READ
+            messages.forEach((item) => {
+                if (item.userMessageId !== user.id && item.status !== "READ") {
+                    //console.log('handleUnreadMessage', item);
+                    handleUnreadMessage(item.id);
+                }
+            });
+            // remove counter when messages are read
+            messages.find((item) => {
+                if (item.userMessageId !== user.id && item.status !== "READ") {
+                    // update removing counter
+                    handleCounterMessage(chatroom.id);
+                    return true;
+                }
+                return false;
+            });
         });
-
-        // remove counter when messages are read
-        result.data.MessageByChatRoomMessagesId.items.find((item) => {
-            if (item.userMessageId !== user.id && item.status !== "READ") {
-                // update removing counter
-                handleCounterMessage(chatroom.id);
-                return true;
-            }
-            return false;
-        });
-
     };
 
     const handleCounterMessage = async (chatroom_id) => {
@@ -340,7 +269,7 @@ const Chat = () => {
         setOpenChat(true);
     }
     // OTHER FUNCTIONS
-    const namedChatRoom = async (chatroom) => {
+    const updateChatRoomList = async (chatroom) => {
         const name_chatroom = chatroom.map((room) => {
             if (!Boolean(room.chatroom.group)) {
                 // Change name to the one you are chatting with
@@ -353,81 +282,8 @@ const Chat = () => {
             }
             return room;
         });
-        console.log('namedChatRoom', name_chatroom);
+        console.log('updateChatRoomList', name_chatroom);
         setChatRoomList([...name_chatroom]);
-    };
-    const fetchChatRooms = async (user_id) => {
-        console.log('fetchChatRooms', user_id);
-        if (!user_id) return;
-        try {
-            // get logged user from User Table to get status.
-            const item = await API.graphql(
-                graphqlOperation(chatRoomUserByChatRoomUserUserId, {chatRoomUserUserId: user_id})
-            );
-            return item.data.ChatRoomUserByChatRoomUserUserId.items;
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    const fetchUser = async (user_id) => {
-        console.log('fetchUser', user_id);
-        if (!user_id) return;
-        try {
-            // get logged user from User Table to get status.
-            const item = await API.graphql(
-                graphqlOperation(userByClinicaID, {clinicaID: user_id})
-            );
-            if (item.data.userByClinicaID.items) {
-                return item.data.userByClinicaID.items[0];
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    // const fetchChatRoom = async () => {
-    //     if (!user) return;
-    //     //console.log('fetchChatRoom', user);
-    //     try {
-    //         const result = await API.graphql({query: listChatRooms});
-    //         console.log('fetchChatRoom', result.data.listChatRooms.items, user.id);
-    //         //filterChatRoom(result.data.listChatRooms.items);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
-    const fetchUserAccount = async (user_id) => {
-        console.log('fetchUserAccount', user_id);
-        if (!user_id) return;
-        try {
-            // get logged user from User Table to get status.
-            const item = await API.graphql(
-                graphqlOperation(getUserAccount, {id: user_id})
-            );
-            if (item.data.getUserAccount) {
-                return item.data.getUserAccount;
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    const addUser = async (user_id, name) => {
-        if (!user_id || !name) return;
-        try {
-            const item = await API.graphql({
-                query: createUser,
-                variables: {
-                    input: {
-                        clinicaID: user_id,
-                        name: name,
-                        status: "Hi there! I'm using Conva",
-                        type: "USER"
-                    },
-                },
-            });
-            return item.data.createUser;
-        } catch (err) {
-            console.error(err);
-        }
     };
 
     // USE EFFECTS
@@ -437,9 +293,7 @@ const Chat = () => {
         // const auth_token = localStorage.getItem("auth_token");
         // const refresh_token = localStorage.getItem("refresh_token");
 
-        // TODO: check user auth token if valid
-
-        fetchUser(user_id).then((user_found) => {
+        getUserById(user_id).then((user_found) => {
             setUser(user_found);
             if (user_id) {
                 // check if logged user is in  users table. create if not found and query user details.
@@ -468,13 +322,8 @@ const Chat = () => {
         //}, 300 * 1000);
 
 
-        fetchChatRooms(user.id).then((result) => {
-            console.log('fetchChatRooms', result);
-            namedChatRoom(result);
-
-            // fetchUsers(user.id).then((result) => {
-            //     setUserList([...result]);
-            // });
+        getChatRooms(user.id).then((result) => {
+            updateChatRoomList(result);
         });
 
         console.log("Subscribe to onCreateChatRoomUserByChatRoomUserUserId");
@@ -485,8 +334,8 @@ const Chat = () => {
         ).subscribe({
             next: ({provider, value}) => {
                 console.log("onCreateChatRoomUserByChatRoomUserUserId", value);
-                fetchChatRooms(user.id).then((result) => {
-                    namedChatRoom(result);
+                getChatRooms(user.id).then((result) => {
+                    updateChatRoomList(result);
                     if (value.data.onCreateChatRoomUserByChatRoomUserUserId.chatRoomUserUserId !== user.id) {
                         handleChatRoomID(value.data.onCreateChatRoomUserByChatRoomUserUserId.chatRoomChatRoomUsersId);
                     }
@@ -501,15 +350,6 @@ const Chat = () => {
         ).subscribe({
             next: ({provider, value}) => {
                 console.log("onUpdateUser", value);
-                //TODO: optimize to find
-                // update online in user list
-                // setUserList((list) => list.map((item) => item.id === value.data.onUpdateUser.id
-                //     ? {
-                //         ...item,
-                //         online: value.data.onUpdateUser.online
-                //     }
-                //     : item));
-                // update online in chatroom list
                 setChatRoomList((list) => list.map((item) => {
                     const items = item.chatroom.chatRoomUsers.items.map((item) =>
                         (item.user.id === value.data.onUpdateUser.id) ? {
@@ -583,14 +423,6 @@ const Chat = () => {
     }, [chatRoomID, forceOpenChat, chatRoomList]);
 
     useEffect(() => {
-
-        // Subscribe to creation of user
-        // subs.subCreateUser = API.graphql(graphqlOperation(onCreateUser)).subscribe({
-        //     next: ({provider, value}) => {
-        //         setUserList((list) => [...list, value.data.onCreateUser]);
-        //     },
-        //     error: (error) => console.warn(error),
-        // });
         // Subscribe to update of chatroom
         subs.subUpdateChatRoom = API.graphql(
             graphqlOperation(onUpdateChatRoom)
@@ -639,16 +471,15 @@ const Chat = () => {
                             chatRoomID={chatRoomID}
                             openChat={openChat}
                             setOpenChat={setOpenChat}
-                            userList={userList}
                             chatRoomList={chatRoomList}
                             handleLogout={handleLogout}
                             handleChatRoom={handleChatRoom}
                             handleChatRoomID={handleChatRoomID}
-                            handleCreateChat={handleCreateChat}
                         />
 
                         {/* Messages body */}
                         <ChatBody
+                            nectus={false}
                             user={user}
                             openChat={openChat}
                             chatRoom={chatRoom}

@@ -66,12 +66,6 @@ type ChatRoom @model @auth(rules: [{ allow: public }]) {
 
 type User @model @auth(rules: [{ allow: public }]) {
     id: ID!
-    clinicaID: String!
-        @index(
-            name: "byUserClinicaID"
-            queryField: "userByClinicaID"
-            sortKeyFields: ["id"]
-        )
     name: String!
         @index(
             name: "byUserName"

@@ -6,6 +6,8 @@ import CreateRoom from "./CreateRoom";
 import InviteUser from "./InviteUser";
 
 import ChatProfile from "./ChatProfile";
+import ChatSetting from "./ChatSetting";
+import ChatSettingQR from "./ChatSettingQR";
 import AvatarWithText from "./loader/AvatarWithText";
 import ListingWithThumbnail from "./loader/ListingWithThumbnail";
 
@@ -13,27 +15,34 @@ function ChatSidebar({
     user,
     chatRoomID,
     openChat,
-    userList,
     chatRoomList,
     handleLogout,
     handleChatRoom,
     handleChatRoomID,
-    handleCreateChat
 }) {
 
     const [searchText, setSearchText] = useState("");
-    // const [searchUserList, setSearchUserList] = useState([]);
     const [searchChatRoomList, setSearchChatRoomList] = useState([]);
     const [openProfile, setOpenProfile] = useState(false);
-    const [openSetting, setOpenSetting] = useState(true);
+    const [openSetting, setOpenSetting] = useState(false);
+    const [openSettingQR, setOpenSettingQR] = useState(false);
     const [dropdown, setDropdown] = useState(false);
     const dropdownMenu = useRef(null)
 
     // Open chat toggle
-    const handleCloseProfile = async () => {
+    const handleCloseProfile = () => {
         setOpenProfile(false);
     }
-    const handleCloseDropdown = async (e) => {
+    const handleCloseSetting = () => {
+        setOpenSetting(false);
+    }
+    const handleOpenSettingQR = () => {
+        setOpenSettingQR(true);
+    }
+    const handleCloseSettingQR = () => {
+        setOpenSettingQR(false);
+    }
+    const handleCloseDropdown = (e) => {
         if (dropdownMenu.current && !dropdownMenu.current.contains(e.target)) {
             setDropdown(false);
         }
@@ -43,7 +52,7 @@ function ChatSidebar({
         //setSearchUserList(userList);
         setSearchChatRoomList(chatRoomList);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userList, chatRoomList]);
+    }, [chatRoomList]);
 
     useEffect(() => {
         // setSearchUserList(userList.filter(item =>
@@ -75,6 +84,18 @@ function ChatSidebar({
                 user={user}
                 openProfile={openProfile}
                 handleCloseProfile={handleCloseProfile} />}
+
+            {user && <ChatSetting
+                user={user}
+                openSetting={openSetting}
+                handleCloseSetting={handleCloseSetting}
+                handleOpenSettingQR={handleOpenSettingQR}
+            />}
+
+            {user && <ChatSettingQR
+                user={user}
+                openSettingQR={openSettingQR}
+                handleCloseSettingQR={handleCloseSettingQR} />}
 
             < div className="my-3 pr-5">
                 {user &&
@@ -146,7 +167,7 @@ function ChatSidebar({
                         <div className="flex items-center">
                             {user && < CreateRoom
                                 user={user}
-                                userList={userList}
+                                chatRoomList={chatRoomList}
                                 handleChatRoomID={handleChatRoomID}
                             />}
                         </div>
