@@ -76,12 +76,21 @@ function CreateRoom({user, chatRoomList, handleChatRoomID}) {
                 type="button"
                 onClick={() => setIsOpen(true)}
                 title="Create Group Chat"
-                className="outline-none focus:outline-none"
+                className="outline-none focus:outline-none text-gray-400 hover:text-gray-500"
             >
-
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="18"
+                    fill="none"
+                    viewBox="0 0 28 18"
+                    className="fill-current"
+                >
+                    <path
+                        d="M7 0a5 5 0 100 10A5 5 0 007 0zM4 5a3 3 0 116 0 3 3 0 01-6 0zM14.908 5.218A2 2 0 0014 5V3a4 4 0 11-2.357 7.232l1.178-1.616a2 2 0 102.087-3.398zM17.998 18A3.999 3.999 0 0014 14.002V12a6.001 6.001 0 016 6h-2.002zM14 18h-2a5 5 0 00-10 0H0a7 7 0 1114 0z"
+                    ></path>
                 </svg>
+
             </button>
             <Dialog
                 open={isOpen}

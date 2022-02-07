@@ -4,7 +4,7 @@ import Avatar from 'react-avatar';
 function ChatRoom({user, room, chatRoomID, handleChatRoomID}) {
     var dateobj = new Date(room.updatedAt);
     const updated = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})
-    const online = room.chatRoomUsers.items.find((item) => (user.id !== item.user.id && item.user.online));
+    const online = room.chatRoomUsers.items.find((item) => ((room.group || user.id !== item.user.id) && item.user.online));
 
     return (
         <li>

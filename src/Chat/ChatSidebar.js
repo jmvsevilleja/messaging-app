@@ -73,7 +73,7 @@ function ChatSidebar({
     return (
         <div
             id="messages-sidebar"
-            className={" bg-white absolute z-20 pl-5 top-0 bottom-0 w-full md:w-auto md:static md:top-auto md:bottom-auto -mr-px md:translate-x-0 transform transition-transform duration-200 ease-in-out"
+            className={" bg-white absolute z-20 top-0 bottom-0 w-full md:w-80 xl:w-96 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out"
                 + (!openChat ? " translate-x-0" : " -translate-x-full")}
         >
 
@@ -97,7 +97,7 @@ function ChatSidebar({
                 openSettingQR={openSettingQR}
                 handleCloseSettingQR={handleCloseSettingQR} />}
 
-            < div className="my-3 pr-5">
+            < div className="my-3 px-5">
                 {user &&
                     <div className="flex relative justify-between item-center p-3 px-0 mb-6 pb-0 ">
                         <div
@@ -117,14 +117,14 @@ function ChatSidebar({
                                         <div className={"absolute bottom-0 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"}></div>
                                     </div>
                                 )}
-
-                                <span className="block ml-2 font-bold text-base text-gray-600">
-                                    {user && user.name}
-                                </span>
-                                <svg className="w-3 h-3 shrink-0 ml-1 mb-1 fill-current text-gray-400" viewBox="0 0 12 12">
-                                    <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                                </svg>
-
+                                <div className="flex items-center text-gray-400 hover:text-gray-500">
+                                    <span className="block ml-2 font-bold text-base text-gray-600">
+                                        {user && user.name}
+                                    </span>
+                                    <svg className="w-3 h-3 shrink-0 ml-1 mb-1 fill-current" viewBox="0 0 12 12">
+                                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
+                                    </svg>
+                                </div>
                                 {dropdown &&
                                     <div
                                         className="origin-top-right z-50 absolute top-full left-0 bg-white border border-gray-200 p-1.5  rounded shadow-lg overflow-hidden mt-1 w-full md:w-1/2"
@@ -202,7 +202,7 @@ function ChatSidebar({
                 </div>
             </div>
 
-            <div className="scrollable pr-5 overflow-x-hidden overflow-y-auto shrink-0 md:w-80 xl:w-96 h-[calc(100vh-130px)]">
+            <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)]">
                 {!user && <ListingWithThumbnail height={300} width={200} />}
                 <ul>
                     {user && searchChatRoomList.length !== 0 &&

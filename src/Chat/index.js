@@ -42,6 +42,7 @@ const Chat = () => {
     const [user, setUser] = useState(null);
     const [chatRoom, setChatRoom] = useState({});
     const [openChat, setOpenChat] = useState(false); // set the chat room open
+    const [openInfo, setOpenInfo] = useState(false); // set the chat room open
 
     const [forceOpenChat, setForceOpenChat] = useState(false); // force to open the chat room
     const [chatRoomID, setChatRoomID] = useState(null);
@@ -108,6 +109,7 @@ const Chat = () => {
             users: chatroom.chatRoomUsers.items,
             group: chatroom.group,
             lastMessage: chatroom.lastMessage,
+            chatRoomAdminId: chatroom.chatRoomAdminId,
         });
 
         if (subs.subCreateMessage) {
@@ -257,7 +259,12 @@ const Chat = () => {
     const handleCloseChat = async () => {
         setOpenChat(false);
     }
-
+    const handleCloseInfo = async () => {
+        setOpenInfo(false);
+    }
+    const handleOpenInfo = async () => {
+        setOpenInfo(true);
+    }
     // open chat room using room ID
     const handleChatRoomID = async (id) => {
         console.log('handleChatRoomID', id);
@@ -485,11 +492,18 @@ const Chat = () => {
                             chatRoom={chatRoom}
                             messageList={messageList}
                             handleCloseChat={handleCloseChat}
+                            handleOpenInfo={handleOpenInfo}
                         />
                     </div>
                 </main>
             </div>
-            <ChatInfo />
+            <ChatInfo
+                user={user}
+                openInfo={openInfo}
+                setOpenInfo={setOpenInfo}
+                chatRoom={chatRoom}
+                handleCloseInfo={handleCloseInfo}
+            />
         </div>
     );
 };

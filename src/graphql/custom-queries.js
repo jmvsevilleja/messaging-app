@@ -65,6 +65,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         lastMessage
         newMessages
         updatedAt
+        chatRoomAdminId
         chatRoomUsers {
           items {
             id

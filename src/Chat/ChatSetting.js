@@ -66,7 +66,9 @@ function ChatSetting({
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="w-6 h-6 fill-current"
+                            width="24"
+                            height="24"
+                            className="fill-current"
                             viewBox="0 0 24 24"
                         >
                             <path
@@ -81,45 +83,50 @@ function ChatSetting({
                 </div>
                 <div className="flex flex-col p-5 mx-4">
                     <div className="flex w-full justify-between items-center p-2">
-                        <div className="text-md font-medium text-base text-gray-600">
-                            <label
-                                for="toggle"
-                            >Night Mode</label>
-                        </div>
+                        <label
+                            htmlFor="darkmode"
+                            className="cursor-pointer text-md font-medium text-base text-gray-600"
+                        >Night Mode
+                        </label>
                         <div
                             className="relative inline-block w-12"
                         >
                             <input
                                 type="checkbox"
-                                name="toggle"
-                                id="toggle"
-                                className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer"
+                                name="darkmode"
+                                id="darkmode"
+                                className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none"
                                 value={darkMode}
                                 onClick={() => {
                                     setDarkMode(!darkMode);
                                 }}
                             />
                             <label
-                                for="toggle"
-                                className="toggle-label block h-7 -ml-1 -mt-1 rounded-full bg-gray-400 cursor-pointer"
+                                htmlFor="darkmode"
+                                className="outline-none focus:outline-none toggle-label block h-7 -ml-1 -mt-1 rounded-full bg-gray-400 cursor-pointer"
                             ></label>
                         </div>
                     </div>
                     <div className="p-2">
 
-                        <div className="flex justify-between items-center">
-                            <div className="text-md font-medium text-base text-gray-600">Privacy and security</div>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                            </svg>
+                        <div className="flex text-gray-400 hover:text-gray-500">
+                            <button className="flex w-full justify-between items-center outline-none focus:outline-none" >
+                                <div className="text-md font-medium text-base text-gray-600">Privacy and security</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
                         </div>
+
                     </div>
                     <div className=" p-2">
-                        <div className="flex justify-between items-center">
-                            <div className="text-md font-medium text-base text-gray-600">About</div>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                            </svg>
+                        <div className="flex text-gray-400 hover:text-gray-500">
+                            <button className="flex w-full justify-between items-center outline-none focus:outline-none" >
+                                <div className="text-md font-medium text-base text-gray-600">About</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
 

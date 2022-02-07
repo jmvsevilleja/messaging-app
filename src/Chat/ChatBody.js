@@ -38,7 +38,8 @@ function ChatBody({
     chatRoom,
     openChat,
     messageList,
-    handleCloseChat
+    handleCloseChat,
+    handleOpenInfo
 }) {
 
     const [messageText, setMessageText] = useState("");
@@ -164,9 +165,7 @@ function ChatBody({
             console.error(err);
         }
     };
-    const handleDeleteChat = () => {
-        console.log('Delete Chat');
-    }
+
     const handleResetChat = () => {
         setIsUploading(false);
         setSelectedFiles([]);
@@ -252,7 +251,7 @@ function ChatBody({
 
     useEffect(() => {
         if (!chatRoom.users) return;
-        const online = chatRoom.users.find((item) => (user.id !== item.user.id && item.user.online));
+        const online = chatRoom.users.find((item) => ((chatRoom.group || user.id !== item.user.id) && item.user.online));
         const typing = chatRoom.users.filter((item) => (user.id !== item.user.id && item.user.online && item.typing));
         //console.log('isOnline', online);
         setIsOnline(online);
@@ -277,7 +276,7 @@ function ChatBody({
     }, [messageList]);
     return (
         <div
-            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden  border-0 md:border-l-2 border-gray-200"
+            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200"
         >
             {nectus && !(openChat) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
@@ -340,9 +339,7 @@ function ChatBody({
                                     </span>}
                             </div>
                             <div className="flex"
-                                onClick={() => {
-                                    handleDeleteChat();
-                                }}>
+                                onClick={handleOpenInfo}>
                                 <button className="text-gray-400 hover:text-gray-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
