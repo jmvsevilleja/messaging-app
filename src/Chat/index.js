@@ -174,9 +174,9 @@ const Chat = () => {
         ).subscribe({
             next: ({provider, value}) => {
                 console.log("onUpdateChatRoomUserByChatRoomChatRoomUsersId", value);
-
                 // update typing in current chatroom
                 setChatRoom((items) => {
+                    //console.log('VALUE', items, value);
                     const users = items.users.map((item) =>
                         (item.id === value.data.onUpdateChatRoomUserByChatRoomChatRoomUsersId.id) ? {
                             ...item,
@@ -304,7 +304,6 @@ const Chat = () => {
         handleUserOnline(true);
         //}, 300 * 1000);
 
-
         getChatRooms(user.id).then((result) => {
             updateChatRoomList(result);
         });
@@ -411,19 +410,36 @@ const Chat = () => {
             graphqlOperation(onUpdateChatRoom)
         ).subscribe({
             next: ({provider, value}) => {
-                //console.log("onUpdateChatRoom", value.data.onUpdateChatRoom);
-                //TODO: optimize to find
-                setChatRoomList((list) => list.map((item) => item.chatroom.id === value.data.onUpdateChatRoom.id
-                    ? {
-                        ...item,
-                        chatroom: {
-                            ...item.chatroom,
-                            lastMessage: value.data.onUpdateChatRoom.lastMessage,
-                            newMessages: value.data.onUpdateChatRoom.newMessages,
-                            updatedAt: value.data.onUpdateChatRoom.updatedAt,
+                console.log("onUpdateChatRoom", value.data.onUpdateChatRoom);
+                if (value.data.onUpdateChatRoom.deleted === true) {
+                    setChatRoom((item) => {
+                        if (item && item.id === value.data.onUpdateChatRoom.id) {
+                            setChatRoomID(null);
+                            setOpenChat(false);
+                            setOpenInfo(false);
+                            getChatRooms(user.id).then((result) => {
+                                updateChatRoomList(result);
+                            });
+                            return {};
                         }
-                    }
-                    : item));
+                        return item;
+                    });
+                }
+
+                // Filter non deleted and update chatroom
+                setChatRoomList((list) => list.filter((item) => !(item.chatroom.id === value.data.onUpdateChatRoom.id
+                    && value.data.onUpdateChatRoom.deleted === true))
+                    .map((item) => (item.chatroom.id === value.data.onUpdateChatRoom.id)
+                        ? {
+                            ...item,
+                            chatroom: {
+                                ...item.chatroom,
+                                lastMessage: value.data.onUpdateChatRoom.lastMessage,
+                                newMessages: value.data.onUpdateChatRoom.newMessages,
+                                updatedAt: value.data.onUpdateChatRoom.updatedAt,
+                            }
+                        }
+                        : item));
             },
             error: (error) => console.warn(error),
         });

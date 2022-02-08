@@ -73,7 +73,7 @@ function ChatSidebar({
     return (
         <div
             id="messages-sidebar"
-            className={" bg-white absolute z-20 top-0 bottom-0 w-full md:w-80 xl:w-96 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out"
+            className={" bg-white absolute z-20 top-0 bottom-0 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out"
                 + (!openChat ? " translate-x-0" : " -translate-x-full")}
         >
 
@@ -202,7 +202,7 @@ function ChatSidebar({
                 </div>
             </div>
 
-            <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)]">
+            <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)] w-full md:w-80 xl:w-96">
                 {!user && <ListingWithThumbnail height={300} width={200} />}
                 <ul>
                     {user && searchChatRoomList.length !== 0 &&

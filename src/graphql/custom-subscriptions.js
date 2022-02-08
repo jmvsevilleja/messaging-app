@@ -91,33 +91,6 @@ export const onUpdateChatRoom = /* GraphQL */ `
       id
       newMessages
       lastMessage
-      messages {
-        items {
-          id
-          content
-          type
-          image {
-            name
-            path
-          }
-          audio {
-            name
-            path
-          }
-          file {
-            name
-            path
-          }
-          status
-          replyToMessageID
-          forUserId
-          createdAt
-          updatedAt
-          chatRoomMessagesId
-          userMessageId
-        }
-        nextToken
-      }
       chatRoomUsers {
         items {
           id
@@ -128,43 +101,12 @@ export const onUpdateChatRoom = /* GraphQL */ `
         }
         nextToken
       }
-      admin {
-        id
-        name
-        imageUri
-        status
-        message {
-          nextToken
-        }
-        chatRoomUser {
-          id
-          createdAt
-          updatedAt
-          chatRoomUserUserId
-          chatRoomChatRoomUsersId
-        }
-        chatRoom {
-          id
-          newMessages
-          name
-          imageUri
-          createdAt
-          updatedAt
-          chatRoomAdminId
-        }
-        lastOnlineAt
-        online
-        publicKey
-        createdAt
-        updatedAt
-        userChatRoomId
-        userChatRoomUserId
-      }
       name
       imageUri
       createdAt
       updatedAt
       chatRoomAdminId
+      deleted
     }
   }
 `;

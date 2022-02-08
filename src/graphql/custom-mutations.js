@@ -87,6 +87,8 @@ export const updateChatRoom = /* GraphQL */ `
       name
       group
       imageUri
+      pin
+      deleted
       createdAt
       updatedAt
       chatRoomAdminId
