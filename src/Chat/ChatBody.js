@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {API, graphqlOperation} from "aws-amplify";
-import {
-    createMessage,
-    updateChatRoomUser
-} from "../graphql/custom-mutations";
-
 import Avatar from "react-avatar";
+import {addMessage, editChatRoomUser} from "../api/mutations";
 
 import Message from "./message";
 import Image from "./image";
@@ -149,18 +144,13 @@ function ChatBody({
         }
 
         try {
-            const created_message = await API.graphql({
-                query: createMessage,
-                variables: {
-                    input: input,
-                },
+            addMessage(input).then(() => {
+                handleResetChat();
+                setMessageText("");
+                if (messageText) {
+                    messageInput.current.focus();
+                }
             });
-            console.log("Created Message", created_message, chatRoom);
-            handleResetChat();
-            setMessageText("");
-            if (messageText) {
-                messageInput.current.focus();
-            }
         } catch (err) {
             console.error(err);
         }
@@ -238,14 +228,10 @@ function ChatBody({
         console.log('handleTypingUpdate', typing);
         const typist = chatRoom.users.find((item) => (user.id === item.user.id));
         if (!typist) return;
-        API.graphql(
-            graphqlOperation(updateChatRoomUser, {
-                input: {
-                    id: typist.id,
-                    typing: typing
-                },
-            })
-        );
+        editChatRoomUser({
+            id: typist.id,
+            typing: typing
+        });
         setIsTyping(typing);
     };
 
@@ -313,11 +299,11 @@ function ChatBody({
                             </button>}
                             {chatRoom && (
                                 <div className="relative">
-                                    <Avatar
+                                    {chatRoom.name && <Avatar
                                         size="40"
                                         round={true}
                                         name={chatRoom.name}
-                                    />
+                                    />}
                                     <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (isOnline ? "bg-green-500" : "bg-gray-500")}></div>
                                 </div>
                             )}
@@ -350,7 +336,7 @@ function ChatBody({
                     </div>
                     <div
                         id="chat"
-                        className="h-full p-5 overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100 xl:px-32"
+                        className="h-full p-5 overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100 xl:px-20"
                     >
                         {messageList
                             // sort messages oldest to newest client-side

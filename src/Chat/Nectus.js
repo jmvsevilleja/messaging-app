@@ -2,13 +2,8 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {API, graphqlOperation} from "aws-amplify";
 import {getUserById, getAccountById, getChatRooms, getMessages} from "../api/queries";
-import {addUser, addChatRoom, addChatRoomUser} from "../api/mutations";
+import {addUser, addChatRoom, addChatRoomUser, editUser, editMessage, editChatRoom} from "../api/mutations";
 
-import {
-    updateUser,
-    updateMessage,
-    updateChatRoom,
-} from "../graphql/custom-mutations";
 import {
     onUpdateUser,
     onUpdateChatRoom,
@@ -37,7 +32,8 @@ const Chat = () => {
     const [chatRoomList, setChatRoomList] = useState([]);
     const [user, setUser] = useState(null);
     const [chatRoom, setChatRoom] = useState({});
-    const [openChat, setOpenChat] = useState(false); // set the chat room open
+    const [openChat, setOpenChat] = useState(false);
+    const [openInfo, setOpenInfo] = useState(false);
 
     const [forceOpenChat, setForceOpenChat] = useState(false); // force to open the chat room
     const [chatRoomID, setChatRoomID] = useState(null);
@@ -46,15 +42,10 @@ const Chat = () => {
     const handleUserOnline = (online) => {
         if (!user) return;
         // update offline status
-        API.graphql(
-            graphqlOperation(updateUser, {
-                input: {
-                    id: user.id,
-                    online: online,
-                    //typing: false
-                },
-            })
-        );
+        editUser({
+            id: user.id,
+            online: online
+        });
     };
 
     const handleCreateUser = async (user_id) => {
@@ -147,15 +138,10 @@ const Chat = () => {
                 if (user && user.id === value.data.onCreateMessageByChatRoomMessagesId.userMessageId) {
                     console.log('onCreateMessageByChatRoomMessagesId', value.data.onCreateMessageByChatRoomMessagesId);
                     // update chatroom new message and add counter
-                    API.graphql({
-                        query: updateChatRoom,
-                        variables: {
-                            input: {
-                                id: value.data.onCreateMessageByChatRoomMessagesId.chatRoom.id,
-                                newMessages: (value.data.onCreateMessageByChatRoomMessagesId.chatRoom.newMessages * 1) + 1,
-                                lastMessage: value.data.onCreateMessageByChatRoomMessagesId.content
-                            },
-                        },
+                    editChatRoom({
+                        id: value.data.onCreateMessageByChatRoomMessagesId.chatRoom.id,
+                        newMessages: (value.data.onCreateMessageByChatRoomMessagesId.chatRoom.newMessages * 1) + 1,
+                        lastMessage: value.data.onCreateMessageByChatRoomMessagesId.content
                     });
                     //console.log("Updated Chatroom", updated_chatroom);
                 }
@@ -239,32 +225,29 @@ const Chat = () => {
 
     const handleCounterMessage = async (chatroom_id) => {
         console.log("handleCounterMessage", chatroom_id);
-        API.graphql({
-            query: updateChatRoom,
-            variables: {
-                input: {
-                    id: chatroom_id,
-                    newMessages: 0,
-                },
-            },
+        editChatRoom({
+            id: chatroom_id,
+            newMessages: 0,
         });
     };
 
     const handleUnreadMessage = async (message_id) => {
         console.log("handleUnreadMessage", message_id);
-        await API.graphql(
-            graphqlOperation(updateMessage, {
-                input: {
-                    id: message_id,
-                    status: "READ",
-                },
-            })
-        );
+        editMessage({
+            id: message_id,
+            status: "READ",
+        });
     };
 
     // Open chat toggle
     const handleCloseChat = async () => {
         setOpenChat(false);
+    }
+    const handleCloseInfo = async () => {
+        setOpenInfo(false);
+    }
+    const handleOpenInfo = async () => {
+        setOpenInfo(true);
     }
 
     // open chat room using room ID
@@ -504,11 +487,17 @@ const Chat = () => {
                             chatRoom={chatRoom}
                             messageList={messageList}
                             handleCloseChat={handleCloseChat}
+                            handleOpenInfo={handleOpenInfo}
                         />
                     </div>
                 </main>
             </div>
-            <ChatInfo />
+            <ChatInfo
+                user={user}
+                openInfo={openInfo}
+                chatRoom={chatRoom}
+                handleCloseInfo={handleCloseInfo}
+            />
         </div>
     );
 };
