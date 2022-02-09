@@ -2,9 +2,6 @@ import React, {useState} from "react";
 import Avatar from 'react-avatar';
 
 function User({user, admin, you}) {
-
-    const [loading, setLoading] = useState(false);
-
     return (
         <li>
             <div

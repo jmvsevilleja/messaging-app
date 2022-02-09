@@ -417,15 +417,24 @@ const Chat = () => {
                             setChatRoomID(null);
                             setOpenChat(false);
                             setOpenInfo(false);
-                            getChatRooms(user.id).then((result) => {
-                                updateChatRoomList(result);
-                            });
+                            if (user) {
+                                getChatRooms(user.id).then((result) => {
+                                    updateChatRoomList(result);
+                                });
+                            }
                             return {};
                         }
                         return item;
                     });
+                    return;
                 }
 
+                setChatRoom((item) => {
+                    return {
+                        ...item,
+                        name: value.data.onUpdateChatRoom.name,
+                    }
+                });
                 // Filter non deleted and update chatroom
                 setChatRoomList((list) => list.filter((item) => !(item.chatroom.id === value.data.onUpdateChatRoom.id
                     && value.data.onUpdateChatRoom.deleted === true))
@@ -437,6 +446,7 @@ const Chat = () => {
                                 lastMessage: value.data.onUpdateChatRoom.lastMessage,
                                 newMessages: value.data.onUpdateChatRoom.newMessages,
                                 updatedAt: value.data.onUpdateChatRoom.updatedAt,
+                                name: value.data.onUpdateChatRoom.name,
                             }
                         }
                         : item));

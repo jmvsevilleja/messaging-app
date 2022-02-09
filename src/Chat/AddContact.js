@@ -4,7 +4,7 @@ import {getUserById, getChatRooms, getAccountById, getAccountByEmail} from "../a
 import {addUser, addChatRoom, addChatRoomUser} from "../api/mutations";
 import QrReader from 'react-qr-reader'
 
-function InviteUser({user, handleChatRoomID}) {
+function AddContact({user, handleChatRoomID}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [userEmail, setUserEmail] = useState("");
@@ -258,7 +258,7 @@ function InviteUser({user, handleChatRoomID}) {
                                 </div>}
                             {!readQR && <div className="mt-4 flex flex-col">
                                 <div className="flex self-end">
-                                    <button className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
+                                    <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
                                         onClick={() => {
                                             setIsOpen(false);
                                         }}>
@@ -286,4 +286,4 @@ function InviteUser({user, handleChatRoomID}) {
     )
 }
 
-export default InviteUser
+export default AddContact

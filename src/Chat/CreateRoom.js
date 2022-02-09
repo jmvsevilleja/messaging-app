@@ -180,7 +180,7 @@ function CreateRoom({user, chatRoomList, handleChatRoomID}) {
 
                             <div className="mt-4 flex flex-col">
                                 <div className="flex self-end">
-                                    <button className="hover:text-gray-600 text-gray-500 font-base py-2 px-4" onClick={() => {
+                                    <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4" onClick={() => {
                                         setIsOpen(false);
                                     }}>
                                         Cancel

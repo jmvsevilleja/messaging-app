@@ -318,10 +318,10 @@ function ChatBody({
                                 {chatRoom.group &&
                                     <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
                                         {chatRoom.users
-                                            .sort((a, b) => b.user.name.localeCompare(a.user.name))
-                                            .map((item) => (
-                                                item.user.name
-                                            )).join(", ")}
+                                            .filter((item) => (
+                                                item.user.online
+                                            )).length + " "}
+                                        Online, from {chatRoom.users.length} People
                                     </span>}
                             </div>
                             <div className="flex"
@@ -338,7 +338,7 @@ function ChatBody({
                         id="chat"
                         className="h-full p-5 overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100 xl:px-20"
                     >
-                        {messageList
+                        {messageList.length !== 0 && messageList
                             // sort messages oldest to newest client-side
                             .sort((a, b) =>
                                 b.createdAt.localeCompare(

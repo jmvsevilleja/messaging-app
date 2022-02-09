@@ -3,7 +3,7 @@ import Avatar from "react-avatar";
 
 import ChatRoom from "./chatroom";
 import CreateRoom from "./CreateRoom";
-import InviteUser from "./InviteUser";
+import AddContact from "./AddContact";
 
 import ChatProfile from "./ChatProfile";
 import ChatSetting from "./ChatSetting";
@@ -73,11 +73,11 @@ function ChatSidebar({
     return (
         <div
             id="messages-sidebar"
-            className={" bg-white absolute z-20 top-0 bottom-0 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out"
+            className={" bg-white absolute z-20 top-0 bottom-0 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out w-full md:w-72 lg:w-80 xl:w-96"
                 + (!openChat ? " translate-x-0" : " -translate-x-full")}
         >
 
-            {!user && <div className="my-3 pr-5">
+            {!user && <div className="my-3 px-5">
                 <AvatarWithText height={80} width={200} className="-mb-3" />
             </div>}
             {user && <ChatProfile
@@ -99,7 +99,7 @@ function ChatSidebar({
 
             < div className="my-3 px-5">
                 {user &&
-                    <div className="flex relative justify-between item-center p-3 px-0 mb-6 pb-0 ">
+                    <div className="flex relative justify-between item-center p-3 px-0 mb-6 pb-0">
                         <div
                             className="grow flex"
 
@@ -158,7 +158,7 @@ function ChatSidebar({
 
                         </div>
                         <div className="flex items-center">
-                            {user && < InviteUser
+                            {user && <AddContact
                                 user={user}
                                 handleChatRoomID={handleChatRoomID}
                             />}
@@ -202,7 +202,7 @@ function ChatSidebar({
                 </div>
             </div>
 
-            <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)] w-full md:w-80 xl:w-96">
+            <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)] w-full md:w-72 lg:w-80 xl:w-96">
                 {!user && <ListingWithThumbnail height={300} width={200} />}
                 <ul>
                     {user && searchChatRoomList.length !== 0 &&
