@@ -45,7 +45,7 @@ function ChatProfile({
                 <div className="justify-between item-center p-5">
                     <div className="flex justify-center mb-10" >
                         <Avatar
-                            size="150"
+                            size="100"
                             round={true}
                             name={user.name}
                         />

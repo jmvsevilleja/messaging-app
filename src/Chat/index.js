@@ -100,6 +100,7 @@ const Chat = () => {
             group: chatroom.group,
             lastMessage: chatroom.lastMessage,
             chatRoomAdminId: chatroom.chatRoomAdminId,
+            imageUri: chatroom.imageUri,
         });
 
         if (subs.subCreateMessage) {
@@ -433,6 +434,7 @@ const Chat = () => {
                     return {
                         ...item,
                         name: value.data.onUpdateChatRoom.name,
+                        imageUri: value.data.onUpdateChatRoom.imageUri
                     }
                 });
                 // Filter non deleted and update chatroom
@@ -447,6 +449,7 @@ const Chat = () => {
                                 newMessages: value.data.onUpdateChatRoom.newMessages,
                                 updatedAt: value.data.onUpdateChatRoom.updatedAt,
                                 name: value.data.onUpdateChatRoom.name,
+                                imageUri: value.data.onUpdateChatRoom.imageUri
                             }
                         }
                         : item));

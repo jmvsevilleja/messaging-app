@@ -62,6 +62,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         id
         name
         group
+        imageUri
         lastMessage
         newMessages
         updatedAt

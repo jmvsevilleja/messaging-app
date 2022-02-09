@@ -43,16 +43,15 @@ function ChatInfo({
                 </div>
             </div>
             <div className="flex flex-col items-center p-5 pt-0">
-                {user && chatRoom.chatRoomAdminId !== user.id && chatRoom.group && chatRoom.name && <Avatar
+                {!chatRoom.imageUri && <Avatar
                     size="100"
                     round={true}
                     name={chatRoom.name}
                 />}
-                {user && chatRoom.chatRoomAdminId === user.id && chatRoom.group && <EditChatRoom
-                    avatar={true}
-                    user={user}
-                    chatRoom={chatRoom}
-                />}
+                {chatRoom.imageUri && <div className="w-24"><img
+                    src={chatRoom.imageUri}
+                    className="rounded-full object-cover h-24 w-24"
+                /></div>}
                 <div className="relative">
                     <div className="flex items-center mt-4 ml-2">
                         <span className="block font-bold text-lg text-gray-600">
