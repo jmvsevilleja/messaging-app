@@ -325,7 +325,7 @@ function ChatBody({
                                             .filter((item) => (
                                                 item.user.online
                                             )).length + " "}
-                                        Online, from {chatRoom.users.length} People
+                                        Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                                     </span>}
                             </div>
                             <div className="flex"

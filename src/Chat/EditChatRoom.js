@@ -9,8 +9,8 @@ const resizeFile = (file) =>
     new Promise((resolve) => {
         Resizer.imageFileResizer(
             file,
-            150,
-            150,
+            300,
+            300,
             "JPEG",
             100,
             0,
@@ -65,8 +65,6 @@ function EditChatRoom({user, chatRoom}) {
 
     const handleReset = () => {
         setIsOpen(false);
-        setSelectedImage(null);
-        setGroupName(chatRoom.name);
     }
 
     return <>
@@ -93,7 +91,7 @@ function EditChatRoom({user, chatRoom}) {
                         as="h3"
                         className="mb-3 text-lg font-medium leading-6 text-gray-600"
                     >
-                        Update Group Info
+                        Update Group Chat
                     </Dialog.Title>
                     <form
                         onSubmit={(e) => {

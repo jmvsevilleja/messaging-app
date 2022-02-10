@@ -131,6 +131,7 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
     ) {
       id
       typing
+      deleted
       chatRoomUserUserId
       updatedAt
     }

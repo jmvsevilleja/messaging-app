@@ -1,9 +1,9 @@
-import React, {useState} from "react";
-import {editChatRoomUser} from "../api/mutations";
+import React, {useEffect, useState} from "react";
+import {addChatRoomUser, editChatRoomUser} from "../api/mutations";
 import {Dialog} from "@headlessui/react";
 import UserSelect from "./userselect";
 
-function EditChatRoomUser({user, chatRoom}) {
+function EditChatRoomUser({user, chatRoomList, chatRoom}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [userList, setUserList] = useState([]);
@@ -12,8 +12,32 @@ function EditChatRoomUser({user, chatRoom}) {
     const [loading, setLoading] = useState(false);
     const [searchUserList, setSearchUserList] = useState([]);
 
+    useEffect(() => {
+        //console.log('chatRoom', chatRoom.users);
+        const chatroom_users = chatRoom.users.filter((item) => !item.deleted).map((item) => ({id: item.user.id}));
+        setSelectedUsers(chatroom_users);
+    }, [chatRoom]);
+
+    useEffect(() => {
+        // get non group users from the chatroom list
+        if (chatRoomList.length !== 0) {
+            const user_list = chatRoomList.filter((item) => (!item.chatroom.group)).map((item) => {
+                return item.chatroom.chatRoomUsers.items.filter((item) => (user.id !== item.user.id))[0].user;
+            });
+            setUserList(user_list);
+            setSearchUserList(user_list);
+        }
+    }, [chatRoomList, user]);
+
+    useEffect(() => {
+        setSearchUserList(userList.filter(item =>
+            item.name.toLowerCase().includes(searchText.toLowerCase())
+        ));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchText, userList]);
+
     const handleSelectedUsers = async (e, user) => {
-        //console.log('handleSelectedUsers', e.target.checked, item);
+        //console.log('handleSelectedUsers', e.target.checked, selectedUsers);
         if (e.target.checked) {
             setSelectedUsers([
                 ...selectedUsers,
@@ -24,6 +48,51 @@ function EditChatRoomUser({user, chatRoom}) {
             setSelectedUsers(selectedUsers.filter((item) => item.id !== user.id));
         }
     }
+
+    const handleEditRoomSubmit = async (event) => {
+        event.preventDefault();
+        // console.log('chatRoom.users', chatRoom.users);
+        // console.log('handleEditRoomSubmit', selectedUsers);
+        // prevent double submit
+        if (loading) return;
+        setLoading(true);
+
+        // Remove Users
+        await Promise.all(chatRoom.users.filter((item) => !item.deleted)
+            .map(async (item) => {
+                const delete_user = selectedUsers.find((selected) => selected.id === item.user.id);
+                if (!delete_user) { // delete when unchecked
+                    //console.log('delete_user', item.user.id);
+                    await editChatRoomUser({
+                        id: item.id,
+                        deleted: true
+                    });
+                }
+            }));
+        // Add Users
+        await Promise.all(
+            selectedUsers.map(async (item) => {
+                const edit_user = chatRoom.users.find((selected) => (selected.user.id === item.id && selected.deleted));
+                if (edit_user) { // edit only deleted users
+                    console.log('edit_user', edit_user);
+                    await editChatRoomUser({
+                        id: edit_user.id,
+                        deleted: false,
+                    });
+                } else {
+                    const add_user = chatRoom.users.find((selected) => selected.user.id === item.id);
+                    if (!add_user) {  // then add user
+                        console.log('add_user', item.id);
+                        await addChatRoomUser(item.id, chatRoom.id);
+                    }
+                }
+
+            })
+        );
+
+        setLoading(false);
+        setIsOpen(false);
+    };
 
     return <>
 
@@ -63,10 +132,9 @@ function EditChatRoomUser({user, chatRoom}) {
                     </Dialog.Title>
                     <form
                         onSubmit={(e) => {
-                            //handleEditChatRoom(e);
+                            handleEditRoomSubmit(e);
                         }}
                     >
-
                         <label>
                             <span className="text-base text-gray-500">Group participants</span>
 
@@ -100,8 +168,7 @@ function EditChatRoomUser({user, chatRoom}) {
                         </label>
 
                         <ul className="pt-2 mt-2 scrollable overflow-x-hidden overflow-y-auto h-80">
-
-                            {user && searchUserList.length !== 0 &&
+                            {searchUserList.length !== 0 &&
                                 searchUserList
                                     .filter((item) => {
                                         return item.id !== user.id;
@@ -130,15 +197,12 @@ function EditChatRoomUser({user, chatRoom}) {
                                 <button
                                     type="submit"
                                     className="bg-primary hover:bg-secondary text-white font-base w-24 px-4 rounded">
-
-
-
                                     {loading && <svg fill='none' className="w-10 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
                                         <path clipRule='evenodd'
                                             d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
                                             fill='currentColor' fillRule='evenodd' />
                                     </svg>}
-                                    {!loading && <span className="py-2">Submit</span>}
+                                    {!loading && <span className="py-2">Save</span>}
                                 </button>
 
                             </div>

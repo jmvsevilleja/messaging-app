@@ -115,6 +115,7 @@ export const updateChatRoomUser = /* GraphQL */ `
     updateChatRoomUser(input: $input, condition: $condition) {
       id
       typing
+      deleted
       chatRoomUserUserId
       createdAt
       updatedAt

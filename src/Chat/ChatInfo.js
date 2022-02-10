@@ -9,6 +9,7 @@ import ExitChatRoom from "./ExitChatRoom";
 function ChatInfo({
     user,
     chatRoom,
+    chatRoomList,
     openInfo,
     handleCloseInfo,
 }) {
@@ -72,7 +73,7 @@ function ChatInfo({
                         .filter((item) => (
                             item.user.online
                         )).length + " "}
-                    Online, from {chatRoom.users.length} People
+                    Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                 </span>}
             </div>
             <div className="flex flex-col py-5 mx-4">
@@ -178,16 +179,17 @@ function ChatInfo({
                                         d="M7 0a5 5 0 100 10A5 5 0 007 0zM4 5a3 3 0 116 0 3 3 0 01-6 0zM14.908 5.218A2 2 0 0014 5V3a4 4 0 11-2.357 7.232l1.178-1.616a2 2 0 102.087-3.398zM17.998 18A3.999 3.999 0 0014 14.002V12a6.001 6.001 0 016 6h-2.002zM14 18h-2a5 5 0 00-10 0H0a7 7 0 1114 0z"
                                     ></path>
                                 </svg>
-                                {chatRoom.users.length} People</div>
-                            <EditChatRoomUser
+                                {chatRoom.users.filter((item) => !item.deleted).length} People</div>
+                            {user && chatRoom.chatRoomAdminId === user.id && <EditChatRoomUser
                                 user={user}
                                 chatRoom={chatRoom}
-                            />
+                                chatRoomList={chatRoomList}
+                            />}
                         </div>
                         <div className=" p-2">
                             <ul className="border-t border-gray-200 pt-2">
                                 {chatRoom.users && chatRoom.users.length !== 0 &&
-                                    chatRoom.users
+                                    chatRoom.users.filter((item) => !item.deleted)
                                         // sort user by name
                                         .sort((a, b) =>
                                             a.user.name.localeCompare(b.user.name)

@@ -29,7 +29,6 @@ function DeleteChatRoom({user, chatRoom}) {
 
                 setIsOpen(false);
                 setLoading(false);
-
             });
     }
 

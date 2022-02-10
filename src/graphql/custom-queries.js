@@ -71,6 +71,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
           items {
             id
             typing
+            deleted
             user {
               id
               name

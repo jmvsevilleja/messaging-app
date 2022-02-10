@@ -30,7 +30,7 @@ function CreateRoom({user, chatRoomList, handleChatRoomID}) {
             item.name.toLowerCase().includes(searchText.toLowerCase())
         ));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchText]);
+    }, [searchText, userList]);
 
     const handleSelectedUsers = async (e, user) => {
         //console.log('handleSelectedUsers', e.target.checked, item);
