@@ -15,7 +15,7 @@ function ChatInfo({
     handleCloseInfo,
 }) {
     const [notification, setNotification] = useState(true);
-    // const [userStatus, setUserStatus] = useState(user.status);
+
     useEffect(() => {
         console.log('Notification', notification);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,7 +97,7 @@ function ChatInfo({
                             className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none"
                             checked={notification}
                             value={notification}
-                            onClick={() => {
+                            onChange={() => {
                                 setNotification(!notification);
                             }}
                         />

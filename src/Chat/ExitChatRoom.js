@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Dialog} from "@headlessui/react";
+import {editChatRoomUser} from "../api/mutations";
 
 function ExitChatRoom({user, chatRoom}) {
 
@@ -8,28 +9,17 @@ function ExitChatRoom({user, chatRoom}) {
 
     const handleExitChatRoom = async (event) => {
         event.preventDefault();
-        console.log('Handle Exit Chatroom', chatRoom);
+        console.log('Handle Exit Chatroom', chatRoom, user.id);
         if (loading) return;
         setLoading(true);
-
-        // await Promise.all(chatRoom.users
-        //     .map(async (item) => {
-        //         console.log('Delete chatroomuser', item.id);
-        //         await editChatRoomUser({
-        //             id: item.id,
-        //             deleted: true
-        //         })
-        //     })).then(() => {
-        //         console.log('Delete chatroom', chatRoom.id);
-        //         editChatRoom({
-        //             id: chatRoom.id,
-        //             deleted: true,
-        //         });
-
-        //         setIsOpen(false);
-        //         setLoading(false);
-
-        //     });
+        const current_user = chatRoom.users.find((selected) => selected.user.id === user.id);
+        console.log(current_user);
+        await editChatRoomUser({
+            id: current_user.id,
+            deleted: true
+        });
+        setIsOpen(false);
+        setLoading(false);
     }
 
     return <div className="p-2">

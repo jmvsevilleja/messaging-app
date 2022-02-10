@@ -109,6 +109,7 @@ function EditChatProfile({user}) {
                             {selectedImage && <div className="w-24"><img
                                 src={URL.createObjectURL(selectedImage)}
                                 className="rounded-full object-cover h-24 w-24"
+                                alt={user.name}
                             /></div>}
 
                             <input

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import Picture from "./Picture";
 
 function User({user, admin, you}) {

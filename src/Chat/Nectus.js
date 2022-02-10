@@ -6,7 +6,6 @@ import {addUser, addChatRoom, addChatRoomUser, editUser, editMessage, editChatRo
 
 import {
     onUpdateUser,
-    onUpdateChatRoom,
     onCreateMessageByChatRoomMessagesId,
     onUpdateMessageByChatRoomMessagesId,
     onUpdateChatRoomUserByChatRoomChatRoomUsersId,
@@ -107,6 +106,7 @@ const Chat = () => {
             users: chatroom.chatRoomUsers.items,
             group: chatroom.group,
             lastMessage: chatroom.lastMessage,
+            imageUri: chatroom.imageUri,
         });
 
         if (subs.subCreateMessage) {
@@ -265,11 +265,12 @@ const Chat = () => {
         const name_chatroom = chatroom.map((room) => {
             if (!Boolean(room.chatroom.group)) {
                 // Change name to the one you are chatting with
-                const modifiedname = room.chatroom.chatRoomUsers.items.find((item) => {
+                const found_user = room.chatroom.chatRoomUsers.items.find((item) => {
                     return item.user.id !== user.id ? item.user.name : "";
                 });
-                if (modifiedname) {
-                    room.chatroom.name = modifiedname.user.name;
+                if (found_user) {
+                    room.chatroom.name = found_user.user.name;
+                    room.chatroom.imageUri = found_user.user.imageUri;
                 }
             }
             return room;
@@ -435,50 +436,13 @@ const Chat = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatRoomID, forceOpenChat, chatRoomList]);
 
-    useEffect(() => {
-        subs.subUpdateChatRoom = API.graphql(
-            graphqlOperation(onUpdateChatRoom)
-        ).subscribe({
-            next: ({provider, value}) => {
-                //console.log("onUpdateChatRoom", value.data.onUpdateChatRoom);
-                //TODO: optimize to find
-                setChatRoomList((list) => list.map((item) => item.chatroom.id === value.data.onUpdateChatRoom.id
-                    ? {
-                        ...item,
-                        chatroom: {
-                            ...item.chatroom,
-                            lastMessage: value.data.onUpdateChatRoom.lastMessage,
-                            newMessages: value.data.onUpdateChatRoom.newMessages,
-                            updatedAt: value.data.onUpdateChatRoom.updatedAt,
-                        }
-                    }
-                    : item));
-            },
-            error: (error) => console.warn(error),
-        });
-
-        // TODO: offline when on browser close
-        return () => {
-            console.log('UNMOUNTED');
-            //unsubscribe
-            for (const item in subs) {
-                if (subs[item]) {
-                    subs[item].unsubscribe();
-                }
-            }
-        };
-    }, []);
-
     //console.log('Rendering index.js');
     return (
         <div className="bg-white flex h-screen overflow-hidden">
             {/* Content area */}
             <div className="relative flex flex-col flex-1 overflow-hidden">
-
                 <main>
                     <div className="relative flex">
-
-
                         {/* Messages body */}
                         <ChatBody
                             nectus={true}

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 
 import EditChatProfile from "./EditChatProfile";
 import Picture from "./Picture";
@@ -8,14 +8,6 @@ function ChatProfile({
     openProfile,
     handleCloseProfile,
 }) {
-    const [userName, setUserName] = useState(user.name);
-    const [userStatus, setUserStatus] = useState(user.status);
-
-    useEffect(() => {
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
 
     return (
         <div>

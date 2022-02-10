@@ -97,7 +97,7 @@ function ChatSetting({
                                 id="darkmode"
                                 className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none"
                                 value={darkMode}
-                                onClick={() => {
+                                onChange={() => {
                                     setDarkMode(!darkMode);
                                 }}
                             />

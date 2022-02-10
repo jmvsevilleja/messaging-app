@@ -108,6 +108,7 @@ function EditChatRoom({user, chatRoom}) {
                             {selectedImage && <div className="w-24"><img
                                 src={URL.createObjectURL(selectedImage)}
                                 className="rounded-full object-cover h-24 w-24"
+                                alt={chatRoom.name}
                             /></div>}
 
                             <input

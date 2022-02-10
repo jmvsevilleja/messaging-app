@@ -237,7 +237,7 @@ function ChatBody({
 
     useEffect(() => {
         if (!chatRoom.users) return;
-        const online = chatRoom.users.find((item) => ((chatRoom.group || user.id !== item.user.id) && item.user.online));
+        const online = chatRoom.users.find((item) => ((user.id !== item.user.id) && item.user.online));
         const typing = chatRoom.users.filter((item) => (user.id !== item.user.id && item.user.online && item.typing));
         //console.log('isOnline', online);
         setIsOnline(online);
@@ -302,6 +302,7 @@ function ChatBody({
                                     name={chatRoom.name}
                                     image={chatRoom.imageUri}
                                     online={isOnline}
+                                    small={chatRoom.group}
                                 />
                             )}
                             <div className="w-full overflow-hidden">
