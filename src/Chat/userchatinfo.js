@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Avatar from 'react-avatar';
+import Picture from "./Picture";
 
 function User({user, admin, you}) {
     return (
@@ -7,10 +7,11 @@ function User({user, admin, you}) {
             <div
                 className="w-full p-2 my-1 flex justify-center items-center overflow-hidden text-sm focus:outline-none"
             >
-                <div className="relative">
-                    {user && <Avatar size="40" round={true} name={user.name} />}
-                    <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (user.online ? "bg-green-500" : "bg-gray-500")}></div>
-                </div>
+                <Picture
+                    name={user.name}
+                    image={user.imageUri}
+                    online={user.online}
+                />
                 <div className="w-full overflow-hidden">
                     <div className="flex justify-between overflow-hidden">
                         <span className="block ml-2 font-medium text-base text-gray-600 text-left">{user.name}</span>

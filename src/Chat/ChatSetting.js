@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import Avatar from "react-avatar";
+import Picture from "./Picture";
 
 function ChatSetting({
     user,
@@ -44,10 +44,10 @@ function ChatSetting({
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-300 p-3 xs:p-5">
 
-                    <Avatar
-                        size="40"
-                        round={true}
+                    <Picture
                         name={user.name}
+                        image={user.imageUri}
+                        small={true}
                     />
                     <div className="w-full overflow-hidden">
                         <div className="flex items-center">

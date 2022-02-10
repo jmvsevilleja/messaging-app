@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import Avatar from "react-avatar";
+
 import UserChatInfo from "./userchatinfo";
 import DeleteChatRoom from "./DeleteChatRoom";
 import EditChatRoomUser from "./EditChatRoomUser";
 import EditChatRoom from "./EditChatRoom";
 import ExitChatRoom from "./ExitChatRoom";
+import Picture from "./Picture";
 
 function ChatInfo({
     user,
@@ -44,15 +45,11 @@ function ChatInfo({
                 </div>
             </div>
             <div className="flex flex-col items-center p-5 pt-0">
-                {!chatRoom.imageUri && <Avatar
-                    size="100"
-                    round={true}
+                <Picture
                     name={chatRoom.name}
-                />}
-                {chatRoom.imageUri && <div className="w-24"><img
-                    src={chatRoom.imageUri}
-                    className="rounded-full object-cover h-24 w-24"
-                /></div>}
+                    image={chatRoom.imageUri}
+                    big={true}
+                />
                 <div className="relative">
                     <div className="flex items-center mt-4 ml-2">
                         <span className="block font-bold text-lg text-gray-600">
@@ -65,10 +62,10 @@ function ChatInfo({
                         chatRoom={chatRoom}
                     />}
                 </div>
-                {user && !chatRoom.group && <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
+                {user && !chatRoom.group && <span className="block text-sm text-gray-600 truncate overflow-hidden">
                     {user.status}
                 </span>}
-                {chatRoom.group && <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
+                {chatRoom.group && <span className="block text-sm text-gray-600 truncate overflow-hidden">
                     {chatRoom.users
                         .filter((item) => (
                             item.user.online

@@ -1,12 +1,18 @@
 import React from "react";
-import Avatar from 'react-avatar';
+import Picture from "./Picture";
 
 function User({user, selectedUsers, handleSelectedUsers}) {
     return (
         <li>
             <label className="flex items-center  justify-between hover:bg-indigo-100 rounded p-2 cursor-pointer text-sm">
                 <span className="flex items-center">
-                    {user && <Avatar size="40" round={true} name={user.name} />}
+
+                    <Picture
+                        name={user.name}
+                        image={user.imageUri}
+                        small={true}
+                    />
+
                     <span className="block ml-2 font-medium text-base text-gray-600">{user.name}</span>
                 </span>
                 <span>

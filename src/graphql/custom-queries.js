@@ -76,6 +76,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
               id
               name
               online
+              imageUri
             }
           }
         }

@@ -275,11 +275,12 @@ const Chat = () => {
         const name_chatroom = chatroom.map((room) => {
             if (!Boolean(room.chatroom.group)) {
                 // Change name to the one you are chatting with
-                const modifiedname = room.chatroom.chatRoomUsers.items.find((item) => {
+                const found_user = room.chatroom.chatRoomUsers.items.find((item) => {
                     return item.user.id !== user.id ? item.user.name : "";
                 });
-                if (modifiedname) {
-                    room.chatroom.name = modifiedname.user.name;
+                if (found_user) {
+                    room.chatroom.name = found_user.user.name;
+                    room.chatroom.imageUri = found_user.user.imageUri;
                 }
             }
             return room;

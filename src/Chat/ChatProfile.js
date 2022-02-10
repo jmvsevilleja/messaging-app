@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from "react";
-import Avatar from "react-avatar";
+
+import EditChatProfile from "./EditChatProfile";
+import Picture from "./Picture";
 
 function ChatProfile({
     user,
@@ -42,47 +44,28 @@ function ChatProfile({
                         <div className=" font-bold text-gray-600">Profile</div>
                     </div>
                 </div>
-                <div className="justify-between item-center p-5">
-                    <div className="flex justify-center mb-10" >
-                        <Avatar
-                            size="100"
-                            round={true}
-                            name={user.name}
-                        />
-                    </div>
+                <div className="flex flex-col items-center p-5 pt-0">
+                    <Picture
+                        name={user.name}
+                        image={user.imageUri}
+                        big={true}
+                    />
+                    <div className="relative">
+                        <div className="flex items-center mt-4 ml-2">
+                            <span className="block font-bold text-lg text-gray-600">
+                                {user.name}
+                            </span>
+                        </div>
 
-                    <div className="mb-5 relative text-gray-600 ">
-                        <label className="text-base">Your Name:
-                            <input
-                                aria-placeholder=""
-                                placeholder=""
-                                type="text"
-                                className="p-2 block w-full rounded bg-gray-100 border-none ring-0 outline-none"
-                                required
-                                onChange={(e) => {
-                                    setUserName(e.target.value);
-                                }}
-                                value={userName}
-                            />
-                        </label>
+                        {user && <EditChatProfile
+                            user={user}
+                        />}
                     </div>
-                    <div className="relative text-gray-600">
-                        <label className="text-base">About:
-                            <input
-                                aria-placeholder=""
-                                placeholder=""
-                                type="text"
-                                className="p-2 block w-full rounded bg-gray-100 border-none ring-0 outline-none"
-                                required
-                                onChange={(e) => {
-                                    setUserStatus(e.target.value);
-                                }}
-                                value={userStatus}
-                            />
-                        </label>
-                    </div>
+                    {user && <span className="block text-sm text-gray-600 truncate overflow-hidden">
+                        {user.status}
+                    </span>}
+
                 </div>
-
             </div>
 
         </div>);

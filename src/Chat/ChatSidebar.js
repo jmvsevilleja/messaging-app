@@ -1,9 +1,9 @@
 import React, {useEffect, useState, useRef} from "react";
-import Avatar from "react-avatar";
 
 import ChatRoom from "./chatroom";
 import CreateRoom from "./CreateRoom";
 import AddContact from "./AddContact";
+import Picture from "./Picture";
 
 import ChatProfile from "./ChatProfile";
 import ChatSetting from "./ChatSetting";
@@ -107,16 +107,13 @@ function ChatSidebar({
                             setDropdown(true);
                         }}
                             ref={dropdownMenu}>
-                                {user && (
-                                    <div className="relative">
-                                        <Avatar
-                                            size="40"
-                                            round={true}
-                                            name={user.name}
-                                        />
-                                        <div className={"absolute bottom-0 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"}></div>
-                                    </div>
-                                )}
+
+                                {user && <Picture
+                                    name={user.name}
+                                    image={user.imageUri}
+                                    small={true}
+                                />}
+
                                 <div className="flex items-center text-gray-400 hover:text-gray-500">
                                     <span className="block ml-2 font-bold text-base text-gray-600">
                                         {user && user.name}

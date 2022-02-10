@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import Avatar from "react-avatar";
 import {addMessage, editChatRoomUser} from "../api/mutations";
 
 import Message from "./message";
 import Image from "./image";
 import AudioRecorder from "./AudioRecorder";
 import AudioPlayer from "./AudioPlayer";
+import Picture from "./Picture";
 
 import ConvoLogo from '../logo.svg';
 import axios from "axios";
@@ -298,18 +298,11 @@ function ChatBody({
                                 </svg>
                             </button>}
                             {chatRoom && (
-                                <div className="relative">
-                                    {!chatRoom.imageUri && chatRoom.name && <Avatar
-                                        size="40"
-                                        round={true}
-                                        name={chatRoom.name}
-                                    />}
-                                    {chatRoom.imageUri && <div className="w-10"><img
-                                        src={chatRoom.imageUri}
-                                        className="rounded-full object-cover h-10 w-10"
-                                    /></div>}
-                                    <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (isOnline ? "bg-green-500" : "bg-gray-500")}></div>
-                                </div>
+                                <Picture
+                                    name={chatRoom.name}
+                                    image={chatRoom.imageUri}
+                                    online={isOnline}
+                                />
                             )}
                             <div className="w-full overflow-hidden">
                                 <div className="flex items-center">

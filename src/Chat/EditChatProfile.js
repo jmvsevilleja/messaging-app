@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import {editChatRoom} from "../api/mutations";
-import Picture from "./Picture";
+import {editUser} from "../api/mutations";
 
 import {Dialog} from "@headlessui/react";
 import Resizer from "react-image-file-resizer";
 import {uploadFile} from "../api/api";
+import Picture from "./Picture";
 
 const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -22,35 +22,36 @@ const resizeFile = (file) =>
         );
     });
 
-function EditChatRoom({user, chatRoom}) {
+function EditChatProfile({user}) {
 
     const [isOpen, setIsOpen] = useState(false);
-    const [groupName, setGroupName] = useState(chatRoom.name);
+    const [userName, setUserName] = useState(user.name);
+    const [userAbout, setUserAbout] = useState(user.status);
     const [loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
 
     const imageRef = React.useRef();
 
-    const handleEditChatRoom = async (event) => {
+    const handleEditChatProfile = async (event) => {
         event.preventDefault();
-        console.log('Handle Edit Chatroom', chatRoom);
+        console.log('Handle Edit Profile', user);
         if (loading) return;
         setLoading(true);
         let changes = {
-            id: chatRoom.id,
-            name: groupName,
+            id: user.id,
+            name: userName,
         }
         if (selectedImage) {
             uploadFile(selectedImage).then((file) => {
                 changes.imageUri = file.path;
-                editChatRoom(changes).then(() => {
+                editUser(changes).then(() => {
                     setIsOpen(false);
                     setLoading(false);
                 });
             });
             return
         }
-        editChatRoom(changes).then(() => {
+        editUser(changes).then(() => {
             setIsOpen(false);
             setLoading(false);
         });
@@ -72,7 +73,7 @@ function EditChatRoom({user, chatRoom}) {
         <button
             type="button"
             onClick={() => setIsOpen(true)}
-            title="Edit Group Info"
+            title="Edit Profile"
             className="absolute bottom-1 -right-8 text-gray-400 hover:text-gray-500 outline-none focus:outline-none"
         >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -92,17 +93,17 @@ function EditChatRoom({user, chatRoom}) {
                         as="h3"
                         className="mb-3 text-lg font-medium leading-6 text-gray-600"
                     >
-                        Update Group Chat
+                        Edit Profile
                     </Dialog.Title>
                     <form
                         onSubmit={(e) => {
-                            handleEditChatRoom(e);
+                            handleEditChatProfile(e);
                         }}
                     >
                         <div className="flex flex-col items-center">
                             {!selectedImage && <Picture
-                                name={chatRoom.name}
-                                image={chatRoom.imageUri}
+                                name={user.name}
+                                image={user.imageUri}
                                 big={true}
                             />}
                             {selectedImage && <div className="w-24"><img
@@ -125,21 +126,36 @@ function EditChatRoom({user, chatRoom}) {
                             </button>
                         </div>
                         <div className="relative text-gray-600">
-                            <label className="text-base">Group Name:
+                            <label className="text-base">Name:
                                 <input
-                                    aria-placeholder="Group Name"
-                                    placeholder="Group Name"
+                                    aria-placeholder="Name"
+                                    placeholder="Name"
                                     type="text"
                                     className="block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                     required
                                     onChange={(e) => {
-                                        setGroupName(e.target.value);
+                                        setUserName(e.target.value);
                                     }}
-                                    value={groupName}
+                                    value={userName}
                                 />
                             </label>
                         </div>
 
+                        <div className="mt-4 relative text-gray-600">
+                            <label className="text-base">About:
+                                <input
+                                    aria-placeholder="About"
+                                    placeholder="About"
+                                    type="text"
+                                    className="block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                    required
+                                    onChange={(e) => {
+                                        setUserAbout(e.target.value);
+                                    }}
+                                    value={userAbout}
+                                />
+                            </label>
+                        </div>
 
                         <div className="mt-4 flex flex-col">
                             <div className="flex self-end">
@@ -167,4 +183,4 @@ function EditChatRoom({user, chatRoom}) {
 
 }
 
-export default EditChatRoom;
+export default EditChatProfile;

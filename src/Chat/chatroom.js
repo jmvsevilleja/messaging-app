@@ -1,5 +1,5 @@
 import React from "react";
-import Avatar from 'react-avatar';
+import Picture from "./Picture";
 
 function ChatRoom({user, room, chatRoomID, handleChatRoomID}) {
     var dateobj = new Date(room.updatedAt);
@@ -15,14 +15,11 @@ function ChatRoom({user, room, chatRoomID, handleChatRoomID}) {
                     handleChatRoomID(room.id);
                 }}>
 
-                <div className="relative">
-                    {!room.imageUri && room && <Avatar size="40" round={true} name={room.name} />}
-                    {room.imageUri && <div className="w-10"><img
-                        src={room.imageUri}
-                        className="rounded-full object-cover h-10 w-10"
-                    /></div>}
-                    <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (online ? "bg-green-500" : "bg-gray-500")}></div>
-                </div>
+                <Picture
+                    name={room.name}
+                    image={room.imageUri}
+                    online={online}
+                />
 
                 <div className="w-full overflow-hidden">
                     <div className="flex justify-between">
