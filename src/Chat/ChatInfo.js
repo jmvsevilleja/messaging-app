@@ -50,16 +50,18 @@ function ChatInfo({
         >
             {user && <ChatInfoSearch
                 user={user}
+                messageList={messageList}
                 openInfoSearch={openInfoSearch}
                 handleCloseChatInfoSearch={handleCloseChatInfoSearch} />}
             {user && <ChatInfoBookmark
                 user={user}
+                messageList={messageList}
                 openInfoBookmark={openInfoBookmark}
                 handleCloseChatInfoBookmark={handleCloseChatInfoBookmark} />}
             {user && <ChatInfoMedia
                 user={user}
-                openInfoMedia={openInfoMedia}
                 messageList={messageList}
+                openInfoMedia={openInfoMedia}
                 handleCloseChatInfoMedia={handleCloseChatInfoMedia} />}
 
             <div className="justify-between item-center p-5 py-5 xs:py-8">
