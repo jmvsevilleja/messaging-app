@@ -62,9 +62,9 @@ const SSO = (props) => {
         // SSO
         var result = c.split("/");
         const authToken = {
-            code: result[result.length - 1],
-            ip: result[result.length - 2],
-            id: result[result.length - 3],
+            code: result[5],
+            ip: result[4],
+            id: result[3],
         };
         if (authToken.code) {
             Auth(authToken);

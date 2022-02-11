@@ -1,16 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {API, graphqlOperation} from "aws-amplify";
-import {
-    createMessage,
-    updateChatRoomUser
-} from "../graphql/custom-mutations";
-
-import Avatar from "react-avatar";
+import {addMessage, editChatRoomUser} from "../api/mutations";
 
 import Message from "./message";
 import Image from "./image";
 import AudioRecorder from "./AudioRecorder";
 import AudioPlayer from "./AudioPlayer";
+import Picture from "./Picture";
 
 import ConvoLogo from '../logo.svg';
 import axios from "axios";
@@ -38,7 +33,8 @@ function ChatBody({
     chatRoom,
     openChat,
     messageList,
-    handleCloseChat
+    handleCloseChat,
+    handleOpenInfo
 }) {
 
     const [messageText, setMessageText] = useState("");
@@ -148,25 +144,18 @@ function ChatBody({
         }
 
         try {
-            const created_message = await API.graphql({
-                query: createMessage,
-                variables: {
-                    input: input,
-                },
+            addMessage(input).then(() => {
+                handleResetChat();
+                setMessageText("");
+                if (messageText) {
+                    messageInput.current.focus();
+                }
             });
-            console.log("Created Message", created_message, chatRoom);
-            handleResetChat();
-            setMessageText("");
-            if (messageText) {
-                messageInput.current.focus();
-            }
         } catch (err) {
             console.error(err);
         }
     };
-    const handleDeleteChat = () => {
-        console.log('Delete Chat');
-    }
+
     const handleResetChat = () => {
         setIsUploading(false);
         setSelectedFiles([]);
@@ -239,20 +228,16 @@ function ChatBody({
         console.log('handleTypingUpdate', typing);
         const typist = chatRoom.users.find((item) => (user.id === item.user.id));
         if (!typist) return;
-        API.graphql(
-            graphqlOperation(updateChatRoomUser, {
-                input: {
-                    id: typist.id,
-                    typing: typing
-                },
-            })
-        );
+        editChatRoomUser({
+            id: typist.id,
+            typing: typing
+        });
         setIsTyping(typing);
     };
 
     useEffect(() => {
         if (!chatRoom.users) return;
-        const online = chatRoom.users.find((item) => (user.id !== item.user.id && item.user.online));
+        const online = chatRoom.users.find((item) => ((user.id !== item.user.id) && item.user.online));
         const typing = chatRoom.users.filter((item) => (user.id !== item.user.id && item.user.online && item.typing));
         //console.log('isOnline', online);
         setIsOnline(online);
@@ -277,7 +262,7 @@ function ChatBody({
     }, [messageList]);
     return (
         <div
-            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden  border-0 md:border-l-2 border-gray-200"
+            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200"
         >
             {nectus && !(openChat) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
@@ -313,14 +298,12 @@ function ChatBody({
                                 </svg>
                             </button>}
                             {chatRoom && (
-                                <div className="relative">
-                                    <Avatar
-                                        size="40"
-                                        round={true}
-                                        name={chatRoom.name}
-                                    />
-                                    <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (isOnline ? "bg-green-500" : "bg-gray-500")}></div>
-                                </div>
+                                <Picture
+                                    name={chatRoom.name}
+                                    image={chatRoom.imageUri}
+                                    online={isOnline}
+                                    small={chatRoom.group}
+                                />
                             )}
                             <div className="w-full overflow-hidden">
                                 <div className="flex items-center">
@@ -333,16 +316,14 @@ function ChatBody({
                                 {chatRoom.group &&
                                     <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
                                         {chatRoom.users
-                                            .sort((a, b) => b.user.name.localeCompare(a.user.name))
-                                            .map((item) => (
-                                                item.user.name
-                                            )).join(", ")}
+                                            .filter((item) => (
+                                                item.user.online
+                                            )).length + " "}
+                                        Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                                     </span>}
                             </div>
                             <div className="flex"
-                                onClick={() => {
-                                    handleDeleteChat();
-                                }}>
+                                onClick={handleOpenInfo}>
                                 <button className="text-gray-400 hover:text-gray-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
@@ -353,9 +334,9 @@ function ChatBody({
                     </div>
                     <div
                         id="chat"
-                        className="h-full p-5 overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100 xl:px-32"
+                        className="h-full p-5 overflow-y-auto relative flex-col-reverse flex text-center scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100 xl:px-20"
                     >
-                        {messageList
+                        {messageList.length !== 0 && messageList
                             // sort messages oldest to newest client-side
                             .sort((a, b) =>
                                 b.createdAt.localeCompare(

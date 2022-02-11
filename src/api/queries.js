@@ -52,7 +52,13 @@ export const getChatRooms = async (user_id) => {
     if (!user_id) return;
     try {
         return await API.graphql(
-            graphqlOperation(chatRoomUserByChatRoomUserUserId, {chatRoomUserUserId: user_id})
+            graphqlOperation(chatRoomUserByChatRoomUserUserId,
+                {
+                    chatRoomUserUserId: user_id,
+                    filter: {
+                        deleted: {ne: true}
+                    }
+                })
         ).then(({data: {ChatRoomUserByChatRoomUserUserId}}) => {
             console.log('GET CHATROOMS BY USER ID', ChatRoomUserByChatRoomUserUserId);
             return ChatRoomUserByChatRoomUserUserId.items;
@@ -66,7 +72,14 @@ export const getMessages = async (chatroom_id) => {
     if (!chatroom_id) return;
     try {
         return await API.graphql(
-            graphqlOperation(messageByChatRoomMessagesId, {chatRoomMessagesId: chatroom_id, sortDirection: "DESC", limit: 100})
+            graphqlOperation(messageByChatRoomMessagesId, {
+                chatRoomMessagesId: chatroom_id,
+                sortDirection: "DESC",
+                limit: 100,
+                filter: {
+                    deleted: {ne: true}
+                }
+            })
         ).then(({data: {MessageByChatRoomMessagesId}}) => {
             console.log('GET MESSAGES BY CHATROOM ID', MessageByChatRoomMessagesId);
             return MessageByChatRoomMessagesId.items;

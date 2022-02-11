@@ -1,12 +1,16 @@
 import {API, graphqlOperation} from "aws-amplify";
 import {
-    createUser
-} from "../graphql/mutations";
-import {
+    createUser,
     createChatRoom,
     createChatRoomUser
 } from "../graphql/mutations";
-
+import {
+    updateUser,
+    createMessage,
+    updateMessage,
+    updateChatRoom,
+    updateChatRoomUser
+} from "../graphql/custom-mutations";
 
 export const addUser = async (user_id, user_name) => {
     if (!user_id || !user_name) return;
@@ -23,6 +27,21 @@ export const addUser = async (user_id, user_name) => {
         ).then(({data: {createUser}}) => {
             console.log('ADD USER', createUser);
             return createUser;
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const editUser = async (input) => {
+    try {
+        return await API.graphql(
+            graphqlOperation(updateUser, {
+                input: input
+            })
+        ).then(({data: {updateUser}}) => {
+            console.log('EDIT USER', updateUser);
+            return updateUser;
         });
     } catch (err) {
         console.error(err);
@@ -49,6 +68,21 @@ export const addChatRoom = async (user_id, chatroom_name, is_group = false) => {
     }
 };
 
+export const editChatRoom = async (input) => {
+    try {
+        return await API.graphql(
+            graphqlOperation(updateChatRoom, {
+                input: input
+            })
+        ).then(({data: {updateChatRoom}}) => {
+            console.log('EDIT CHATROOM', updateChatRoom);
+            return updateChatRoom;
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
 export const addChatRoomUser = async (user_id, chatroom_id) => {
     if (!user_id || !chatroom_id) return;
     try {
@@ -60,8 +94,53 @@ export const addChatRoomUser = async (user_id, chatroom_id) => {
                 }
             })
         ).then(({data: {createChatRoomUser}}) => {
-            console.log('ADD CHATROOM USER', createChatRoomUser);
+            console.log('ADD CHATROOMUSER', createChatRoomUser);
             return createChatRoomUser;
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const addMessage = async (input) => {
+    try {
+        return await API.graphql(
+            graphqlOperation(createMessage, {
+                input: input
+            })
+        ).then(({data: {createMessage}}) => {
+            console.log('ADD MESSAGE', createMessage);
+            return createMessage;
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const editMessage = async (input) => {
+    try {
+        return await API.graphql(
+            graphqlOperation(updateMessage, {
+                input: input
+            })
+        ).then(({data: {updateMessage}}) => {
+            console.log('EDIT MESSAGE', updateMessage);
+            return updateMessage;
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const editChatRoomUser = async (input) => {
+    try {
+        return await API.graphql(
+            graphqlOperation(updateChatRoomUser, {
+                input: input
+            })
+        ).then(({data: {updateChatRoomUser}}) => {
+            console.log('EDIT CHATROOMUSER', updateChatRoomUser);
+            return updateChatRoomUser;
         });
     } catch (err) {
         console.error(err);
