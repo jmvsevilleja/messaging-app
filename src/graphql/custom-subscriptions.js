@@ -137,3 +137,12 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
     }
   }
 `;
+export const onCreateChatRoomUser = /* GraphQL */ `
+  subscription OnCreateChatRoomUser {
+    onCreateChatRoomUser {
+      id
+      chatRoomUserUserId
+      updatedAt
+    }
+  }
+`;

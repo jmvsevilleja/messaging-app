@@ -17,7 +17,7 @@ function ChatInfo({
     const [notification, setNotification] = useState(true);
 
     useEffect(() => {
-        console.log('Notification', notification);
+        //console.log('Notification', notification);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [notification]);
 

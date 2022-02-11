@@ -1,35 +1,25 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {API, graphqlOperation} from "aws-amplify";
+
 import {getUserById, getAccountById, getChatRooms, getMessages} from "../api/queries";
 import {addUser, editUser, editMessage, editChatRoom} from "../api/mutations";
-
 import {
-    //onCreateUser,
-    onUpdateUser,
-    onUpdateChatRoom,
-    onCreateChatRoomUserByChatRoomUserUserId,
-    onCreateMessageByChatRoomMessagesId,
-    onUpdateMessageByChatRoomMessagesId,
-    onUpdateChatRoomUserByChatRoomChatRoomUsersId,
-} from "../graphql/custom-subscriptions";
+    subOnUpdateUser,
+    subOnCreateChatRoomUser,
+    subOnCreateChatRoomUserByChatRoomUserUserId,
+    subOnUpdateChatRoom,
+    subOnCreateMessageByChatRoomMessagesId,
+    subOnUpdateMessageByChatRoomMessagesId,
+    subOnUpdateChatRoomUserByChatRoomChatRoomUsersId,
+} from "../api/subscriptions";
 
 import ChatSidebar from "./ChatSidebar";
 import ChatBody from "./ChatBody";
 import ChatInfo from "./ChatInfo";
 
-//import axios from "axios";
 import "./index.css";
 
-let subs = {
-    subCreateChatRoomUser: null,
-    subCreateUser: null,
-    subUpdateUser: null,
-    subUpdateChatRoom: null,
-    subCreateMessage: null,
-    subUpdateMessage: null,
-    subUpdateChatRoomUser: null,
-};
+let subscriptions = {};
 
 const Chat = () => {
     const [messageList, setMessageList] = useState([]);
@@ -53,9 +43,9 @@ const Chat = () => {
         document.cookie = "auth_login=; Max-Age=-99999999;";
         document.cookie = "token=; Max-Age=-99999999;";
         // unsubscribe
-        for (const item in subs) {
-            if (subs[item]) {
-                subs[item].unsubscribe();
+        for (const item in subscriptions) {
+            if (subscriptions[item]) {
+                subscriptions[item].unsubscribe();
             }
         }
         handleUserOnline(false);
@@ -103,115 +93,6 @@ const Chat = () => {
             imageUri: chatroom.imageUri,
         });
 
-        if (subs.subCreateMessage) {
-            subs.subCreateMessage.unsubscribe();
-        }
-        if (subs.subUpdateMessage) {
-            subs.subUpdateMessage.unsubscribe();
-        }
-        if (subs.subUpdateChatRoomUser) {
-            subs.subUpdateChatRoomUser.unsubscribe();
-        }
-        //console.log('Subscribe to onCreateMessageByChatRoomMessagesId');
-        subs.subCreateMessage = API.graphql(
-            graphqlOperation(onCreateMessageByChatRoomMessagesId, {chatRoomMessagesId: chatroom.id})
-        ).subscribe({
-            next: ({provider, value: {data: {onCreateMessageByChatRoomMessagesId}}}) => {
-                console.log("onCreateMessageByChatRoomMessagesId", onCreateMessageByChatRoomMessagesId);
-                setMessageList((list) => [
-                    ...list,
-                    onCreateMessageByChatRoomMessagesId,
-                ]);
-
-                // set READ if your not the owner
-                if (user && user.id !== onCreateMessageByChatRoomMessagesId.userMessageId) {
-                    handleUnreadMessage(onCreateMessageByChatRoomMessagesId.id);
-                }
-
-                // pass the last message and the counter
-                if (user && user.id === onCreateMessageByChatRoomMessagesId.userMessageId) {
-                    // update chatroom new message and add counter
-                    editChatRoom({
-                        id: onCreateMessageByChatRoomMessagesId.chatRoom.id,
-                        newMessages: (onCreateMessageByChatRoomMessagesId.chatRoom.newMessages * 1) + 1,
-                        lastMessage: onCreateMessageByChatRoomMessagesId.content
-                    });
-                    //console.log("Updated Chatroom", updated_chatroom);
-                }
-            },
-            error: (error) => console.warn(error),
-        });
-
-        //console.log('Subscribe to onUpdateMessageByChatRoomMessagesId');
-        subs.subUpdateMessage = API.graphql(
-            graphqlOperation(onUpdateMessageByChatRoomMessagesId, {
-                chatRoomMessagesId: chatroom.id,
-            })
-        ).subscribe({
-            next: ({provider, value: {data: {onUpdateMessageByChatRoomMessagesId}}}) => {
-                console.log("onUpdateMessageByChatRoomMessagesId", onUpdateMessageByChatRoomMessagesId);
-                if (onUpdateMessageByChatRoomMessagesId.userMessageId === user.id) {
-                    // Update all message status
-                    setMessageList((list) =>
-                        list.map((item) => item.id === onUpdateMessageByChatRoomMessagesId.id
-                            ? {...item, status: onUpdateMessageByChatRoomMessagesId.status}
-                            : item)
-                    );
-                    if (user && user.id === onUpdateMessageByChatRoomMessagesId.userMessageId) {
-                        // update removing counter
-                        handleCounterMessage(onUpdateMessageByChatRoomMessagesId.chatRoom.id);
-                    }
-                }
-            },
-            error: (error) => console.warn(error),
-        });
-
-        console.log("Subscribe to onUpdateChatRoomUserByChatRoomChatRoomUsersId");
-        subs.subUpdateChatRoomUser = API.graphql(
-            graphqlOperation(onUpdateChatRoomUserByChatRoomChatRoomUsersId, {
-                chatRoomChatRoomUsersId: chatroom.id,
-            })
-        ).subscribe({
-            next: ({provider, value: {data: {onUpdateChatRoomUserByChatRoomChatRoomUsersId}}}) => {
-                console.log("onUpdateChatRoomUserByChatRoomChatRoomUsersId", onUpdateChatRoomUserByChatRoomChatRoomUsersId);
-                // update typing/deleted in current chatroom
-                setChatRoom((items) => {
-                    const users = items.users.map((item) =>
-                        (item.id === onUpdateChatRoomUserByChatRoomChatRoomUsersId.id) ? {
-                            ...item,
-                            typing: onUpdateChatRoomUserByChatRoomChatRoomUsersId.typing,
-                            deleted: onUpdateChatRoomUserByChatRoomChatRoomUsersId.deleted
-                        } : item
-                    );
-                    return {
-                        ...items,
-                        users
-                    }
-                });
-                // update deleted in chatroomlist
-                setChatRoomList((list) => list.map((item) => {
-                    const items = item.chatroom.chatRoomUsers.items.map((item) =>
-                        (item.id === onUpdateChatRoomUserByChatRoomChatRoomUsersId.id) ? {
-                            ...item,
-                            deleted: onUpdateChatRoomUserByChatRoomChatRoomUsersId.deleted
-                        } : item
-                    );
-                    return {
-                        ...item,
-                        chatroom: {
-                            ...item.chatroom,
-                            chatRoomUsers: {
-                                ...item.chatroom.chatRoomUsers,
-                                items
-                            }
-                        }
-                    };
-                }));
-
-            },
-            error: (error) => console.warn(error),
-        });
-
         // TODO: load the next 100 messages on scroll
         getMessages(chatroom.id).then((messages) => {
             setMessageList(messages);
@@ -232,6 +113,80 @@ const Chat = () => {
                 return false;
             });
         });
+
+        // SUBSCRIPTIONS
+        ['sub11', 'sub12', 'sub13'].forEach((item) => {
+            if (subscriptions[item]) {
+                subscriptions[item].unsubscribe();
+            }
+        });
+
+        subscriptions.sub11 = subOnCreateMessageByChatRoomMessagesId(chatroom.id, ((value) => {
+            setMessageList((list) => [
+                ...list,
+                value,
+            ]);
+            // set READ if your not the owner
+            if (user && user.id !== value.userMessageId) {
+                handleUnreadMessage(value.id);
+            }
+            // pass the last message and the counter
+            if (user && user.id === value.userMessageId) {
+                // update chatroom new message and add counter
+                editChatRoom({
+                    id: value.chatRoom.id,
+                    newMessages: (value.chatRoom.newMessages * 1) + 1,
+                    lastMessage: value.content
+                });
+            }
+        }));
+        subscriptions.sub12 = subOnUpdateMessageByChatRoomMessagesId(chatroom.id, ((value) => {
+            if (value.userMessageId === user.id) {
+                // Update all message status
+                setMessageList((list) =>
+                    list.map((item) => item.id === value.id
+                        ? {...item, status: value.status}
+                        : item)
+                );
+                if (user && user.id === value.userMessageId) {
+                    // update removing counter
+                    handleCounterMessage(value.chatRoom.id);
+                }
+            }
+        }));
+        subscriptions.sub13 = subOnUpdateChatRoomUserByChatRoomChatRoomUsersId(chatroom.id, ((value) => {
+            // update typing/deleted in current chatroom
+            setChatRoom((items) => {
+                return {
+                    ...items,
+                    users: (items.users.map((item) =>
+                        (item.id === value.id) ? {
+                            ...item,
+                            typing: value.typing,
+                            deleted: value.deleted
+                        } : item
+                    ))
+                }
+            });
+            // update deleted in chatroomlist
+            setChatRoomList((list) => list.map((item) => {
+                return {
+                    ...item,
+                    chatroom: {
+                        ...item.chatroom,
+                        chatRoomUsers: {
+                            ...item.chatroom.chatRoomUsers,
+                            items: (item.chatroom.chatRoomUsers.items.map((item) =>
+                                (item.id === value.id) ? {
+                                    ...item,
+                                    deleted: value.deleted
+                                } : item
+                            ))
+                        }
+                    }
+                };
+            }));
+        }));
     };
 
     const handleCounterMessage = async (chatroom_id) => {
@@ -328,80 +283,109 @@ const Chat = () => {
             updateChatRoomList(result);
         });
 
-        console.log("Subscribe to onCreateChatRoomUserByChatRoomUserUserId");
-        subs.subCreateChatRoomUser = API.graphql(
-            graphqlOperation(onCreateChatRoomUserByChatRoomUserUserId, {
-                chatRoomUserUserId: user.id,
-            })
-        ).subscribe({
-            next: ({provider, value: {data: {onCreateChatRoomUserByChatRoomUserUserId}}}) => {
-                console.log("onCreateChatRoomUserByChatRoomUserUserId", onCreateChatRoomUserByChatRoomUserUserId);
-                getChatRooms(user.id).then((result) => {
-                    updateChatRoomList(result);
-                    if (onCreateChatRoomUserByChatRoomUserUserId.chatRoomUserUserId !== user.id) {
-                        handleChatRoomID(onCreateChatRoomUserByChatRoomUserUserId.chatRoomChatRoomUsersId);
-                    }
-                });
-            },
-            error: (error) => console.warn(error),
-        });
+        // SUBSCRIPTIONS
+        subscriptions.sub1 = subOnCreateChatRoomUser(((value) => {
+            //console.log('subOnCreateChatRoomUser VALUE', value)
+        }));
 
-        console.log("Subscribe to onUpdateUser");
-        subs.subUpdateUser = API.graphql(
-            graphqlOperation(onUpdateUser)
-        ).subscribe({
-            next: ({provider, value: {data: {onUpdateUser}}}) => {
-                console.log("onUpdateUser", onUpdateUser);
-                setChatRoomList((list) => list.map((item) => {
-                    const items = item.chatroom.chatRoomUsers.items.map((item) =>
-                        (item.user.id === onUpdateUser.id) ? {
-                            ...item,
-                            user: {
-                                ...item.user,
-                                online: onUpdateUser.online
-                            }
-                        } : item
-                    );
-                    return {
-                        ...item,
-                        chatroom: {
-                            ...item.chatroom,
-                            chatRoomUsers: {
-                                ...item.chatroom.chatRoomUsers,
-                                items
-                            }
+        subscriptions.sub2 = subOnCreateChatRoomUserByChatRoomUserUserId(user.id, ((value) => {
+            getChatRooms(user.id).then((result) => {
+                updateChatRoomList(result);
+                if (value.chatRoomUserUserId !== user.id) {
+                    handleChatRoomID(value.chatRoomChatRoomUsersId);
+                }
+            });
+        }));
+
+        subscriptions.sub3 = subOnUpdateUser(((value) => {
+            setChatRoomList((list) => list.map((items) => {
+                return {
+                    ...items,
+                    chatroom: {
+                        ...items.chatroom,
+                        chatRoomUsers: {
+                            ...items.chatroom.chatRoomUsers,
+                            items: (items.chatroom.chatRoomUsers.items.map((item) =>
+                                (item.user.id === value.id) ? {
+                                    ...item,
+                                    user: {
+                                        ...item.user,
+                                        online: value.online
+                                    }
+                                } : item
+                            ))
                         }
-                    };
-                }));
-
-                console.log('chatRoom.users', chatRoom.users);
-
-                // update typing in current chatroom
-                setChatRoom((items) => {
-                    if (items.users) {
-                        const users = items.users.map((item) =>
-                            (item.user.id === onUpdateUser.id) ? {
+                    }
+                };
+            }));
+            // update online in current chatroom
+            setChatRoom((items) => {
+                if (items.users) {
+                    return {
+                        ...items,
+                        users: (items.users.map((item) =>
+                            (item.user.id === value.id) ? {
                                 ...item,
                                 user: {
                                     ...item.user,
-                                    online: onUpdateUser.online
+                                    online: value.online
                                 }
                             } : item
-                        );
-                        return {
-                            ...items,
-                            users
-                        }
+                        ))
                     }
+                }
+                return {
+                    ...items,
+                }
+            });
+        }));
+
+        subscriptions.sub4 = subOnUpdateChatRoom(((value) => {
+            // when chatroom is deleted
+            if (value.deleted === true) {
+                setChatRoom((item) => {
+                    if (item && item.id === value.id) {
+                        setChatRoomID(null);
+                        setOpenChat(false);
+                        setOpenInfo(false);
+                        getChatRooms(user.id).then((result) => {
+                            updateChatRoomList(result);
+                        });
+
+                        return {};
+                    }
+                    return item;
+                });
+            }
+            // when chatroom name/image is updated
+            if (value.deleted !== true) {
+                setChatRoom((item) => {
                     return {
-                        ...items,
+                        ...item,
+                        name: value.name,
+                        imageUri: value.imageUri
                     }
                 });
+            }
 
+            // Filter non deleted and update chatroom
+            setChatRoomList((list) => list.filter((item) => !(item.chatroom.id === value.id
+                && value.deleted === true))
+                .map((item) => (item.chatroom.id === value.id)
+                    ? {
+                        ...item,
+                        chatroom: {
+                            ...item.chatroom,
+                            lastMessage: value.lastMessage,
+                            newMessages: value.newMessages,
+                            updatedAt: value.updatedAt,
+                            name: value.name,
+                            imageUri: value.imageUri
+                        }
+                    }
+                    : item));
+        }));
 
-            },
-            error: (error) => console.warn(error),
-        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
@@ -425,65 +409,13 @@ const Chat = () => {
     }, [chatRoomID, forceOpenChat, chatRoomList]);
 
     useEffect(() => {
-        // Subscribe to update of chatroom
-        subs.subUpdateChatRoom = API.graphql(
-            graphqlOperation(onUpdateChatRoom)
-        ).subscribe({
-            next: ({provider, value: {data: {onUpdateChatRoom}}}) => {
-                console.log("onUpdateChatRoom", onUpdateChatRoom);
-                if (onUpdateChatRoom.deleted === true) {
-                    setChatRoom((item) => {
-                        if (item && item.id === onUpdateChatRoom.id) {
-                            setChatRoomID(null);
-                            setOpenChat(false);
-                            setOpenInfo(false);
-                            if (user) {
-                                getChatRooms(user.id).then((result) => {
-                                    updateChatRoomList(result);
-                                });
-                            }
-                            return {};
-                        }
-                        return item;
-                    });
-                }
-                if (onUpdateChatRoom.deleted !== true) {
-                    setChatRoom((item) => {
-                        return {
-                            ...item,
-                            name: onUpdateChatRoom.name,
-                            imageUri: onUpdateChatRoom.imageUri
-                        }
-                    });
-                }
-
-                // Filter non deleted and update chatroom
-                setChatRoomList((list) => list.filter((item) => !(item.chatroom.id === onUpdateChatRoom.id
-                    && onUpdateChatRoom.deleted === true))
-                    .map((item) => (item.chatroom.id === onUpdateChatRoom.id)
-                        ? {
-                            ...item,
-                            chatroom: {
-                                ...item.chatroom,
-                                lastMessage: onUpdateChatRoom.lastMessage,
-                                newMessages: onUpdateChatRoom.newMessages,
-                                updatedAt: onUpdateChatRoom.updatedAt,
-                                name: onUpdateChatRoom.name,
-                                imageUri: onUpdateChatRoom.imageUri
-                            }
-                        }
-                        : item));
-            },
-            error: (error) => console.warn(error),
-        });
-
         // TODO: offline when on browser close
         return () => {
             console.log('UNMOUNTED');
             //unsubscribe
-            for (const item in subs) {
-                if (subs[item]) {
-                    subs[item].unsubscribe();
+            for (const item in subscriptions) {
+                if (subscriptions[item]) {
+                    subscriptions[item].unsubscribe();
                 }
             }
         };
