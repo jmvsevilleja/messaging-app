@@ -359,7 +359,7 @@ const Chat = () => {
                 });
             }
             // when chatroom name/image is updated
-            if (value.deleted !== true) {
+            if (value.group && value.deleted !== true) {
                 setChatRoom((item) => {
                     return {
                         ...item,
@@ -380,13 +380,14 @@ const Chat = () => {
                             lastMessage: value.lastMessage,
                             newMessages: value.newMessages,
                             updatedAt: value.updatedAt,
-                            name: value.name,
-                            imageUri: value.imageUri
+                            ...(value.group ? {
+                                name: value.name,
+                                imageUri: value.imageUri
+                            } : {})
                         }
                     }
                     : item));
         }));
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
