@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {editChatRoom} from "../api/mutations";
 import Picture from "./Picture";
 
@@ -25,11 +25,15 @@ const resizeFile = (file) =>
 function EditChatRoom({user, chatRoom}) {
 
     const [isOpen, setIsOpen] = useState(false);
-    const [groupName, setGroupName] = useState(chatRoom.name);
+    const [groupName, setGroupName] = useState("");
     const [loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
 
     const imageRef = React.useRef();
+
+    useEffect(() => {
+        setGroupName(chatRoom.name);
+    }, [chatRoom]);
 
     const handleEditChatRoom = async (event) => {
         event.preventDefault();
