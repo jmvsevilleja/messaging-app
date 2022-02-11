@@ -225,6 +225,7 @@ const Chat = () => {
         }
         setOpenChat(true);
     }
+
     // OTHER FUNCTIONS
     const updateChatRoomList = async (chatroom) => {
         const name_chatroom = chatroom.map((room) => {

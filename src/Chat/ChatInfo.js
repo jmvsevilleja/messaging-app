@@ -8,6 +8,7 @@ import ExitChatRoom from "./ExitChatRoom";
 import Picture from "./Picture";
 
 function ChatInfo({
+    nectus,
     user,
     chatRoom,
     chatRoomList,
@@ -152,11 +153,12 @@ function ChatInfo({
                         </button>
                     </div>
                 </div>
-                {user && chatRoom.chatRoomAdminId === user.id && <DeleteChatRoom
+
+                {user && !nectus && chatRoom.chatRoomAdminId === user.id && <DeleteChatRoom
                     user={user}
                     chatRoom={chatRoom}
                 />}
-                {user && chatRoom.group && chatRoom.chatRoomAdminId !== user.id && <ExitChatRoom
+                {user && !nectus && chatRoom.group && chatRoom.chatRoomAdminId !== user.id && <ExitChatRoom
                     user={user}
                     chatRoom={chatRoom}
                 />}
