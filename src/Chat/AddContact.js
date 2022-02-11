@@ -4,7 +4,7 @@ import {getUserById, getChatRooms, getAccountById, getAccountByEmail} from "../a
 import {addUser, addChatRoom, addChatRoomUser} from "../api/mutations";
 import QrReader from 'react-qr-reader'
 
-function InviteUser({user, handleChatRoomID}) {
+function AddContact({user, handleChatRoomID}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [userEmail, setUserEmail] = useState("");
@@ -135,9 +135,10 @@ function InviteUser({user, handleChatRoomID}) {
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="outline-none focus:outline-none"
+                className="outline-none focus:outline-none mr-2 text-gray-400 hover:text-gray-500"
+                title="Add Contact"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-5 w-5 text-gray-400 hover:text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                 </svg>
             </button>
@@ -257,7 +258,7 @@ function InviteUser({user, handleChatRoomID}) {
                                 </div>}
                             {!readQR && <div className="mt-4 flex flex-col">
                                 <div className="flex self-end">
-                                    <button className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
+                                    <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
                                         onClick={() => {
                                             setIsOpen(false);
                                         }}>
@@ -285,4 +286,4 @@ function InviteUser({user, handleChatRoomID}) {
     )
 }
 
-export default InviteUser
+export default AddContact

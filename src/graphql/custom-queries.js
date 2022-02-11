@@ -62,17 +62,21 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         id
         name
         group
+        imageUri
         lastMessage
         newMessages
         updatedAt
+        chatRoomAdminId
         chatRoomUsers {
           items {
             id
             typing
+            deleted
             user {
               id
               name
               online
+              imageUri
             }
           }
         }

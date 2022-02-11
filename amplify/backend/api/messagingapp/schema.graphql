@@ -49,6 +49,7 @@ type Message @model @auth(rules: [{ allow: public }]) {
             sortKeyFields: ["createdAt"]
         )
     bookmark: Boolean
+    deleted: Boolean
 }
 
 type ChatRoom @model @auth(rules: [{ allow: public }]) {
@@ -62,6 +63,7 @@ type ChatRoom @model @auth(rules: [{ allow: public }]) {
     group: Boolean
     imageUri: String
     pin: Boolean
+    deleted: Boolean
 }
 
 type User @model @auth(rules: [{ allow: public }]) {
@@ -100,6 +102,7 @@ type ChatRoomUser @model(queries: null) @auth(rules: [{ allow: public }]) {
             queryField: "ChatRoomUserByChatRoomUserUserId"
             sortKeyFields: ["updatedAt"]
         )
+    deleted: Boolean
 }
 
 type Subscription {

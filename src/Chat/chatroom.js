@@ -1,10 +1,10 @@
 import React from "react";
-import Avatar from 'react-avatar';
+import Picture from "./Picture";
 
 function ChatRoom({user, room, chatRoomID, handleChatRoomID}) {
     var dateobj = new Date(room.updatedAt);
     const updated = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true})
-    const online = room.chatRoomUsers.items.find((item) => (user.id !== item.user.id && item.user.online));
+    const online = room.chatRoomUsers.items.find((item) => ((room.group || user.id !== item.user.id) && item.user.online));
 
     return (
         <li>
@@ -15,10 +15,11 @@ function ChatRoom({user, room, chatRoomID, handleChatRoomID}) {
                     handleChatRoomID(room.id);
                 }}>
 
-                <div className="relative">
-                    {room && <Avatar size="40" round={true} name={room.name} />}
-                    <div className={"absolute bottom-0 right-1 w-3 h-3 border-2 border-white rounded-full " + (online ? "bg-green-500" : "bg-gray-500")}></div>
-                </div>
+                <Picture
+                    name={room.name}
+                    image={room.imageUri}
+                    online={online}
+                />
 
                 <div className="w-full overflow-hidden">
                     <div className="flex justify-between">

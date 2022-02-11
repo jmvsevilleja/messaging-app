@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import Avatar from "react-avatar";
+import Picture from "./Picture";
 import QRCode from "react-qr-code";
 
 function ChatSettingQR({
@@ -43,10 +43,10 @@ function ChatSettingQR({
                 </div>
                 <div className="justify-between item-center p-5">
                     <div className="flex justify-center -mb-10">
-                        <Avatar
-                            size="80"
-                            round={true}
+                        <Picture
                             name={user.name}
+                            image={user.imageUri}
+                            big={true}
                         />
                     </div>
                     <div className="bg-white rounded-3xl px-4 py-8 m-4">
