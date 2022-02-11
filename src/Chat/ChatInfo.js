@@ -7,6 +7,10 @@ import EditChatRoom from "./EditChatRoom";
 import ExitChatRoom from "./ExitChatRoom";
 import Picture from "./Picture";
 
+import ChatInfoSearch from "./ChatInfoSearch";
+import ChatInfoBookmark from "./ChatInfoBookmark";
+import ChatInfoMedia from "./ChatInfoMedia";
+
 function ChatInfo({
     nectus,
     user,
@@ -16,6 +20,20 @@ function ChatInfo({
     handleCloseInfo,
 }) {
     const [notification, setNotification] = useState(true);
+
+    const [openInfoSearch, setOpenInfoSearch] = useState(false);
+    const [openInfoBookmark, setOpenInfoBookmark] = useState(false);
+    const [openInfoMedia, setOpenInfoMedia] = useState(false);
+
+    const handleCloseChatInfoSearch = () => {
+        setOpenInfoSearch(false);
+    }
+    const handleCloseChatInfoBookmark = () => {
+        setOpenInfoBookmark(false);
+    }
+    const handleCloseChatInfoMedia = () => {
+        setOpenInfoMedia(false);
+    }
 
     useEffect(() => {
         //console.log('Notification', notification);
@@ -29,7 +47,20 @@ function ChatInfo({
             className={" bg-white z-20 w-full md:w-64 lg:w-80 xl:w-96 md:static top-auto bottom-auto transform transition-transform duration-200 ease-in-out border-0 md:border-l border-gray-200"
                 + (openInfo ? " translate-x-0" : " translate-x-64 !w-0")}
         >
-            <div className="justify-between item-center p-3 xs:p-5">
+            {user && <ChatInfoSearch
+                user={user}
+                openInfoSearch={openInfoSearch}
+                handleCloseChatInfoSearch={handleCloseChatInfoSearch} />}
+            {user && <ChatInfoBookmark
+                user={user}
+                openInfoBookmark={openInfoBookmark}
+                handleCloseChatInfoBookmark={handleCloseChatInfoBookmark} />}
+            {user && <ChatInfoMedia
+                user={user}
+                openInfoMedia={openInfoMedia}
+                handleCloseChatInfoMedia={handleCloseChatInfoMedia} />}
+
+            <div className="justify-between item-center p-5 py-5 xs:py-8">
                 <div className="flex justify-between items-center" >
 
                     <div className="font-bold text-gray-600"></div>
@@ -37,8 +68,8 @@ function ChatInfo({
                         className="text-gray-400 hover:text-gray-500"
                         onClick={handleCloseInfo}
                     >
-                        <span className="sr-only">Close Info</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-11 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <span className="sr-only">Close</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
 
@@ -83,7 +114,7 @@ function ChatInfo({
                         <div className="ml-4 text-md font-medium text-base text-gray-600">
                             <label
                                 htmlFor="notif"
-                                className="cursor-pointer"
+                                className="py-2 cursor-pointer"
                             >Notifications
                             </label></div>
                     </div>
@@ -108,9 +139,13 @@ function ChatInfo({
                         ></label>
                     </div>
                 </div>
-                <div className="p-2">
+                <div className="px-2">
                     <div className="flex text-gray-400 hover:text-gray-500">
-                        <button className="flex w-full justify-between items-center outline-none focus:outline-none" >
+                        <button className="py-2 flex w-full justify-between items-center outline-none focus:outline-none"
+                            onClick={() => {
+                                setOpenInfoSearch(true);
+                            }}
+                        >
                             <div className="flex w-full">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -123,9 +158,12 @@ function ChatInfo({
                         </button>
                     </div>
                 </div>
-                <div className="p-2">
+                <div className="px-2">
                     <div className="flex text-gray-400 hover:text-gray-500">
-                        <button className="flex w-full justify-between items-center outline-none focus:outline-none">
+                        <button className="py-2 flex w-full justify-between items-center outline-none focus:outline-none"
+                            onClick={() => {
+                                setOpenInfoBookmark(true);
+                            }}>
                             <div className="flex w-full">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -138,9 +176,12 @@ function ChatInfo({
                         </button>
                     </div>
                 </div>
-                <div className="p-2">
+                <div className="px-2">
                     <div className="flex text-gray-400 hover:text-gray-500">
-                        <button className="flex w-full justify-between items-center outline-none focus:outline-none" >
+                        <button className="py-2 flex w-full justify-between items-center outline-none focus:outline-none"
+                            onClick={() => {
+                                setOpenInfoMedia(true);
+                            }}>
                             <div className="flex w-full">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -185,7 +226,7 @@ function ChatInfo({
                                 chatRoomList={chatRoomList}
                             />}
                         </div>
-                        <div className=" p-2">
+                        <div className="p-2">
                             <ul className="border-t border-gray-200 pt-2">
                                 {chatRoom.users && chatRoom.users.length !== 0 &&
                                     chatRoom.users.filter((item) => !item.deleted)

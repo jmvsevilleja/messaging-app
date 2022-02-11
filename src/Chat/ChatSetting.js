@@ -21,7 +21,7 @@ function ChatSetting({
                 id="sidebar"
                 className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar  bg-white duration-200 ease-in-out " + (openSetting ? "translate-x-0" : "-translate-x-full")}
             >
-                <div className="justify-between item-center p-5">
+                <div className="justify-between item-center p-5 py-8">
                     <div className="flex items-center" >
                         <button
                             className="text-gray-400 hover:text-gray-500 mr-4"

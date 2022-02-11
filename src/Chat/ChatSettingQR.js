@@ -20,7 +20,7 @@ function ChatSettingQR({
                 id="sidebar"
                 className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar  bg-gray-100  duration-200 ease-in-out " + (openSettingQR ? "translate-x-0" : "-translate-x-full")}
             >
-                <div className="justify-between item-center p-5 bg-white">
+                <div className="justify-between item-center p-5 py-8 bg-white">
                     <div className="flex items-center" >
                         <button
                             className="text-gray-400 hover:text-gray-500 mr-4"
