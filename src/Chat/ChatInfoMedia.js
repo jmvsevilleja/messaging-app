@@ -55,8 +55,8 @@ function ChatInfo({
                             ))}
                     </div>}
                     <div className="px-5 font-bold text-gray-600">Documents</div>
-                    {messageList.filter((item) => item.type === 'FILE').length === 0 && <div className="p-2 flex justify-center text-sm">No Documents</div>}
-                    {messageList.filter((item) => item.type === 'FILE').length !== 0 && <div className="justify-between item-center px-5">
+                    {messageList && messageList.filter((item) => item.type === 'FILE').length === 0 && <div className="p-2 flex justify-center text-sm">No Documents</div>}
+                    {messageList && messageList.filter((item) => item.type === 'FILE').length !== 0 && <div className="justify-between item-center px-5">
                         {messageList
                             // sort messages oldest to newest client-side
                             .filter((item) => item.type === 'FILE')

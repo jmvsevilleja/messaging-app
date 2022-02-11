@@ -35,7 +35,7 @@ function ChatInfo({
                     </div>
                 </div>
                 <div className="justify-between item-center p-5">
-                    {messageList.filter((item) => item.pin === true).length === 0 && <div className="p-2 flex justify-center text-sm">No Bookmarks</div>}
+                    {messageList && messageList.filter((item) => item.pin === true).length === 0 && <div className="p-2 flex justify-center text-sm">No Bookmarks</div>}
 
                 </div>
 
