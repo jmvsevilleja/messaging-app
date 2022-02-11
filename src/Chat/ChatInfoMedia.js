@@ -36,8 +36,8 @@ function ChatInfo({
                 </div>
                 <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)]" >
                     <div className="px-5 font-bold text-gray-600">Media</div>
-                    {messageList.filter((item) => item.type === 'IMAGE').length === 0 && <div className="p-2 flex justify-center text-sm">No media</div>}
-                    {messageList.filter((item) => item.type === 'IMAGE').length !== 0 && <div className="justify-between item-center px-5 grid grid-cols-1 xs:grid-cols-2">
+                    {messageList && messageList.filter((item) => item.type === 'IMAGE').length === 0 && <div className="p-2 flex justify-center text-sm">No media</div>}
+                    {messageList && messageList.filter((item) => item.type === 'IMAGE').length !== 0 && <div className="justify-between item-center px-5 grid grid-cols-1 xs:grid-cols-2">
                         {messageList
                             // sort messages oldest to newest client-side
                             .filter((item) => item.type === 'IMAGE')
@@ -55,8 +55,8 @@ function ChatInfo({
                             ))}
                     </div>}
                     <div className="px-5 font-bold text-gray-600">Documents</div>
-                    {messageList.filter((item) => item.type === 'FILE').length === 0 && <div className="p-2 flex justify-center text-sm">No Documents</div>}
-                    {messageList.filter((item) => item.type === 'FILE').length !== 0 && <div className="justify-between item-center px-5">
+                    {messageList && messageList.filter((item) => item.type === 'FILE').length === 0 && <div className="p-2 flex justify-center text-sm">No Documents</div>}
+                    {messageList && messageList.filter((item) => item.type === 'FILE').length !== 0 && <div className="justify-between item-center px-5">
                         {messageList
                             // sort messages oldest to newest client-side
                             .filter((item) => item.type === 'FILE')
