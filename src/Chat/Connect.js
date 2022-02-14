@@ -13,12 +13,16 @@ function Connect({user, chatRoom}) {
     const user_id = localStorage.getItem("user_id");
     const code = localStorage.getItem("code");
     const to = chatRoom.users.find((item) => {
-        return (item.user.id != user.id)
-    }).user.id;
+        return (item.user.id !== user.id)
+    });
+    const from = chatRoom.users.find((item) => {
+        return (item.user.id === user.id)
+    });
+
     const transaction_id =
         Date.now().toString().substring(0, 4) +
         Date.now().toString().substring(9);
-    const iframe_url = `https://clinicaconnect.com/login/true/${user_id}/112.204.187.130/${code}?to=${to}&transaction_id=${transaction_id}&from=conva`;
+    const iframe_url = `https://clinicaconnect.com/login/true/${user_id}/112.204.187.130/${code}?to=${to.user.id}&to=${to.user.name}&from=${from.user.id}&from_name=${from.user.name}&transaction_id=${transaction_id}&app=conva`;
 
     return (
         <>
