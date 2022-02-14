@@ -6,6 +6,7 @@ import Image from "./image";
 import AudioRecorder from "./AudioRecorder";
 import AudioPlayer from "./AudioPlayer";
 import Picture from "./Picture";
+import Connect from "./Connect";
 
 import ConvoLogo from '../logo.svg';
 import axios from "axios";
@@ -50,11 +51,6 @@ function ChatBody({
     const messageInput = React.useRef(null);
     const fileRef = React.useRef();
     const imageRef = React.useRef();
-
-
-    const handleOpenConnect = async (e) => {
-        console.log('Open Connect');
-    };
 
     const handleSubmitMessage = async (e) => {
         e.preventDefault();
@@ -327,22 +323,7 @@ function ChatBody({
                                         Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                                     </span>}
                             </div>
-                            <div className="flex mx-1"
-                                onClick={handleOpenConnect}>
-                                <button className="text-primary hover:text-secondary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div className="flex mx-1 mr-4"
-                                onClick={handleOpenConnect}>
-                                <button className="text-primary hover:text-secondary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                                    </svg>
-                                </button>
-                            </div>
+                            <Connect user={user} chatRoom={chatRoom} />
                             <div className="flex"
                                 onClick={handleOpenInfo}>
                                 <button className="text-gray-400 hover:text-gray-500">

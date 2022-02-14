@@ -39,6 +39,7 @@ const SSO = (props) => {
                         localStorage.setItem("refresh_token", accessToken.refresh_token);
                         localStorage.setItem("access_token", accessToken.access_token);
                         localStorage.setItem("user_id", accessToken.id);
+                        localStorage.setItem("code", authToken.code);
 
                         navigate(`/chat`);
                     }
