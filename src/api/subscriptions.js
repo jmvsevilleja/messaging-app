@@ -17,7 +17,7 @@ export const subOnCreateChatRoomUser = (callbackfunction) => {
             graphqlOperation(onCreateChatRoomUser)
         ).subscribe({
             next: ({provider, value: {data: {onCreateChatRoomUser}}}) => {
-                console.log("ON CREATE CHATROOM", onCreateChatRoomUser);
+                console.log("ON CREATE CHATROOM USER", onCreateChatRoomUser);
                 callbackfunction(onCreateChatRoomUser);
             },
             error: (error) => console.warn(error),

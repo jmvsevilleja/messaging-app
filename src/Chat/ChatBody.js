@@ -322,7 +322,7 @@ function ChatBody({
                                     <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
                                         {chatRoom.users
                                             .filter((item) => (
-                                                item.user.online
+                                                item.user.online && !item.deleted
                                             )).length + " "}
                                         Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                                     </span>}
