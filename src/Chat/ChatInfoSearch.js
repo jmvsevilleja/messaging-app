@@ -1,22 +1,25 @@
 import React, {useEffect, useState} from "react";
 
 function ChatInfo({
-    user,
+    messageList,
     openInfoSearch,
     handleCloseChatInfoSearch,
 }) {
     const [searchText, setSearchText] = useState("");
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const [searchMessageList, setSearchMessageList] = useState([]);
 
     useEffect(() => {
+        if (!searchText) {
+            setSearchMessageList([]);
+            return;
+        }
 
-        // setSearchChatRoomList(chatRoomList.filter(item =>
-        //     item.chatroom.name.toLowerCase().includes(searchText.toLowerCase())
-        // ));
+        setSearchMessageList(messageList.filter(item =>
+            item.content.toLowerCase().includes(searchText.toLowerCase())
+        ));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchText]);
+    }, [searchText, messageList]);
+
     return (
         <div>
             <div
@@ -38,8 +41,8 @@ function ChatInfo({
                         </button>
                     </div>
                 </div>
-                <div className="justify-between item-center p-5">
-                    <div className="relative text-gray-600 focus-within:text-gray-400">
+                <div className="justify-between item-center px-5">
+                    <div className="relative text-gray-600 focus-within:text-gray-400 mb-5">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                             <svg
                                 fill="none"
@@ -65,6 +68,22 @@ function ChatInfo({
                                 setSearchText(e.target.value);
                             }}
                         />
+                    </div>
+                    <div
+                        className="scrollable px-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-180px)]"
+                    >
+                        {searchMessageList.length !== 0 && searchMessageList
+                            // sort messages oldest to newest client-side
+                            .sort((a, b) =>
+                                b.createdAt.localeCompare(
+                                    a.createdAt
+                                )
+                            )
+                            .map((message) => (<>
+                                {message.content && <div className="break-normal shadow-md mb-1 rounded-lg p-2 text-base  text-white bg-primary text-left">
+                                    {message.content}
+                                </div>}
+                            </>))}
                     </div>
                 </div>
 

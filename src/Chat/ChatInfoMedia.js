@@ -50,7 +50,7 @@ function ChatInfo({
 
 
                 <Tab.Group>
-                    <Tab.List className="flex">
+                    <Tab.List className="flex px-5">
                         {Object.keys(categories).map((category) => (
                             <Tab
                                 key={category}
