@@ -48,8 +48,9 @@ function ChatInfo({
             className={" bg-white z-20 w-full md:w-64 lg:w-80 xl:w-96 md:static top-auto bottom-auto transform transition-transform duration-200 ease-in-out border-0 md:border-l border-gray-200"
                 + (openInfo ? " translate-x-0" : " translate-x-64 !w-0")}
         >
-            {user && <ChatInfoSearch
+            {user && Object.keys(chatRoom).length !== 0 && <ChatInfoSearch
                 user={user}
+                chatRoom={chatRoom}
                 messageList={messageList}
                 openInfoSearch={openInfoSearch}
                 handleCloseChatInfoSearch={handleCloseChatInfoSearch} />}
@@ -208,8 +209,8 @@ function ChatInfo({
                     chatRoom={chatRoom}
                 />}
                 {chatRoom.group &&
-                    <div className="mt-5">
-                        <div className="flex justify-between items-center p-2" >
+                    <div className="mt-5 ">
+                        <div className="flex justify-between items-center p-2 border-gray-200 border-b" >
                             <div className="flex font-bold text-sm text-primary text-left">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -230,8 +231,8 @@ function ChatInfo({
                                 chatRoomList={chatRoomList}
                             />}
                         </div>
-                        <div className="p-2">
-                            <ul className="border-t border-gray-200 pt-2">
+                        <div className="scrollable p-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-600px)]">
+                            <ul className=" pt-2">
                                 {chatRoom.users && chatRoom.users.length !== 0 &&
                                     chatRoom.users.filter((item) => !item.deleted)
                                         // sort user by name

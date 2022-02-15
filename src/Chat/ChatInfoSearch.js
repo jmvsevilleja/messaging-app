@@ -1,12 +1,21 @@
 import React, {useEffect, useState} from "react";
 
+function getTextWithHighlights(text, searchText) {
+    const regex = new RegExp(searchText, 'gi');
+    const newText = text.replace(regex, `<mark class="highlight">$&</mark>`);
+    return <span dangerouslySetInnerHTML={{__html: newText}} />;
+}
+
 function ChatInfo({
+    chatRoom,
     messageList,
     openInfoSearch,
     handleCloseChatInfoSearch,
 }) {
     const [searchText, setSearchText] = useState("");
     const [searchMessageList, setSearchMessageList] = useState([]);
+
+    const names = Object.fromEntries((chatRoom.users.map(item => [item.user.id, item.user.name])));
 
     useEffect(() => {
         if (!searchText) {
@@ -80,9 +89,11 @@ function ChatInfo({
                                 )
                             )
                             .map((message) => (<>
-                                {message.content && <div className="break-normal shadow-md mb-1 rounded-lg p-2 text-base  text-white bg-primary text-left">
-                                    {message.content}
-                                </div>}
+                                {message.content && <>
+                                    <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>
+                                    <div className="break-all shadow-md mb-1 rounded-lg p-2 text-base  text-white bg-primary text-left">
+                                        {getTextWithHighlights(message.content, searchText)}
+                                    </div></>}
                             </>))}
                     </div>
                 </div>
