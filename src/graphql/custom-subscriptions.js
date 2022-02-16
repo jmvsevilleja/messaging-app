@@ -42,6 +42,8 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
       userMessageId
       createdAt
       updatedAt
+      bookmark
+      deleted
       chatRoom {
         id
         newMessages

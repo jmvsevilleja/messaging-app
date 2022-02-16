@@ -34,6 +34,7 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
           status
           userMessageId
           createdAt
+          bookmark
       }
       nextToken
     }

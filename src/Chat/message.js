@@ -31,15 +31,16 @@ function Message({user_id, message, chatroom}) {
     return (
         <div
             className={
-                "flex flex-col float-right m-2 " + (isme ? "justify-end items-end" : "justify-start items-start mr-10")
+                "flex flex-col float-right m-2 " + (isme ? "justify-end items-end" : "justify-start items-start mr-14")
             }
         >
 
             {!isme && <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>}
 
             {message.type === 'AUDIO' && message.audio &&
-                <div className={"flex w-full " + (isme ? "justify-end items-end" : "justify-start items-start")}>
-                    <audio className="my-2 inline-flex" src={message.audio.path} controls controlsList="nodownload noplaybackrate" />
+                <div className={"flex w-full relative " + (isme ? "justify-end items-end" : "justify-start items-start")}>
+                    <audio className="my-2 inline-flex mr-8" src={message.audio.path} controls controlsList="nodownload noplaybackrate" />
+                    <MessageDropdown isme={isme} message={message} />
                 </div>
             }
             {message.type === 'IMAGE' && message.image &&
@@ -65,16 +66,17 @@ function Message({user_id, message, chatroom}) {
                             )
                         })}
                     </div>
-                    <MessageDropdown isme={isme} />
+                    <MessageDropdown isme={isme} message={message} />
                 </div>
             }
             {message.type === 'FILE' && message.file &&
                 <div>
                     {message.file.map((file, index) => {
                         return (file.name && file.path &&
-                            <div className="flex items-center m-2 mx-0" key={file.name}>
+                            <div className="flex items-center m-2 mx-0 relative" key={file.name}>
                                 <File file={file} src={file.path}
                                     handleDownloadFile={handleDownloadFile} />
+                                <MessageDropdown isme={isme} message={message} />
                             </div>
 
                         )
@@ -82,11 +84,16 @@ function Message({user_id, message, chatroom}) {
                 </div>
             }
             {message.content && <div className="relative">
-                <MessageDropdown isme={isme} />
+                {(message.type === "TEXT" || message.type === "LINK") && <MessageDropdown isme={isme} message={message} />}
                 <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-50 rounded-tl-none")}>
                     <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{message.content}</p>
                 </div></div >}
             <div className="flex items-center justify-between">
+                {message.bookmark &&
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mx-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                }
                 <div className="mt-1 mr-1 text-xs text-gray-500 font-normal">{created}</div>
                 {isme && message.status === "SENT" &&
                     <svg

@@ -50,8 +50,8 @@ function ChatInfo({
                         </button>
                     </div>
                 </div>
-                <div className="justify-between item-center px-5">
-                    <div className="relative text-gray-600 focus-within:text-gray-400 mb-5">
+                <div className="justify-between item-center pl-5">
+                    <div className="relative text-gray-600 focus-within:text-gray-400 mb-5 mr-5">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                             <svg
                                 fill="none"
@@ -78,9 +78,7 @@ function ChatInfo({
                             }}
                         />
                     </div>
-                    <div
-                        className="scrollable px-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-180px)]"
-                    >
+                    <div className="scrollable px-5 pr-10 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-180px)]">
                         {searchMessageList.length !== 0 && searchMessageList
                             // sort messages oldest to newest client-side
                             .sort((a, b) =>
@@ -91,7 +89,7 @@ function ChatInfo({
                             .map((message) => (<>
                                 {message.content && <div key={message.id}>
                                     <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>
-                                    <div className="break-all shadow-md mb-1 rounded-lg p-2 text-base  text-white bg-primary text-left">
+                                    <div className="break-normal shadow-md mb-1 rounded-lg p-2 text-sm text-white bg-primary text-left">
                                         {getTextWithHighlights(message.content, searchText)}
                                     </div></div>}
                             </>))}

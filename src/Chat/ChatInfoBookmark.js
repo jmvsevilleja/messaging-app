@@ -1,17 +1,13 @@
-import React, {useEffect} from "react";
+import React from "react";
 
 function ChatInfo({
-    user,
+    chatRoom,
     messageList,
     openInfoBookmark,
     handleCloseChatInfoBookmark,
 }) {
     // const [userStatus, setUserStatus] = useState(user.status);
-
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
+    const names = Object.fromEntries((chatRoom.users.map(item => [item.user.id, item.user.name])));
 
     return (
         <div>
@@ -34,9 +30,23 @@ function ChatInfo({
 
                     </div>
                 </div>
-                <div className="justify-between item-center p-5">
-                    {messageList && messageList.filter((item) => item.pin === true).length === 0 && <div className="p-2 flex justify-center text-sm">No Bookmarks</div>}
-
+                <div className="scrollable px-10 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-120px)]">
+                    {messageList && messageList.filter((item) => item.bookmark === true).length === 0 && <div className="p-2 flex justify-center text-sm">No Bookmarks</div>}
+                    {messageList.length !== 0 && messageList
+                        // sort messages oldest to newest client-side
+                        .sort((a, b) =>
+                            b.createdAt.localeCompare(
+                                a.createdAt
+                            )
+                        )
+                        .filter((item) => item.bookmark)
+                        .map((message) => (<>
+                            {message.content && <div key={message.id}>
+                                <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>
+                                <div className="break-normal shadow-md mb-1 rounded-lg p-2 text-sm text-white bg-primary text-left">
+                                    {message.content}
+                                </div></div>}
+                        </>))}
                 </div>
 
             </div>

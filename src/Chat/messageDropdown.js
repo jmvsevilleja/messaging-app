@@ -1,9 +1,25 @@
 import React from "react";
 import {Menu} from '@headlessui/react'
+import {editMessage} from "../api/mutations";
 
-function MessageDropdown({isme}) {
-    return (
-        <div className="px-2 absolute -right-1 top-1">
+function MessageDropdown({isme, message}) {
+
+    const handleDelete = () => {
+        editMessage({
+            id: message.id,
+            deleted: true,
+        });
+    }
+
+    const handleBookmark = () => {
+        editMessage({
+            id: message.id,
+            bookmark: !message.bookmark,
+        });
+    }
+
+    return (<>
+        {(message.type === 'TEXT' || message.type === "LINK" || isme) && <div className="z-10 px-2 absolute -right-1 top-1">
             <Menu as="div" className="inline-block text-left">
                 <Menu.Button className="text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -11,23 +27,30 @@ function MessageDropdown({isme}) {
                     </svg>
                 </Menu.Button>
                 <Menu.Items className={"absolute top-5 bg-white text-gray-500 drop-shadow p-1 rounded " + ((isme) ? "right-2" : "left-2")}>
-                    <div className="text-sm px-2 py-1 hover:bg-gray-100">
+                    {(message.type === 'TEXT' || message.type === "LINK") && <div className="text-sm px-2 py-1 hover:bg-gray-100">
                         <Menu.Item>
                             <button
                                 className="w-full text-left"
-                            >Bookmark</button>
+                                onClick={() => {
+                                    handleBookmark();
+                                }}
+                            >{message.bookmark ? "Unbookmark" : "Bookmark"}</button>
                         </Menu.Item>
-                    </div>
-                    <div className="text-sm px-2 py-1 hover:bg-gray-100">
+                    </div>}
+                    {isme && <div className="text-sm px-2 py-1 hover:bg-gray-100">
                         <Menu.Item>
                             <button
                                 className="w-full text-left"
+                                onClick={() => {
+                                    handleDelete();
+                                }}
                             >Delete</button>
                         </Menu.Item>
-                    </div>
+                    </div>}
                 </Menu.Items>
             </Menu>
-        </div>
+        </div>}
+    </>
     );
 }
 

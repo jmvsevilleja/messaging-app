@@ -4,7 +4,7 @@ function File({file, handleDownloadFile}) {
 
     return (
         <>
-            <button className=" text-gray-400 hover:text-gray-500"
+            <button className="pr-8 text-gray-400 hover:text-gray-500"
                 onClick={(e) => {
                     handleDownloadFile(file.path, file.name);
                 }}

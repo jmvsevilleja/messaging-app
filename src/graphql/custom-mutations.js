@@ -45,6 +45,8 @@ export const updateMessage = /* GraphQL */ `
         status
         createdAt
         updatedAt
+        bookmark
+        deleted
         chatRoom {
           id
           newMessages

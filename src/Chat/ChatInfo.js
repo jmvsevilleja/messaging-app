@@ -54,8 +54,8 @@ function ChatInfo({
                 messageList={messageList}
                 openInfoSearch={openInfoSearch}
                 handleCloseChatInfoSearch={handleCloseChatInfoSearch} />}
-            {user && <ChatInfoBookmark
-                user={user}
+            {user && Object.keys(chatRoom).length !== 0 && <ChatInfoBookmark
+                chatRoom={chatRoom}
                 messageList={messageList}
                 openInfoBookmark={openInfoBookmark}
                 handleCloseChatInfoBookmark={handleCloseChatInfoBookmark} />}

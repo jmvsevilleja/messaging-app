@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState} from "react";
 
 import ChatRoom from "./chatroom";
 import CreateRoom from "./CreateRoom";
