@@ -32,7 +32,7 @@ function ChatInfo({
                 </div>
                 <div className="scrollable px-10 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-120px)]">
                     {messageList && messageList.filter((item) => item.bookmark === true).length === 0 && <div className="p-2 flex justify-center text-sm">No Bookmarks</div>}
-                    {messageList.length !== 0 && messageList
+                    {messageList && messageList.length !== 0 && messageList
                         // sort messages oldest to newest client-side
                         .sort((a, b) =>
                             b.createdAt.localeCompare(

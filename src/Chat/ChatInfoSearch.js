@@ -79,7 +79,7 @@ function ChatInfo({
                         />
                     </div>
                     <div className="scrollable px-5 pr-10 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-180px)]">
-                        {searchMessageList.length !== 0 && searchMessageList
+                        {searchMessageList && searchMessageList.length !== 0 && searchMessageList
                             // sort messages oldest to newest client-side
                             .sort((a, b) =>
                                 b.createdAt.localeCompare(
