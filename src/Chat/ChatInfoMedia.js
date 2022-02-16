@@ -47,8 +47,6 @@ function ChatInfo({
                         </button>
                     </div>
                 </div>
-
-
                 <Tab.Group>
                     <Tab.List className="flex px-5">
                         {Object.keys(categories).map((category) => (

@@ -83,8 +83,8 @@ function Message({user_id, message, chatroom}) {
             }
             {message.content && <div className="relative">
                 <MessageDropdown isme={isme} />
-                <div className={"pr-8 break-all xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-50 rounded-tl-none")}>
-                    <p>{message.content}</p>
+                <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-50 rounded-tl-none")}>
+                    <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{message.content}</p>
                 </div></div >}
             <div className="flex items-center justify-between">
                 <div className="mt-1 mr-1 text-xs text-gray-500 font-normal">{created}</div>

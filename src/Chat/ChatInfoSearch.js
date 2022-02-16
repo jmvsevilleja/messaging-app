@@ -89,11 +89,11 @@ function ChatInfo({
                                 )
                             )
                             .map((message) => (<>
-                                {message.content && <>
+                                {message.content && <div key={message.id}>
                                     <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>
                                     <div className="break-all shadow-md mb-1 rounded-lg p-2 text-base  text-white bg-primary text-left">
                                         {getTextWithHighlights(message.content, searchText)}
-                                    </div></>}
+                                    </div></div>}
                             </>))}
                     </div>
                 </div>
