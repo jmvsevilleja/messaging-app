@@ -438,6 +438,7 @@ const Chat = () => {
                 user={user}
                 openInfo={openInfo}
                 chatRoom={chatRoom}
+                messageList={messageList}
                 handleCloseInfo={handleCloseInfo}
             />
         </div>
