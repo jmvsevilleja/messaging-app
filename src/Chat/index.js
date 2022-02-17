@@ -126,6 +126,15 @@ const Chat = () => {
         handleUnsubscribeChatRoom();
 
         subscriptions.sub11 = subOnCreateMessageByChatRoomMessagesId(chatroom.id, ((value) => {
+            // notify recipients
+            if (value.userMessageId !== user.id) {
+                if (Notification.permission === 'granted') {
+                    navigator.serviceWorker.getRegistration().then(function (reg) {
+                        reg.showNotification(value.content);
+                    });
+                }
+            }
+
             setMessageList((list) => [
                 ...list,
                 value,
@@ -448,6 +457,9 @@ const Chat = () => {
     }, [chatRoomID, forceOpenChat, chatRoomList]);
 
     useEffect(() => {
+        // Notification.requestPermission(function (status) {
+        //     console.log('Notification permission status:', status);
+        // });
         // TODO: offline when on browser close
         return () => {
             console.log('UNMOUNTED');

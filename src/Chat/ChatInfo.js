@@ -20,7 +20,7 @@ function ChatInfo({
     openInfo,
     handleCloseInfo,
 }) {
-    const [notification, setNotification] = useState(true);
+    const [notification, setNotification] = useState(false);
 
     const [openInfoSearch, setOpenInfoSearch] = useState(false);
     const [openInfoBookmark, setOpenInfoBookmark] = useState(false);
@@ -42,12 +42,10 @@ function ChatInfo({
             Notification.requestPermission(function (status) {
                 console.log('Notification permission status:', status);
             });
-            if (Notification.permission === 'granted') {
-                navigator.serviceWorker.getRegistration().then(function (reg) {
-                    reg.showNotification('Hello world!');
-                });
-            }
-
+            // if (Notification.permission === 'granted') {
+            //     navigator.serviceWorker.getRegistration().then(function (reg) {
+            //     });
+            // }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [notification]);
