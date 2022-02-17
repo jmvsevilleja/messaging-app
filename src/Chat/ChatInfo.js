@@ -37,7 +37,18 @@ function ChatInfo({
     }
 
     useEffect(() => {
-        //console.log('Notification', notification);
+        console.log('Notification', notification, Notification.permission);
+        if (notification) {
+            Notification.requestPermission(function (status) {
+                console.log('Notification permission status:', status);
+            });
+            if (Notification.permission === 'granted') {
+                navigator.serviceWorker.getRegistration().then(function (reg) {
+                    reg.showNotification('Hello world!');
+                });
+            }
+
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [notification]);
 
@@ -131,7 +142,7 @@ function ChatInfo({
                             type="checkbox"
                             name="notif"
                             id="notif"
-                            className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none"
+                            className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none focus:ring-0 focus:ring-offset-0"
                             checked={notification}
                             value={notification}
                             onChange={() => {

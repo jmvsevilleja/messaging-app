@@ -42,7 +42,7 @@ function ChatSetting({
                         <div className=" font-bold text-gray-600">Setting</div>
                     </div>
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-300 p-3 xs:p-5">
+                <div className="flex justify-between items-center border-b border-gray-300 p-5">
 
                     <Picture
                         name={user.name}
@@ -95,7 +95,7 @@ function ChatSetting({
                                 type="checkbox"
                                 name="darkmode"
                                 id="darkmode"
-                                className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none"
+                                className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none focus:ring-0 focus:ring-offset-0"
                                 value={darkMode}
                                 onChange={() => {
                                     setDarkMode(!darkMode);

@@ -40,18 +40,20 @@ function ChatInfo({
                             )
                         )
                         .filter((item) => item.bookmark)
-                        .map((message) => (<>
-                            {message.content && <div key={message.id}>
+                        .map((message) => (<div key={message.id}>
+                            {message.content && <>
                                 <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>
-                                <div className="break-normal shadow-md mb-1 rounded-lg p-2 text-sm text-white bg-primary text-left">
-                                    {message.content}
-                                </div></div>}
-                        </>))}
+                                <div className="shadow-md mb-1 rounded-lg p-2 text-sm text-white bg-primary text-left">
+                                    <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>
+                                        {message.content}
+                                    </p>
+                                </div></>}
+                        </div>))}
                 </div>
 
             </div>
 
-        </div>);
+        </div >);
 }
 
 export default ChatInfo;
