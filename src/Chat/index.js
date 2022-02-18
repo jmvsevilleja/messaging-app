@@ -97,6 +97,7 @@ const Chat = () => {
             users: chatroom.chatRoomUsers.items,
             group: chatroom.group,
             lastMessage: chatroom.lastMessage,
+            //newMessages: chatroom.newMessages,
             chatRoomAdminId: chatroom.chatRoomAdminId,
             imageUri: chatroom.imageUri,
         });
@@ -126,15 +127,6 @@ const Chat = () => {
         handleUnsubscribeChatRoom();
 
         subscriptions.sub11 = subOnCreateMessageByChatRoomMessagesId(chatroom.id, ((value) => {
-            // notify recipients
-            if (value.userMessageId !== user.id) {
-                if (Notification.permission === 'granted') {
-                    navigator.serviceWorker.getRegistration().then(function (reg) {
-                        reg.showNotification(value.content);
-                    });
-                }
-            }
-
             setMessageList((list) => [
                 ...list,
                 value,
@@ -142,15 +134,6 @@ const Chat = () => {
             // set READ if your not the owner
             if (user && user.id !== value.userMessageId) {
                 handleUnreadMessage(value.id);
-            }
-            // pass the last message and the counter
-            if (user && user.id === value.userMessageId) {
-                // update chatroom new message and add counter
-                editChatRoom({
-                    id: value.chatRoom.id,
-                    newMessages: (value.chatRoom.newMessages * 1) + 1,
-                    lastMessage: value.content
-                });
             }
         }));
         subscriptions.sub12 = subOnUpdateMessageByChatRoomMessagesId(chatroom.id, ((value) => {
@@ -191,7 +174,8 @@ const Chat = () => {
                         (item.id === value.id) ? {
                             ...item,
                             typing: value.typing,
-                            deleted: value.deleted
+                            deleted: value.deleted,
+                            notification: value.notification
                         } : item
                     )) : null
                 }
@@ -207,7 +191,8 @@ const Chat = () => {
                             items: (item.chatroom.chatRoomUsers.items.map((item) =>
                                 (item.id === value.id) ? {
                                     ...item,
-                                    deleted: value.deleted
+                                    deleted: value.deleted,
+                                    notification: value.notification,
                                 } : item
                             ))
                         }
@@ -407,11 +392,14 @@ const Chat = () => {
             // when chatroom name/image is updated
             if (value.group && value.deleted !== true) {
                 setChatRoom((item) => {
-                    return {
-                        ...item,
-                        name: value.name,
-                        imageUri: value.imageUri
+                    if (item && item.id === value.id) {
+                        return {
+                            ...item,
+                            name: value.name,
+                            imageUri: value.imageUri,
+                        }
                     }
+                    return item;
                 });
             }
 
@@ -424,7 +412,7 @@ const Chat = () => {
                         chatroom: {
                             ...item.chatroom,
                             lastMessage: value.lastMessage,
-                            newMessages: value.newMessages,
+                            // newMessages: value.newMessages,
                             updatedAt: value.updatedAt,
                             ...(value.group ? {
                                 name: value.name,
@@ -433,6 +421,17 @@ const Chat = () => {
                         }
                     }
                     : item));
+
+            // notify recipients
+            const user_notif = value.chatRoomUsers.items.find((items) => (items.chatRoomUserUserId === user.id && items.notification));
+            if (value.lastMessageBy !== user.id && user_notif && value.lastMessage && value.newMessages === 0) {
+                console.log('Notification', user_notif, value.newMessages);
+                if (Notification.permission === 'granted') {
+                    navigator.serviceWorker.getRegistration().then(function (reg) {
+                        reg.showNotification("Message from " + value.name, {body: value.lastMessage});
+                    });
+                }
+            }
         }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
@@ -506,14 +505,15 @@ const Chat = () => {
                     </div>
                 </main>
             </div>
-            <ChatInfo
-                user={user}
-                openInfo={openInfo}
-                chatRoom={chatRoom}
-                chatRoomList={chatRoomList}
-                messageList={messageList}
-                handleCloseInfo={handleCloseInfo}
-            />
+            {chatRoom && chatRoom.users &&
+                <ChatInfo
+                    user={user}
+                    openInfo={openInfo}
+                    chatRoom={chatRoom}
+                    chatRoomList={chatRoomList}
+                    messageList={messageList}
+                    handleCloseInfo={handleCloseInfo}
+                />}
         </div>
     );
 };

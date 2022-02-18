@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {addMessage, editChatRoomUser} from "../api/mutations";
+import {addMessage, editChatRoomUser, editChatRoom} from "../api/mutations";
 
 import Message from "./message";
 import Image from "./image";
@@ -46,7 +46,6 @@ function ChatBody({
     const [selectedImages, setSelectedImages] = useState([]);
     const [recordedAudio, setRecordedAudio] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
-
 
     const messageInput = React.useRef(null);
     const fileRef = React.useRef();
@@ -145,13 +144,26 @@ function ChatBody({
         }
 
         try {
+            // add message
             addMessage(input).then(() => {
                 handleResetChat();
                 setMessageText("");
                 if (messageText) {
                     messageInput.current.focus();
                 }
+                console.log('chatRoom.newMessages', chatRoom.newMessages);
+                // edit chatroom last message
+                editChatRoom({
+                    id: chatRoom.id,
+                    //newMessages: (chatRoom.newMessages * 1) + 1,
+                    name: chatRoom.group ? chatRoom.name : user.name,
+                    lastMessage: messageText,
+                    lastMessageBy: user.id,
+                });
             });
+
+
+
         } catch (err) {
             console.error(err);
         }
@@ -323,7 +335,7 @@ function ChatBody({
                                         Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                                     </span>}
                             </div>
-                            <Connect user={user} chatRoom={chatRoom} />
+                            {chatRoom && chatRoom.users && <Connect user={user} chatRoom={chatRoom} />}
                             <div className="flex"
                                 onClick={handleOpenInfo}>
                                 <button className="text-gray-400 hover:text-gray-500">

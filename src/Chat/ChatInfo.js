@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {editChatRoomUser} from "../api/mutations";
 
 import UserChatInfo from "./userchatinfo";
 import DeleteChatRoom from "./DeleteChatRoom";
@@ -20,7 +21,7 @@ function ChatInfo({
     openInfo,
     handleCloseInfo,
 }) {
-    const [notification, setNotification] = useState(false);
+    const [notification, setNotification] = useState(null);
 
     const [openInfoSearch, setOpenInfoSearch] = useState(false);
     const [openInfoBookmark, setOpenInfoBookmark] = useState(false);
@@ -37,19 +38,25 @@ function ChatInfo({
     }
 
     useEffect(() => {
-        console.log('Notification', notification, Notification.permission);
-        if (notification) {
-            Notification.requestPermission(function (status) {
-                console.log('Notification permission status:', status);
-            });
-            // if (Notification.permission === 'granted') {
-            //     navigator.serviceWorker.getRegistration().then(function (reg) {
-            //     });
-            // }
+        if (chatRoom.users && notification !== null) {
+            const user_notif = chatRoom.users.find((selected) => (selected.user.id === user.id));
+            if (user_notif) { // edit only deleted users
+                editChatRoomUser({
+                    id: user_notif.id,
+                    notification: notification,
+                });
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [notification]);
 
+    useEffect(() => {
+        if (chatRoom.users) {
+            const user_notif = chatRoom.users.find((selected) => (selected.user.id === user.id));
+            setNotification(user_notif.notification);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatRoom]);
 
     return (
         <div
@@ -141,8 +148,8 @@ function ChatInfo({
                             name="notif"
                             id="notif"
                             className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none focus:ring-0 focus:ring-offset-0"
-                            checked={notification}
-                            value={notification}
+                            checked={Boolean(notification)}
+                            value={Boolean(notification)}
                             onChange={() => {
                                 setNotification(!notification);
                             }}
@@ -240,7 +247,7 @@ function ChatInfo({
                                 chatRoomList={chatRoomList}
                             />}
                         </div>
-                        <div className="scrollable p-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-600px)]">
+                        <div className="scrollable p-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-550px)]">
                             <ul className=" pt-2">
                                 {chatRoom.users && chatRoom.users.length !== 0 &&
                                     chatRoom.users.filter((item) => !item.deleted)
