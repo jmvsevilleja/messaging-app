@@ -65,6 +65,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         group
         imageUri
         lastMessage
+        lastMessageBy
         newMessages
         updatedAt
         chatRoomAdminId
@@ -73,6 +74,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
             id
             typing
             deleted
+            notification
             user {
               id
               name

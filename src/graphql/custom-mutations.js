@@ -63,6 +63,7 @@ export const updateChatRoom = /* GraphQL */ `
       id
       newMessages
       lastMessage
+      lastMessageBy
       admin {
         id
         name
@@ -83,6 +84,7 @@ export const updateChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           chatRoomChatRoomUsersId
+          notification
         }
         nextToken
       }
@@ -122,6 +124,7 @@ export const updateChatRoomUser = /* GraphQL */ `
       createdAt
       updatedAt
       chatRoomChatRoomUsersId
+      notification
     }
   }
 `;

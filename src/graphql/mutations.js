@@ -24,6 +24,8 @@ export const createMessage = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -31,6 +33,7 @@ export const createMessage = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -52,6 +55,7 @@ export const createMessage = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -129,6 +133,8 @@ export const updateMessage = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -136,6 +142,7 @@ export const updateMessage = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -157,6 +164,7 @@ export const updateMessage = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -234,6 +242,8 @@ export const deleteMessage = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -241,6 +251,7 @@ export const deleteMessage = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -262,6 +273,7 @@ export const deleteMessage = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -325,6 +337,7 @@ export const createChatRoom = /* GraphQL */ `
       id
       newMessages
       lastMessage
+      lastMessageBy
       messages {
         items {
           id
@@ -349,6 +362,8 @@ export const createChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -369,6 +384,8 @@ export const createChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -376,6 +393,7 @@ export const createChatRoom = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -413,6 +431,7 @@ export const updateChatRoom = /* GraphQL */ `
       id
       newMessages
       lastMessage
+      lastMessageBy
       messages {
         items {
           id
@@ -437,6 +456,8 @@ export const updateChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -457,6 +478,8 @@ export const updateChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -464,6 +487,7 @@ export const updateChatRoom = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -501,6 +525,7 @@ export const deleteChatRoom = /* GraphQL */ `
       id
       newMessages
       lastMessage
+      lastMessageBy
       messages {
         items {
           id
@@ -525,6 +550,8 @@ export const deleteChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -545,6 +572,8 @@ export const deleteChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -552,6 +581,7 @@ export const deleteChatRoom = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -614,6 +644,7 @@ export const createUser = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -641,6 +672,8 @@ export const createUser = /* GraphQL */ `
         updatedAt
         chatRoomUserUserId
         deleted
+        notification
+        bookmarks
         createdAt
         chatRoomChatRoomUsersId
       }
@@ -648,6 +681,7 @@ export const createUser = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -721,6 +755,7 @@ export const updateUser = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -748,6 +783,8 @@ export const updateUser = /* GraphQL */ `
         updatedAt
         chatRoomUserUserId
         deleted
+        notification
+        bookmarks
         createdAt
         chatRoomChatRoomUsersId
       }
@@ -755,6 +792,7 @@ export const updateUser = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -828,6 +866,7 @@ export const deleteUser = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -855,6 +894,8 @@ export const deleteUser = /* GraphQL */ `
         updatedAt
         chatRoomUserUserId
         deleted
+        notification
+        bookmarks
         createdAt
         chatRoomChatRoomUsersId
       }
@@ -862,6 +903,7 @@ export const deleteUser = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -912,6 +954,7 @@ export const createChatRoomUser = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -956,6 +999,8 @@ export const createChatRoomUser = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -963,6 +1008,7 @@ export const createChatRoomUser = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -984,6 +1030,8 @@ export const createChatRoomUser = /* GraphQL */ `
       updatedAt
       chatRoomUserUserId
       deleted
+      notification
+      bookmarks
       createdAt
       chatRoomChatRoomUsersId
     }
@@ -1000,6 +1048,7 @@ export const updateChatRoomUser = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -1044,6 +1093,8 @@ export const updateChatRoomUser = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -1051,6 +1102,7 @@ export const updateChatRoomUser = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -1072,6 +1124,8 @@ export const updateChatRoomUser = /* GraphQL */ `
       updatedAt
       chatRoomUserUserId
       deleted
+      notification
+      bookmarks
       createdAt
       chatRoomChatRoomUsersId
     }
@@ -1088,6 +1142,7 @@ export const deleteChatRoomUser = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -1132,6 +1187,8 @@ export const deleteChatRoomUser = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -1139,6 +1196,7 @@ export const deleteChatRoomUser = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -1160,6 +1218,8 @@ export const deleteChatRoomUser = /* GraphQL */ `
       updatedAt
       chatRoomUserUserId
       deleted
+      notification
+      bookmarks
       createdAt
       chatRoomChatRoomUsersId
     }
