@@ -79,6 +79,14 @@ const Chat = () => {
         );
     };
 
+    const handleUnsubscribeChatRoom = () => {
+        ['sub11', 'sub12', 'sub13'].forEach((item) => {
+            if (subscriptions[item]) {
+                subscriptions[item].unsubscribe();
+            }
+        });
+    }
+
     const handleChatRoom = async (chatroom) => {
         console.log("handleChatRoom", chatroom);
         setMessageList([]);
@@ -89,6 +97,7 @@ const Chat = () => {
             users: chatroom.chatRoomUsers.items,
             group: chatroom.group,
             lastMessage: chatroom.lastMessage,
+            //newMessages: chatroom.newMessages,
             chatRoomAdminId: chatroom.chatRoomAdminId,
             imageUri: chatroom.imageUri,
         });
@@ -115,11 +124,7 @@ const Chat = () => {
         });
 
         // SUBSCRIPTIONS
-        ['sub11', 'sub12', 'sub13'].forEach((item) => {
-            if (subscriptions[item]) {
-                subscriptions[item].unsubscribe();
-            }
-        });
+        handleUnsubscribeChatRoom();
 
         subscriptions.sub11 = subOnCreateMessageByChatRoomMessagesId(chatroom.id, ((value) => {
             setMessageList((list) => [
@@ -130,42 +135,49 @@ const Chat = () => {
             if (user && user.id !== value.userMessageId) {
                 handleUnreadMessage(value.id);
             }
-            // pass the last message and the counter
-            if (user && user.id === value.userMessageId) {
-                // update chatroom new message and add counter
-                editChatRoom({
-                    id: value.chatRoom.id,
-                    newMessages: (value.chatRoom.newMessages * 1) + 1,
-                    lastMessage: value.content
-                });
-            }
         }));
         subscriptions.sub12 = subOnUpdateMessageByChatRoomMessagesId(chatroom.id, ((value) => {
             if (value.userMessageId === user.id) {
-                // Update all message status
-                setMessageList((list) =>
-                    list.map((item) => item.id === value.id
-                        ? {...item, status: value.status}
-                        : item)
-                );
-                if (user && user.id === value.userMessageId) {
-                    // update removing counter
-                    handleCounterMessage(value.chatRoom.id);
+                // Update all unread message status
+                if (value.status === 'READ') {
+                    setMessageList((list) =>
+                        list.map((item) => item.id === value.id
+                            ? {...item, status: value.status}
+                            : item)
+                    );
+                    //     if (user && user.id === value.userMessageId) {
+                    //         // update removing counter
+                    //         handleCounterMessage(value.chatRoom.id);
+                    //     }
                 }
             }
+            // remove deleted message
+            if (value.deleted) {
+                setMessageList((list) =>
+                    list.filter((item) => !(item.id === value.id && !item.deleted))
+                );
+                return;
+            }
+            // update bookmark message
+            setMessageList((list) =>
+                list.map((item) => item.id === value.id
+                    ? {...item, bookmark: value.bookmark}
+                    : item)
+            );
         }));
         subscriptions.sub13 = subOnUpdateChatRoomUserByChatRoomChatRoomUsersId(chatroom.id, ((value) => {
             // update typing/deleted in current chatroom
             setChatRoom((items) => {
                 return {
                     ...items,
-                    users: (items.users.map((item) =>
+                    users: items.users ? (items.users.map((item) =>
                         (item.id === value.id) ? {
                             ...item,
                             typing: value.typing,
-                            deleted: value.deleted
+                            deleted: value.deleted,
+                            notification: value.notification
                         } : item
-                    ))
+                    )) : null
                 }
             });
             // update deleted in chatroomlist
@@ -179,13 +191,32 @@ const Chat = () => {
                             items: (item.chatroom.chatRoomUsers.items.map((item) =>
                                 (item.id === value.id) ? {
                                     ...item,
-                                    deleted: value.deleted
+                                    deleted: value.deleted,
+                                    notification: value.notification,
                                 } : item
                             ))
                         }
                     }
                 };
             }));
+            // exit chatroom
+            if (value.deleted && value.chatRoomUserUserId === user.id) {
+                console.log('Chatroom exited', value.chatRoomUserUserId)
+                setChatRoomID(null);
+                setOpenChat(false);
+                setOpenInfo(false);
+                setChatRoom({});
+                getChatRooms(user.id).then((result) => {
+                    updateChatRoomList(result);
+                });
+                handleUnsubscribeChatRoom();
+            }
+            // if (!value.deleted && value.chatRoomUserUserId === user.id) {
+            //     console.log('Chatroom added', value.chatRoomUserUserId);
+            //     getChatRooms(user.id).then((result) => {
+            //         updateChatRoomList(result);
+            //     });
+            // }
         }));
     };
 
@@ -346,13 +377,13 @@ const Chat = () => {
             if (value.deleted === true) {
                 setChatRoom((item) => {
                     if (item && item.id === value.id) {
+                        console.log('Chatroom deleted', item.id)
                         setChatRoomID(null);
                         setOpenChat(false);
                         setOpenInfo(false);
-                        getChatRooms(user.id).then((result) => {
-                            updateChatRoomList(result);
-                        });
-
+                        // getChatRooms(user.id).then((result) => {
+                        //     updateChatRoomList(result);
+                        // });
                         return {};
                     }
                     return item;
@@ -361,11 +392,14 @@ const Chat = () => {
             // when chatroom name/image is updated
             if (value.group && value.deleted !== true) {
                 setChatRoom((item) => {
-                    return {
-                        ...item,
-                        name: value.name,
-                        imageUri: value.imageUri
+                    if (item && item.id === value.id) {
+                        return {
+                            ...item,
+                            name: value.name,
+                            imageUri: value.imageUri,
+                        }
                     }
+                    return item;
                 });
             }
 
@@ -378,7 +412,7 @@ const Chat = () => {
                         chatroom: {
                             ...item.chatroom,
                             lastMessage: value.lastMessage,
-                            newMessages: value.newMessages,
+                            // newMessages: value.newMessages,
                             updatedAt: value.updatedAt,
                             ...(value.group ? {
                                 name: value.name,
@@ -387,6 +421,17 @@ const Chat = () => {
                         }
                     }
                     : item));
+
+            // notify recipients
+            const user_notif = value.chatRoomUsers.items.find((items) => (items.chatRoomUserUserId === user.id && items.notification));
+            if (value.lastMessageBy !== user.id && user_notif && value.lastMessage && value.newMessages === 0) {
+                console.log('Notification', user_notif, value.newMessages);
+                if (Notification.permission === 'granted') {
+                    navigator.serviceWorker.getRegistration().then(function (reg) {
+                        reg.showNotification("Message from " + value.name, {body: value.lastMessage});
+                    });
+                }
+            }
         }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
@@ -411,6 +456,9 @@ const Chat = () => {
     }, [chatRoomID, forceOpenChat, chatRoomList]);
 
     useEffect(() => {
+        // Notification.requestPermission(function (status) {
+        //     console.log('Notification permission status:', status);
+        // });
         // TODO: offline when on browser close
         return () => {
             console.log('UNMOUNTED');
@@ -457,14 +505,15 @@ const Chat = () => {
                     </div>
                 </main>
             </div>
-            <ChatInfo
-                user={user}
-                openInfo={openInfo}
-                chatRoom={chatRoom}
-                chatRoomList={chatRoomList}
-                messageList={messageList}
-                handleCloseInfo={handleCloseInfo}
-            />
+            {chatRoom && chatRoom.users &&
+                <ChatInfo
+                    user={user}
+                    openInfo={openInfo}
+                    chatRoom={chatRoom}
+                    chatRoomList={chatRoomList}
+                    messageList={messageList}
+                    handleCloseInfo={handleCloseInfo}
+                />}
         </div>
     );
 };

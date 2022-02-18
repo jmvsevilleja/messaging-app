@@ -1,15 +1,15 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState} from "react";
 
 import ChatRoom from "./chatroom";
 import CreateRoom from "./CreateRoom";
 import AddContact from "./AddContact";
-import Picture from "./Picture";
 
 import ChatProfile from "./ChatProfile";
 import ChatSetting from "./ChatSetting";
 import ChatSettingQR from "./ChatSettingQR";
 import AvatarWithText from "./loader/AvatarWithText";
 import ListingWithThumbnail from "./loader/ListingWithThumbnail";
+import ChatSidebarProfile from "./ChatSidebarProfile";
 
 function ChatSidebar({
     user,
@@ -26,8 +26,6 @@ function ChatSidebar({
     const [openProfile, setOpenProfile] = useState(false);
     const [openSetting, setOpenSetting] = useState(false);
     const [openSettingQR, setOpenSettingQR] = useState(false);
-    const [dropdown, setDropdown] = useState(false);
-    const dropdownMenu = useRef(null)
 
     // Open chat toggle
     const handleCloseProfile = () => {
@@ -41,11 +39,6 @@ function ChatSidebar({
     }
     const handleCloseSettingQR = () => {
         setOpenSettingQR(false);
-    }
-    const handleCloseDropdown = (e) => {
-        if (dropdownMenu.current && !dropdownMenu.current.contains(e.target)) {
-            setDropdown(false);
-        }
     }
 
     useEffect(() => {
@@ -64,12 +57,7 @@ function ChatSidebar({
         ));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchText]);
-    useEffect(() => {
-        document.addEventListener('click', handleCloseDropdown);
-        return () => {
-            document.removeEventListener("click", handleCloseDropdown);
-        };
-    }, []);
+
     return (
         <div
             id="messages-sidebar"
@@ -100,60 +88,12 @@ function ChatSidebar({
             < div className="my-3 px-5">
                 {user &&
                     <div className="flex relative justify-between item-center p-3 px-0 mb-6 pb-0">
-                        <div
-                            className="grow flex"
-
-                        >   <div className="flex cursor-pointer items-center" onMouseDown={() => {
-                            setDropdown(true);
-                        }}
-                            ref={dropdownMenu}>
-
-                                {user && <Picture
-                                    name={user.name}
-                                    image={user.imageUri}
-                                    small={true}
-                                />}
-
-                                <div className="flex items-center text-gray-400 hover:text-gray-500">
-                                    <span className="block ml-2 font-bold text-base text-gray-600">
-                                        {user && user.name}
-                                    </span>
-                                    <svg className="w-3 h-3 shrink-0 ml-1 mb-1 fill-current" viewBox="0 0 12 12">
-                                        <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                                    </svg>
-                                </div>
-                                {dropdown &&
-                                    <div
-                                        className="origin-top-right z-50 absolute top-full left-0 bg-white border border-gray-200 p-1.5  rounded shadow-lg overflow-hidden mt-1 w-full md:w-1/2"
-                                    >
-                                        <ul>
-                                            <li>
-                                                <button className="w-full font-medium text-sm text-gray-600 hover:bg-gray-100 px-3 py-1.5 text-left"
-                                                    onClick={() => {
-                                                        setOpenProfile(true);
-                                                        setDropdown(false);
-                                                    }}
-                                                >Profile</button>
-                                            </li>
-                                            <li>
-                                                <button className="w-full font-medium text-sm text-gray-600 hover:bg-gray-100 px-3 py-1.5 text-left"
-                                                    onClick={() => {
-                                                        setOpenSetting(true);
-                                                        setDropdown(false);
-                                                    }}
-                                                >Settings</button>
-                                            </li>
-                                            <li>
-                                                <button className="w-full font-medium text-sm text-gray-600 hover:bg-gray-100 px-3 py-1.5 text-left"
-                                                    onClick={handleLogout}
-                                                >Sign Out</button>
-                                            </li>
-                                        </ul>
-                                    </div>}
-
-                            </div>
-
-                        </div>
+                        <ChatSidebarProfile
+                            user={user}
+                            handleLogout={handleLogout}
+                            setOpenProfile={setOpenProfile}
+                            setOpenSetting={setOpenSetting}
+                        />
                         <div className="flex items-center">
                             {user && <AddContact
                                 user={user}
@@ -218,26 +158,6 @@ function ChatSidebar({
                                 />
                             ))}
                 </ul>
-
-                {/* <ul className="border-t border-gray-200 pt-2 mt-2">
-
-                    {user && searchUserList.length !== 0 &&
-                        searchUserList
-                            .filter((item) => {
-                                return item.id !== user.id;
-                            })
-                            // sort user by name
-                            .sort((a, b) =>
-                                a.name.localeCompare(b.name)
-                            )
-                            .map((item) => (
-                                <User
-                                    user={item}
-                                    handleCreateChat={handleCreateChat}
-                                    key={item.id}
-                                />
-                            ))}
-                </ul> */}
             </div>
         </div >
     )

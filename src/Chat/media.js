@@ -48,6 +48,13 @@ function Media({message}) {
                     })}
                 </div>
             }
+            {message.type === "LINK" &&
+                <div>
+                    {message.content && <div className="break-all shadow-md mb-1 rounded-lg p-2 text-base text-left text-white bg-primary" >
+                        <p>{message.content}</p>
+                    </div>}
+                </div>
+            }
         </>
     );
 }

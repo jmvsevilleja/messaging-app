@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "./image";
 import File from "./file";
+import MessageDropdown from "./messageDropdown"
 
 function handleDownloadFile(url, name) {
     fetch(url)
@@ -20,14 +21,9 @@ function handleDownloadFile(url, name) {
 }
 
 function Message({user_id, message, chatroom}) {
-    let name = "";
-    if (chatroom.users) {
-        // get name from the users list
-        const usersname = chatroom.users.find(i => i.user.id === message.userMessageId);
-        if (usersname) {
-            name = usersname.user.name
-        }
-    }
+
+    const names = Object.fromEntries((chatroom.users.map(item => [item.user.id, item.user.name])));
+
     const isme = user_id === message.userMessageId;
     var dateobj = new Date(message.createdAt);
     const created = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
@@ -35,55 +31,69 @@ function Message({user_id, message, chatroom}) {
     return (
         <div
             className={
-                "flex flex-col float-right m-2 " + (isme ? "justify-end items-end" : "justify-start items-start")
+                "flex flex-col float-right m-2 " + (isme ? "justify-end items-end" : "justify-start items-start mr-14")
             }
         >
-            {!isme && <p className="text-xs text-primary font-medium">{name}</p>}
+
+            {!isme && <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>}
+
             {message.type === 'AUDIO' && message.audio &&
-                <div className={"flex w-full " + (isme ? "justify-end items-end" : "justify-start items-start")}>
-                    <audio className="my-2 inline-flex" src={message.audio.path} controls controlsList="nodownload noplaybackrate" />
+                <div className={"flex w-full relative " + (isme ? "justify-end items-end" : "justify-start items-start")}>
+                    <audio className="my-2 inline-flex mr-8" src={message.audio.path} controls controlsList="nodownload noplaybackrate" />
+                    <MessageDropdown isme={isme} message={message} />
                 </div>
             }
             {message.type === 'IMAGE' && message.image &&
-                <div>
-                    {message.image.map((file, index) => {
-                        return (file.name && file.path &&
-                            <div className="flex items-center w-60 m-2 mx-0" key={file.name}>
-                                <Image file={file} src={file.path} />
-                                <button className=" text-gray-400 hover:text-gray-500 rounded border-gray-400 border ml-2"
-                                    onClick={(e) => {
-                                        handleDownloadFile(file.path, file.name);
-                                    }}
-                                >
-                                    <div className="sr-only">Download</div>
+                <div className="relative">
+                    <div>
+                        {message.image.map((file, index) => {
+                            return (file.name && file.path &&
+                                <div className="flex items-center w-48 m-2 mx-0" key={file.name}>
+                                    <Image file={file} src={file.path} />
+                                    <button className=" text-gray-400 hover:text-gray-500 rounded border-gray-400 border ml-2"
+                                        onClick={(e) => {
+                                            handleDownloadFile(file.path, file.name);
+                                        }}
+                                    >
+                                        <div className="sr-only">Download</div>
 
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                </button>
-                            </div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                    </button>
+                                </div>
 
-                        )
-                    })}
+                            )
+                        })}
+                    </div>
+                    <MessageDropdown isme={isme} message={message} />
                 </div>
             }
             {message.type === 'FILE' && message.file &&
                 <div>
                     {message.file.map((file, index) => {
                         return (file.name && file.path &&
-                            <div className="flex items-center m-2 mx-0" key={file.name}>
+                            <div className="flex items-center m-2 mx-0 relative" key={file.name}>
                                 <File file={file} src={file.path}
                                     handleDownloadFile={handleDownloadFile} />
+                                <MessageDropdown isme={isme} message={message} />
                             </div>
 
                         )
                     })}
                 </div>
             }
-            {message.content && <div className={"break-normal xl:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-50 rounded-tl-none")}>
-                <p>{message.content}</p>
-            </div>}
+            {message.content && <div className="relative">
+                {(message.type === "TEXT" || message.type === "LINK") && <MessageDropdown isme={isme} message={message} />}
+                <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-50 rounded-tl-none")}>
+                    <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{message.content}</p>
+                </div></div >}
             <div className="flex items-center justify-between">
+                {message.bookmark &&
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mx-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                }
                 <div className="mt-1 mr-1 text-xs text-gray-500 font-normal">{created}</div>
                 {isme && message.status === "SENT" &&
                     <svg

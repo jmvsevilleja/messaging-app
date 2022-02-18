@@ -42,6 +42,8 @@ export const onUpdateMessageByChatRoomMessagesId = /* GraphQL */ `
       userMessageId
       createdAt
       updatedAt
+      bookmark
+      deleted
       chatRoom {
         id
         newMessages
@@ -91,6 +93,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
       id
       newMessages
       lastMessage
+      lastMessageBy
       chatRoomUsers {
         items {
           id
@@ -98,6 +101,7 @@ export const onUpdateChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           chatRoomChatRoomUsersId
+          notification
         }
         nextToken
       }
@@ -135,6 +139,7 @@ export const onUpdateChatRoomUserByChatRoomChatRoomUsersId = /* GraphQL */ `
       deleted
       chatRoomUserUserId
       updatedAt
+      notification
     }
   }
 `;

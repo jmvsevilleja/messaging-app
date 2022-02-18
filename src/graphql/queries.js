@@ -21,6 +21,8 @@ export const getMessage = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -28,6 +30,7 @@ export const getMessage = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -49,6 +52,7 @@ export const getMessage = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -131,6 +135,7 @@ export const listMessages = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -205,6 +210,7 @@ export const messageByMessageType = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -279,6 +285,7 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -321,6 +328,7 @@ export const getChatRoom = /* GraphQL */ `
       id
       newMessages
       lastMessage
+      lastMessageBy
       messages {
         items {
           id
@@ -345,6 +353,8 @@ export const getChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -365,6 +375,8 @@ export const getChatRoom = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -372,6 +384,7 @@ export const getChatRoom = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -411,6 +424,7 @@ export const listChatRooms = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -475,6 +489,7 @@ export const getUser = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -502,6 +517,8 @@ export const getUser = /* GraphQL */ `
         updatedAt
         chatRoomUserUserId
         deleted
+        notification
+        bookmarks
         createdAt
         chatRoomChatRoomUsersId
       }
@@ -509,6 +526,7 @@ export const getUser = /* GraphQL */ `
         id
         newMessages
         lastMessage
+        lastMessageBy
         messages {
           nextToken
         }
@@ -570,6 +588,8 @@ export const listUsers = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -577,6 +597,7 @@ export const listUsers = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -630,6 +651,8 @@ export const userByName = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -637,6 +660,7 @@ export const userByName = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -690,6 +714,8 @@ export const userByType = /* GraphQL */ `
           updatedAt
           chatRoomUserUserId
           deleted
+          notification
+          bookmarks
           createdAt
           chatRoomChatRoomUsersId
         }
@@ -697,6 +723,7 @@ export const userByType = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -741,6 +768,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
           id
           newMessages
           lastMessage
+          lastMessageBy
           name
           group
           imageUri
@@ -768,6 +796,8 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         updatedAt
         chatRoomUserUserId
         deleted
+        notification
+        bookmarks
         createdAt
         chatRoomChatRoomUsersId
       }

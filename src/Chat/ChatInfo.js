@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {editChatRoomUser} from "../api/mutations";
 
 import UserChatInfo from "./userchatinfo";
 import DeleteChatRoom from "./DeleteChatRoom";
@@ -20,7 +21,7 @@ function ChatInfo({
     openInfo,
     handleCloseInfo,
 }) {
-    const [notification, setNotification] = useState(true);
+    const [notification, setNotification] = useState(null);
 
     const [openInfoSearch, setOpenInfoSearch] = useState(false);
     const [openInfoBookmark, setOpenInfoBookmark] = useState(false);
@@ -37,10 +38,25 @@ function ChatInfo({
     }
 
     useEffect(() => {
-        //console.log('Notification', notification);
+        if (chatRoom.users && notification !== null) {
+            const user_notif = chatRoom.users.find((selected) => (selected.user.id === user.id));
+            if (user_notif) { // edit only deleted users
+                editChatRoomUser({
+                    id: user_notif.id,
+                    notification: notification,
+                });
+            }
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [notification]);
 
+    useEffect(() => {
+        if (chatRoom.users) {
+            const user_notif = chatRoom.users.find((selected) => (selected.user.id === user.id));
+            setNotification(user_notif.notification);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatRoom]);
 
     return (
         <div
@@ -48,13 +64,14 @@ function ChatInfo({
             className={" bg-white z-20 w-full md:w-64 lg:w-80 xl:w-96 md:static top-auto bottom-auto transform transition-transform duration-200 ease-in-out border-0 md:border-l border-gray-200"
                 + (openInfo ? " translate-x-0" : " translate-x-64 !w-0")}
         >
-            {user && <ChatInfoSearch
+            {user && Object.keys(chatRoom).length !== 0 && <ChatInfoSearch
                 user={user}
+                chatRoom={chatRoom}
                 messageList={messageList}
                 openInfoSearch={openInfoSearch}
                 handleCloseChatInfoSearch={handleCloseChatInfoSearch} />}
-            {user && <ChatInfoBookmark
-                user={user}
+            {user && Object.keys(chatRoom).length !== 0 && <ChatInfoBookmark
+                chatRoom={chatRoom}
                 messageList={messageList}
                 openInfoBookmark={openInfoBookmark}
                 handleCloseChatInfoBookmark={handleCloseChatInfoBookmark} />}
@@ -104,7 +121,7 @@ function ChatInfo({
                 {chatRoom.group && <span className="block text-sm text-gray-600 truncate overflow-hidden">
                     {chatRoom.users
                         .filter((item) => (
-                            item.user.online
+                            item.user.online && !item.deleted
                         )).length + " "}
                     Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                 </span>}
@@ -130,9 +147,9 @@ function ChatInfo({
                             type="checkbox"
                             name="notif"
                             id="notif"
-                            className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none"
-                            checked={notification}
-                            value={notification}
+                            className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none focus:ring-0 focus:ring-offset-0"
+                            checked={Boolean(notification)}
+                            value={Boolean(notification)}
                             onChange={() => {
                                 setNotification(!notification);
                             }}
@@ -208,8 +225,8 @@ function ChatInfo({
                     chatRoom={chatRoom}
                 />}
                 {chatRoom.group &&
-                    <div className="mt-5">
-                        <div className="flex justify-between items-center p-2" >
+                    <div className="mt-5 ">
+                        <div className="flex justify-between items-center p-2 border-gray-200 border-b" >
                             <div className="flex font-bold text-sm text-primary text-left">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -230,8 +247,8 @@ function ChatInfo({
                                 chatRoomList={chatRoomList}
                             />}
                         </div>
-                        <div className="p-2">
-                            <ul className="border-t border-gray-200 pt-2">
+                        <div className="scrollable p-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-550px)]">
+                            <ul className=" pt-2">
                                 {chatRoom.users && chatRoom.users.length !== 0 &&
                                     chatRoom.users.filter((item) => !item.deleted)
                                         // sort user by name
