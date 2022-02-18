@@ -20,9 +20,11 @@ function Connect({user, chatRoom}) {
         return (item.user.id === user.id)
     });
 
-    const transaction_id =
-        Date.now().toString().substring(0, 4) +
-        Date.now().toString().substring(9);
+
+    const transaction_id = to.user.id;
+
+    // Date.now().toString().substring(0, 4) +
+    // Date.now().toString().substring(9);
     const iframe_url = `https://develop.d9jtdzsj058zk.amplifyapp.com/login/true/${user_id}/${ip}/${code}/null/null?to=${to.user.id}&to_name=${to.user.name}&from=${from.user.id}&from_name=${from.user.name}&transaction_id=${transaction_id}&app=conva`;
 
     return (
@@ -68,7 +70,9 @@ function Connect({user, chatRoom}) {
                             width="100%"
                             id="myId"
                             className="myClassname"
-                            height="100%" />
+                            height="100%"
+                            allow="camera *;microphone *"
+                        />
                     </div>
                 </div>
             </Dialog>
