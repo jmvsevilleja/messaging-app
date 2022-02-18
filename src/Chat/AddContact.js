@@ -8,6 +8,7 @@ function AddContact({user, handleChatRoomID}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [userEmail, setUserEmail] = useState("");
+    const [userPhone, setUserPhone] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [readQR, setreadQR] = useState(false);
@@ -217,19 +218,19 @@ function AddContact({user, handleChatRoomID}) {
                                     value={userEmail}
                                 />
                             </div>
-                                {/* <div className="flex justify-center -my-2"><span className="text-sm text-primary">or</span></div> */}
-                                {/* <div className="relative text-gray-600 focus-within:text-gray-400">
-                                <input
-                                    aria-placeholder="Phone"
-                                    placeholder="Phone"
-                                    type="text"
-                                    className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
-                                    onChange={(e) => {
-                                        setUserPhone(e.target.value);
-                                    }}
-                                    value={userPhone}
-                                />
-                            </div> */}
+                                <div className="flex justify-center -my-2"><span className="text-sm text-primary">or</span></div>
+                                <div className="relative text-gray-600 focus-within:text-gray-400">
+                                    <input
+                                        aria-placeholder="Phone"
+                                        placeholder="Phone"
+                                        type="text"
+                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                        onChange={(e) => {
+                                            setUserPhone(e.target.value);
+                                        }}
+                                        value={userPhone}
+                                    />
+                                </div>
                                 <div className="flex justify-center -mt-2 mb-1"><span className="text-sm text-primary">or</span></div>
                                 <div className="flex justify-center">
                                     <button
