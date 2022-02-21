@@ -275,7 +275,7 @@ function ChatBody({
     }, [messageList]);
     return (
         <div
-            className="bg-white dark:bg-slate-900 grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200 dark:border-gray-500"
+            className="bg-white dark:bg-slate-900 grow flex flex-col md:translate-x-0 transform transition-transform duration-200 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200 dark:border-gray-500"
         >
             {nectus && !(openChat) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
@@ -327,7 +327,7 @@ function ChatBody({
 
                                 </div>
                                 {chatRoom.group &&
-                                    <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
+                                    <span className="block ml-2 text-sm text-gray-600 dark:text-slate-400 truncate overflow-hidden">
                                         {chatRoom.users
                                             .filter((item) => (
                                                 item.user.online && !item.deleted
@@ -407,7 +407,7 @@ function ChatBody({
                             </div>
                             <div className="text-sm text-primary ml-2">{userTyping}</div>
                         </div>}
-                    {selectedFiles.length !== 0 && <div className="absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
+                    {selectedFiles.length !== 0 && <div className="absolute z-20 inset-x-0 bottom-16 bg-white dark:bg-slate-900 bg-opacity-90 overflow-y-auto scrollable  p-2">
                         {selectedFiles.map((file, index) => {
                             return (
                                 <div key={file.name}>
@@ -442,7 +442,7 @@ function ChatBody({
                             )
                         })}
                     </div>}
-                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
+                    {selectedImages.length !== 0 && <div className="flex z-20 justify-start md:justify-center items-center absolute inset-x-0 bottom-16 bg-white dark:bg-slate-900 bg-opacity-90 overflow-y-auto scrollable  p-2">
                         {selectedImages.map((file, index) => {
                             const objectURL = URL.createObjectURL(file);
                             return (
@@ -470,7 +470,7 @@ function ChatBody({
                             )
                         })}
                     </div>}
-                    {recordedAudio && <div className="absolute inset-x-0 bottom-16 bg-white bg-opacity-90 p-2">
+                    {recordedAudio && <div className="absolute z-20 inset-x-0 bottom-16 bg-white dark:bg-slate-900 bg-opacity-90 p-2">
                         <AudioPlayer recordedAudio={recordedAudio} isUploading={isUploading} handleDeleteAudioUpload={handleDeleteAudioUpload} />
                     </div>}
                     <form

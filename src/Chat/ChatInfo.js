@@ -61,8 +61,8 @@ function ChatInfo({
     return (
         <div
             id="rightsidebar"
-            className={"bg-white dark:bg-slate-900  z-20 w-full md:w-64 lg:w-80 xl:w-96 md:static top-auto bottom-auto transform transition-transform duration-200 ease-in-out border-0 border-gray-200 dark:border-gray-500"
-                + (openInfo ? " translate-x-0  md:border-l" : " translate-x-64 !w-0")}
+            className={"bg-white dark:bg-slate-900  z-20 w-full md:w-64 lg:w-80 xl:w-96 md:static top-auto bottom-auto border-0 border-gray-200 dark:border-gray-500"
+                + (openInfo ? " translate-x-0 md:border-l" : " translate-x-64 !w-0")}
         >
             {user && Object.keys(chatRoom).length !== 0 && <ChatInfoSearch
                 user={user}
@@ -226,15 +226,15 @@ function ChatInfo({
                 />}
                 {chatRoom.group &&
                     <div className="mt-5 ">
-                        <div className="flex justify-between items-center p-2 border-gray-200 border-b" >
-                            <div className="flex font-bold text-sm text-primary text-left">
+                        <div className="flex justify-between items-center p-2 mb-2 border-gray-200 dark:border-gray-500 border-b" >
+                            <div className="flex font-bold text-sm text-primary dark:text-white text-left">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="28"
                                     height="18"
                                     fill="none"
                                     viewBox="0 0 28 18"
-                                    className="fill-current text-primary mr-3 ml-1"
+                                    className="fill-current mr-3 ml-1"
                                 >
                                     <path
                                         d="M7 0a5 5 0 100 10A5 5 0 007 0zM4 5a3 3 0 116 0 3 3 0 01-6 0zM14.908 5.218A2 2 0 0014 5V3a4 4 0 11-2.357 7.232l1.178-1.616a2 2 0 102.087-3.398zM17.998 18A3.999 3.999 0 0014 14.002V12a6.001 6.001 0 016 6h-2.002zM14 18h-2a5 5 0 00-10 0H0a7 7 0 1114 0z"
@@ -247,7 +247,7 @@ function ChatInfo({
                                 chatRoomList={chatRoomList}
                             />}
                         </div>
-                        <div className="scrollable p-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-550px)]">
+                        <div className="scrollable p-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-560px)]">
                             <ul className=" pt-2">
                                 {chatRoom.users && chatRoom.users.length !== 0 &&
                                     chatRoom.users.filter((item) => !item.deleted)

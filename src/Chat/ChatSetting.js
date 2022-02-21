@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import Picture from "./Picture";
 
 function ChatSetting({
@@ -6,20 +6,16 @@ function ChatSetting({
     openSetting,
     handleCloseSetting,
     handleOpenSettingQR,
+    toggleDarkMode,
+    darkMode
 }) {
-    const [darkMode, setDarkMode] = useState(false);
+
     // const [userStatus, setUserStatus] = useState(user.status);
-
-    useEffect(() => {
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     return (
         <div>
             <div
                 id="sidebar"
-                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar bg-white dark:bg-slate-900 duration-200 ease-in-out " + (openSetting ? "translate-x-0" : "-translate-x-full")}
+                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar bg-white dark:bg-slate-900 duration-200 ease-in-out transition-transform " + (openSetting ? "translate-x-0" : "-translate-x-full")}
             >
                 <div className="justify-between item-center p-5 py-8">
                     <div className="flex items-center" >
@@ -39,7 +35,7 @@ function ChatSetting({
                             </svg>
 
                         </button>
-                        <div className=" font-bold text-gray-600">Setting</div>
+                        <div className=" font-bold text-gray-600 dark:text-white">Setting</div>
                     </div>
                 </div>
                 <div className="flex justify-between items-center border-b border-gray-300 p-5">
@@ -51,17 +47,17 @@ function ChatSetting({
                     />
                     <div className="w-full overflow-hidden">
                         <div className="flex items-center">
-                            <span className="block ml-2 font-bold text-base text-gray-600">
+                            <span className="block ml-2 font-bold text-base text-gray-600 dark:text-white">
                                 {user.name}
                             </span>
 
                         </div>
-                        <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
+                        <span className="block ml-2 text-sm text-gray-600 dark:text-slate-400 truncate overflow-hidden">
                             {user.status}
                         </span>
                     </div>
 
-                    <button className="outline-0 text-primary"
+                    <button className="outline-0 text-primary dark:text-white"
                         onClick={handleOpenSettingQR}
                     >
                         <svg
@@ -85,7 +81,7 @@ function ChatSetting({
                     <div className="flex w-full justify-between items-center p-2">
                         <label
                             htmlFor="darkmode"
-                            className="cursor-pointer text-md font-medium text-base text-gray-600"
+                            className="cursor-pointer text-md font-medium text-base text-gray-600 dark:text-slate-400"
                         >Night Mode
                         </label>
                         <div
@@ -97,8 +93,9 @@ function ChatSetting({
                                 id="darkmode"
                                 className="bg-gray-100 border-bg-gray-100 mr-1 toggle-checkbox absolute block w-5 h-5 rounded-full border-2 appearance-none cursor-pointer outline-none focus:outline-none focus:ring-0 focus:ring-offset-0"
                                 value={darkMode}
+                                checked={darkMode}
                                 onChange={() => {
-                                    setDarkMode(!darkMode);
+                                    toggleDarkMode();
                                 }}
                             />
                             <label
@@ -111,7 +108,7 @@ function ChatSetting({
 
                         <div className="flex text-gray-400 hover:text-gray-500">
                             <button className="flex w-full justify-between items-center outline-none focus:outline-none" >
-                                <div className="text-md font-medium text-base text-gray-600">Privacy and security</div>
+                                <div className="text-md font-medium text-base text-gray-600 dark:text-slate-400">Privacy and security</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                                 </svg>
@@ -122,7 +119,7 @@ function ChatSetting({
                     <div className=" p-2">
                         <div className="flex text-gray-400 hover:text-gray-500">
                             <button className="flex w-full justify-between items-center outline-none focus:outline-none" >
-                                <div className="text-md font-medium text-base text-gray-600">About</div>
+                                <div className="text-md font-medium text-base text-gray-600 dark:text-slate-400">About</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                                 </svg>

@@ -6,7 +6,7 @@ import Picture from "./Picture";
 function ChatProfile({
     user,
     openProfile,
-    handleCloseProfile,
+    handleCloseProfile
 }) {
 
     return (
@@ -44,7 +44,7 @@ function ChatProfile({
                     />
                     <div className="relative">
                         <div className="flex items-center mt-4 ml-2">
-                            <span className="block font-bold text-lg text-gray-600">
+                            <span className="block font-bold text-lg text-gray-600 dark:text-white">
                                 {user.name}
                             </span>
                         </div>
@@ -53,7 +53,7 @@ function ChatProfile({
                             user={user}
                         />}
                     </div>
-                    {user && <span className="block text-sm text-gray-600 truncate overflow-hidden">
+                    {user && <span className="block text-sm text-gray-600 dark:text-slate-400 truncate overflow-hidden">
                         {user.status}
                     </span>}
 

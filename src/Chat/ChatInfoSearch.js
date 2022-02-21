@@ -33,11 +33,11 @@ function ChatInfo({
         <div>
             <div
                 id="sidebar"
-                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar bg-white dark:bg-slate-900 duration-200 ease-in-out " + (openInfoSearch ? "translate-x-0" : "translate-x-full")}
+                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar bg-white dark:bg-slate-900 duration-200 ease-in-out transition-transform " + (openInfoSearch ? "translate-x-0" : "translate-x-full")}
             >
-                <div className="justify-between item-center p-5 py-8 bg-white">
+                <div className="justify-between item-center p-5 py-8">
                     <div className="flex items-center justify-between" >
-                        <div className=" font-bold text-gray-600">Search in Conversation</div>
+                        <div className=" font-bold text-gray-600 dark:text-white">Search in Conversation</div>
                         <button
                             className="text-gray-400 hover:text-gray-500"
                             onClick={handleCloseChatInfoSearch}
@@ -88,7 +88,7 @@ function ChatInfo({
                             )
                             .map((message) => (<div key={message.id}>
                                 {message.content && <>
-                                    <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>
+                                    <p className="text-xs text-primary dark:text-slate-400 font-medium">{names[message.userMessageId]}</p>
                                     <div className="shadow-md mb-1 rounded-lg p-2 text-white bg-primary text-left">
                                         <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>
                                             {getTextWithHighlights(message.content, searchText)}

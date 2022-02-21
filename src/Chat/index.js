@@ -28,12 +28,24 @@ const Chat = () => {
     const [chatRoom, setChatRoom] = useState({});
     const [openChat, setOpenChat] = useState(false);
     const [openInfo, setOpenInfo] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
 
     const [forceOpenChat, setForceOpenChat] = useState(false);
     const [chatRoomID, setChatRoomID] = useState(null);
     let navigate = useNavigate();
 
     // HANDLE FUNCTIONS
+    const toggleDarkMode = async () => {
+        setDarkMode((val) => {
+            localStorage.setItem("dark_mode", !val);
+            return !val
+        });
+    }
+
+    useEffect(() => {
+        setDarkMode(localStorage.getItem("dark_mode") == "true");
+    }, []);
+
     const handleLogout = async () => {
         localStorage.removeItem("user_id");
         localStorage.removeItem("auth_login");
@@ -474,7 +486,7 @@ const Chat = () => {
 
     //console.log('Rendering index.js');
     return (
-        <div className="dark flex h-screen overflow-hidden">
+        <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>
             {/* Content area */}
             <div className="relative flex flex-col flex-1 overflow-hidden">
 
@@ -490,6 +502,8 @@ const Chat = () => {
                             handleLogout={handleLogout}
                             handleChatRoom={handleChatRoom}
                             handleChatRoomID={handleChatRoomID}
+                            toggleDarkMode={toggleDarkMode}
+                            darkMode={darkMode}
                         />
 
                         {/* Messages body */}

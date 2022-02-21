@@ -18,9 +18,9 @@ function ChatSettingQR({
         <div>
             <div
                 id="sidebar"
-                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar  bg-gray-100  duration-200 ease-in-out " + (openSettingQR ? "translate-x-0" : "-translate-x-full")}
+                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar  bg-gray-100 dark:bg-slate-900 duration-200 ease-in-out " + (openSettingQR ? "translate-x-0" : "-translate-x-full")}
             >
-                <div className="justify-between item-center p-5 py-8 bg-white">
+                <div className="justify-between item-center p-5 py-8">
                     <div className="flex items-center" >
                         <button
                             className="text-gray-400 hover:text-gray-500 mr-4"
@@ -38,7 +38,7 @@ function ChatSettingQR({
                             </svg>
 
                         </button>
-                        <div className=" font-bold text-gray-600">Setting</div>
+                        <div className="font-bold text-gray-600 dark:text-white">Setting</div>
                     </div>
                 </div>
                 <div className="justify-between item-center p-5">
@@ -58,7 +58,7 @@ function ChatSettingQR({
                             <QRCode value={user.id} size={150} />
                         </div>
                     </div>
-                    <div className="text-center text-gray-600 p-4 text-sm">
+                    <div className="text-center text-gray-600 dark:text-slate-400 p-4 text-sm">
                         Your QR Code is private. If you share it with someone, they can scan it with their Conva App camera to add you as contact
                     </div>
 

@@ -19,6 +19,8 @@ function ChatSidebar({
     handleLogout,
     handleChatRoom,
     handleChatRoomID,
+    toggleDarkMode,
+    darkMode
 }) {
 
     const [searchText, setSearchText] = useState("");
@@ -78,6 +80,8 @@ function ChatSidebar({
                 openSetting={openSetting}
                 handleCloseSetting={handleCloseSetting}
                 handleOpenSettingQR={handleOpenSettingQR}
+                toggleDarkMode={toggleDarkMode}
+                darkMode={darkMode}
             />}
 
             {user && <ChatSettingQR
