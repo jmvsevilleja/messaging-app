@@ -1,13 +1,19 @@
 import React, {useState} from "react";
 import {Dialog} from "@headlessui/react";
 import Iframe from 'react-iframe'
+import {checkSubscription} from "../api/api";
 
 function Connect({user, chatRoom}) {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isSub, setIsSub] = useState(false);
 
     const handleOpenConnect = async (e) => {
-        setIsOpen(true);
+        // checkSubscription(user.id).then((result) => {
+        //     console.log(result);
+        // })
+        setIsSub(true);
+        //setIsOpen(true);
     };
 
     const user_id = localStorage.getItem("user_id");
@@ -20,7 +26,10 @@ function Connect({user, chatRoom}) {
         return (item.user.id === user.id)
     });
 
+    const handleSubscription = async () => {
+        window.open(`https://www.clinicapay.com/pricing?product=prod_L84vb6dsVu8iu2&code=${code}&ip_address=${ip}&user_id=${user_id}`, "_blank");
 
+    };
     const transaction_id = to.user.id;
 
     // Date.now().toString().substring(0, 4) +
@@ -45,6 +54,46 @@ function Connect({user, chatRoom}) {
                     </svg>
                 </button>
             </div>}
+            <Dialog
+                open={isSub}
+                onClose={() => {
+                    setIsSub(false)
+                }}
+                className="fixed z-30 inset-0 overflow-y-auto"
+            >
+                <div className="flex items-center justify-center min-h-screen">
+                    <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+
+                    <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl m-5">
+                        <div className="text-gray-400 hover:text-gray-500 relative">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsSub(false);
+                                }}
+                                className="absolute -right-2 -top-2"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="flex flex-col justify-center">
+                            <div className="py-10 flex justify-center text-center">
+                                To continue using audio and video calls. <br />Please subscribe to our Clinica Connect App.
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    handleSubscription();
+                                }}
+                                className="bg-primary hover:bg-secondary text-white font-base p-2 px-4 rounded">
+                                <span className="py-2">Get Subscription</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </Dialog>
             <Dialog
                 open={isOpen}
                 onClose={() => {

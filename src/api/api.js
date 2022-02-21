@@ -19,6 +19,29 @@ export const uploadFile = async (file) => {
                 });
             }
         });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const checkSubscription = async (user_id) => {
+    try {
+        const auth_token = localStorage.getItem("auth_token");
+        const refresh_token = localStorage.getItem("refresh_token");
+        return axios.get(`https://ghhrzz65r1.execute-api.ap-southeast-2.amazonaws.com/dev/installed-app`, {
+            params: {
+                userID: user_id
+            },
+            headers: {
+                Authorization: `Bearer ${auth_token}`,
+                "X-REFRESH-TOKEN": refresh_token,
+            },
+        }).then(async res => {
+            if (res.status === 200) {
+                //const {presigned_url, public_url, filename} = res.data.message;
+                console.log('Subscription ... ', res);
+            }
+        });
 
     } catch (err) {
         console.error(err);
