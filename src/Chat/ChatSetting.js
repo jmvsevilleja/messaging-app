@@ -38,7 +38,7 @@ function ChatSetting({
                         <div className=" font-bold text-gray-600 dark:text-white">Setting</div>
                     </div>
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-300 p-5">
+                <div className="flex justify-between items-center border-b border-gray-300 dark:border-gray-500 p-5 mx-5">
 
                     <Picture
                         name={user.name}
