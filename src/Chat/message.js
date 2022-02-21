@@ -47,7 +47,7 @@ function Message({user_id, message, chatroom}) {
                 <div className="relative">
                     <div>
                         {message.image.map((file, index) => {
-                            return (file.name && file.path &&
+                            return (file && file.name && file.path &&
                                 <div className="flex items-center w-48 m-2 mx-0" key={file.name}>
                                     <Image file={file} src={file.path} />
                                     <button className=" text-gray-400 hover:text-gray-500 rounded border-gray-400 border ml-2"
@@ -72,7 +72,7 @@ function Message({user_id, message, chatroom}) {
             {message.type === 'FILE' && message.file &&
                 <div>
                     {message.file.map((file, index) => {
-                        return (file.name && file.path &&
+                        return (file && file.name && file.path &&
                             <div className="flex items-center m-2 mx-0 relative" key={file.name}>
                                 <File file={file} src={file.path}
                                     handleDownloadFile={handleDownloadFile} />

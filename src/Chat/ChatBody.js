@@ -9,7 +9,7 @@ import Picture from "./Picture";
 import Connect from "./Connect";
 
 import ConvoLogo from '../logo.svg';
-import axios from "axios";
+import {uploadFile} from "../api/api";
 import Resizer from "react-image-file-resizer";
 
 const resizeFile = (file) =>
@@ -75,23 +75,7 @@ function ChatBody({
             input.image = await Promise.all(selectedImages.map(async (file, key) => {
                 console.log("Image file", file, file.type);
                 setIsUploading(true);
-                return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
-                    filename: file.name
-                }, {headers: {"X-ROUTE": "public"}}).then(async res => {
-                    if (res.status === 200) {
-                        const {presigned_url, public_url, filename} = res.data.message;
-                        console.log('Uploading ... ', filename);
-                        return await axios.put(presigned_url, file, {headers: {"Content-Type": file.type}}).then(async res => {
-                            if (res.status === 200) {
-                                console.log("Upload Success", filename, public_url);
-                                return {
-                                    name: filename,
-                                    path: public_url
-                                }
-                            }
-                        });
-                    }
-                });
+                return uploadFile(file);
             }));
         }
 
@@ -100,47 +84,15 @@ function ChatBody({
             input.file = await Promise.all(selectedFiles.map(async (file, key) => {
                 console.log("Document file", file, file.type);
                 setIsUploading(true);
-                return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
-                    filename: file.name
-                }, {headers: {"X-ROUTE": "public"}}).then(async res => {
-                    if (res.status === 200) {
-                        const {presigned_url, public_url, filename} = res.data.message;
-                        console.log('Uploading ... ', filename);
-                        return await axios.put(presigned_url, file, {headers: {"Content-Type": file.type}}).then(async res => {
-                            if (res.status === 200) {
-                                console.log("Upload Success", filename, public_url);
-                                return {
-                                    name: filename,
-                                    path: public_url
-                                }
-                            }
-                        });
-                    }
-                });
+                return uploadFile(file);
             }));
         }
 
         if (recordedAudio) {
             input.type = "AUDIO";
             setIsUploading(true);
-            const filename = 'audio-file-' + Date.now() + '.mp3';
-            input.audio = await axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
-                filename: filename
-            }, {headers: {"X-ROUTE": "public"}}).then(async res => {
-                if (res.status === 200) {
-                    const {presigned_url, public_url} = res.data.message;
-                    console.log('Uploading ... ', filename);
-                    return await axios.put(presigned_url, recordedAudio, {headers: {"Content-Type": recordedAudio.type}}).then(async res => {
-                        if (res.status === 200) {
-                            console.log("Upload Success", filename, public_url);
-                            return {
-                                name: filename,
-                                path: public_url
-                            }
-                        }
-                    });
-                }
-            });
+            recordedAudio.name = 'audio-file-' + Date.now() + '.mp3';
+            input.audio = await uploadFile(recordedAudio);
         }
 
         try {
