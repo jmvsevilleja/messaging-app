@@ -61,7 +61,7 @@ function ChatSidebar({
     return (
         <div
             id="messages-sidebar"
-            className={" bg-white absolute z-20 top-0 bottom-0 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out w-full md:w-72 lg:w-80 xl:w-96"
+            className={"bg-white dark:bg-slate-900 absolute z-20 top-0 bottom-0 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out w-full md:w-72 lg:w-80 xl:w-96"
                 + (!openChat ? " translate-x-0" : " -translate-x-full")}
         >
 

@@ -13,7 +13,7 @@ function ChatProfile({
         <div>
             <div
                 id="sidebar"
-                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar  bg-white  duration-200 ease-in-out " + (openProfile ? "translate-x-0" : "-translate-x-full")}
+                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar  bg-white dark:bg-slate-900  duration-200 ease-in-out " + (openProfile ? "translate-x-0" : "-translate-x-full")}
             >
                 <div className="justify-between item-center p-5 py-8">
                     <div className="flex items-center" >
@@ -33,7 +33,7 @@ function ChatProfile({
                             </svg>
 
                         </button>
-                        <div className=" font-bold text-gray-600">Profile</div>
+                        <div className=" font-bold text-gray-600 dark:text-white">Profile</div>
                     </div>
                 </div>
                 <div className="flex flex-col items-center p-5 pt-0">

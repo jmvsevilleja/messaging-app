@@ -474,7 +474,7 @@ const Chat = () => {
 
     //console.log('Rendering index.js');
     return (
-        <div className="bg-white flex h-screen overflow-hidden">
+        <div className="dark flex h-screen overflow-hidden">
             {/* Content area */}
             <div className="relative flex flex-col flex-1 overflow-hidden">
 

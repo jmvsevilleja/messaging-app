@@ -61,8 +61,8 @@ function ChatInfo({
     return (
         <div
             id="rightsidebar"
-            className={" bg-white z-20 w-full md:w-64 lg:w-80 xl:w-96 md:static top-auto bottom-auto transform transition-transform duration-200 ease-in-out border-0 md:border-l border-gray-200"
-                + (openInfo ? " translate-x-0" : " translate-x-64 !w-0")}
+            className={"bg-white dark:bg-slate-900  z-20 w-full md:w-64 lg:w-80 xl:w-96 md:static top-auto bottom-auto transform transition-transform duration-200 ease-in-out border-0 border-gray-200 dark:border-gray-500"
+                + (openInfo ? " translate-x-0  md:border-l" : " translate-x-64 !w-0")}
         >
             {user && Object.keys(chatRoom).length !== 0 && <ChatInfoSearch
                 user={user}
@@ -105,7 +105,7 @@ function ChatInfo({
                 />
                 <div className="relative">
                     <div className="flex items-center mt-4 ml-2">
-                        <span className="block font-bold text-lg text-gray-600">
+                        <span className="block font-bold text-lg text-gray-600 dark:text-white">
                             {chatRoom.name}
                         </span>
                     </div>
@@ -115,10 +115,10 @@ function ChatInfo({
                         chatRoom={chatRoom}
                     />}
                 </div>
-                {user && !chatRoom.group && <span className="block text-sm text-gray-600 truncate overflow-hidden">
+                {user && !chatRoom.group && <span className="block text-sm text-gray-600 dark:text-slate-400 truncate overflow-hidden">
                     {user.status}
                 </span>}
-                {chatRoom.group && <span className="block text-sm text-gray-600 truncate overflow-hidden">
+                {chatRoom.group && <span className="block text-sm text-gray-600 dark:text-slate-400 truncate overflow-hidden">
                     {chatRoom.users
                         .filter((item) => (
                             item.user.online && !item.deleted
@@ -132,7 +132,7 @@ function ChatInfo({
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
-                        <div className="ml-4 text-md font-medium text-base text-gray-600">
+                        <div className="ml-4 text-md font-medium text-base text-gray-600 dark:text-slate-400">
                             <label
                                 htmlFor="notif"
                                 className="py-2 cursor-pointer"
@@ -171,7 +171,7 @@ function ChatInfo({
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
-                                <div className="ml-4 text-md font-medium text-base text-gray-600 text-left">Search in Conversation</div>
+                                <div className="ml-4 text-md font-medium text-base text-gray-600 dark:text-slate-400 text-left">Search in Conversation</div>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -189,7 +189,7 @@ function ChatInfo({
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                                 </svg>
-                                <div className="ml-4 text-md font-medium text-base text-gray-600">Bookmarks</div>
+                                <div className="ml-4 text-md font-medium text-base text-gray-600 dark:text-slate-400 text-left">Bookmarks</div>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -207,7 +207,7 @@ function ChatInfo({
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <div className="ml-4 text-md font-medium text-base text-gray-600 text-left">Media Links and Documents</div>
+                                <div className="ml-4 text-md font-medium text-base text-gray-600 dark:text-slate-400 text-left">Media Links and Documents</div>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />

@@ -275,7 +275,7 @@ function ChatBody({
     }, [messageList]);
     return (
         <div
-            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200"
+            className="bg-white dark:bg-slate-900 grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200 dark:border-gray-500"
         >
             {nectus && !(openChat) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
@@ -287,13 +287,13 @@ function ChatBody({
             {!nectus && !(openChat || Object.keys(chatRoom).length !== 0) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
                     <div className="">
-                        <img className=" w-96" src={ConvoLogo} alt="Conva" />
+                        <img className="w-96" src={ConvoLogo} alt="Conva" />
                     </div>
                 </div>
             )}
             {Object.keys(chatRoom).length !== 0 && (
                 <div className="w-full h-full flex flex-col overflow-hidden">
-                    <div className="justify-between item-center border-b border-gray-300 p-3 xs:p-5">
+                    <div className="justify-between item-center border-b border-gray-300 dark:border-gray-500 p-3 xs:p-5">
                         <span className="flex items-center overflow-hidden">
                             {!nectus && <button
                                 className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
@@ -320,7 +320,7 @@ function ChatBody({
                             )}
                             <div className="w-full overflow-hidden">
                                 <div className="flex items-center">
-                                    <span className="block ml-2 font-bold text-base text-gray-600">
+                                    <span className="block ml-2 font-bold text-base text-gray-600 dark:text-white">
                                         {" "}
                                         {chatRoom && chatRoom.name}
                                     </span>

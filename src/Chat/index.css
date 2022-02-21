@@ -13,7 +13,6 @@
 .scrollable::-webkit-scrollbar-thumb {
     cursor: pointer;
     background-color: #9ca3af;
-    border-radius: 10px;
 }
 
 #darkmode.toggle-checkbox:checked {

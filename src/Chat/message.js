@@ -35,7 +35,7 @@ function Message({user_id, message, chatroom}) {
             }
         >
 
-            {!isme && <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>}
+            {!isme && <p className="text-xs text-primary dark:text-white font-medium">{names[message.userMessageId]}</p>}
 
             {message.type === 'AUDIO' && message.audio &&
                 <div className={"flex w-full relative " + (isme ? "justify-end items-end" : "justify-start items-start")}>
@@ -85,7 +85,7 @@ function Message({user_id, message, chatroom}) {
             }
             {message.content && <div className="relative">
                 {(message.type === "TEXT" || message.type === "LINK") && <MessageDropdown isme={isme} message={message} />}
-                <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-50 rounded-tl-none")}>
+                <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-100 dark:bg-gray-200 rounded-tl-none")}>
                     <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{message.content}</p>
                 </div></div >}
             <div className="flex items-center justify-between">

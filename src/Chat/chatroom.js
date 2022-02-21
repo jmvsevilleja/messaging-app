@@ -9,8 +9,8 @@ function ChatRoom({user, room, chatRoomID, handleChatRoomID}) {
     return (
         <li>
             <button
-                className={"hover:bg-indigo-100 p-2 my-3 rounded w-full cursor-pointer flex items-center text-sm focus:outline-none transition duration-150 ease-in-out " +
-                    (chatRoomID === room.id ? "bg-indigo-100" : "")}
+                className={"hover:bg-gray-100 dark:hover:bg-gray-800 p-2 my-3 rounded w-full cursor-pointer flex items-center text-sm focus:outline-none transition duration-150 ease-in-out " +
+                    (chatRoomID === room.id ? "bg-gray-100 dark:bg-gray-800" : "")}
                 onClick={() => {
                     handleChatRoomID(room.id);
                 }}>
@@ -23,14 +23,14 @@ function ChatRoom({user, room, chatRoomID, handleChatRoomID}) {
 
                 <div className="w-full overflow-hidden">
                     <div className="flex justify-between">
-                        <span className="block ml-2 font-medium text-base text-gray-600 text-left">
+                        <span className="block ml-2 font-medium text-base text-gray-600 dark:text-white text-left">
                             {room.name}
                         </span>
 
                         <span className="block ml-2 text-sm text-gray-600 text-left">{updated}</span>
                     </div>
                     <div className="flex justify-between overflow-hidden">
-                        <div className="ml-2 pr-5 text-sm text-gray-600 text-left truncate overflow-hidden">{Boolean(room.lastMessage) && room.lastMessage}</div>
+                        <div className="ml-2 pr-5 text-sm text-gray-600 dark:text-slate-400 text-left truncate overflow-hidden">{Boolean(room.lastMessage) && room.lastMessage}</div>
                         {Boolean(room.newMessages) && <div className="text-xs inline-flex font-medium bg-primary text-white rounded-full text-center leading-5 px-2">
                             {room.newMessages}
                         </div>}
