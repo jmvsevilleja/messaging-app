@@ -36,10 +36,11 @@ export const checkSubscription = async (user_id) => {
                 Authorization: `Bearer ${auth_token}`,
                 "X-REFRESH-TOKEN": refresh_token,
             },
-        }).then(async res => {
-            if (res.status === 200) {
+        }).then(({status, data: {message: {listInstalledApps}}}) => {
+            if (status === 200) {
                 //const {presigned_url, public_url, filename} = res.data.message;
-                console.log('Subscription ... ', res);
+                console.log('GET INSTALLED APPS', listInstalledApps);
+                return listInstalledApps.items;
             }
         });
 
