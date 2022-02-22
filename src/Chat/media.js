@@ -26,7 +26,7 @@ function Media({message}) {
             {message.type === "IMAGE" && message.image &&
                 <>
                     {message.image.map((file, index) => {
-                        return (file.name && file.path &&
+                        return (file && file.name && file.path &&
                             <div className="w-30 m-2 float-right" key={file.name}>
                                 <Image file={file} src={file.path} />
                             </div>
@@ -38,7 +38,7 @@ function Media({message}) {
             {message.type === "FILE" && message.file &&
                 <div>
                     {message.file.map((file, index) => {
-                        return (file.name && file.path &&
+                        return (file && file.name && file.path &&
                             <div className="flex items-center m-2 mx-0" key={file.name}>
                                 <File file={file} src={file.path}
                                     handleDownloadFile={handleDownloadFile} />
