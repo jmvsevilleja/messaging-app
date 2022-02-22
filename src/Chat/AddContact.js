@@ -3,6 +3,7 @@ import {Dialog} from "@headlessui/react";
 import {getUserById, getChatRooms, getAccountById, getAccountByEmail} from "../api/queries";
 import {addUser, addChatRoom, addChatRoomUser} from "../api/mutations";
 import QrReader from 'react-qr-reader'
+import {checkSubscription} from "../api/api";
 
 function AddContact({user, handleChatRoomID}) {
 
@@ -12,6 +13,7 @@ function AddContact({user, handleChatRoomID}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [readQR, setreadQR] = useState(false);
+    const [showSub, setShowSub] = useState(false);
 
     const handleScan = data => {
         if (data) {
@@ -29,6 +31,7 @@ function AddContact({user, handleChatRoomID}) {
         setIsOpen(false);
         setUserEmail("");
         setreadQR(false);
+        setShowSub(false);
     }
 
     const handleCreateChat = async (selected_user) => {
@@ -67,34 +70,62 @@ function AddContact({user, handleChatRoomID}) {
         });
     };
 
-    const handleInviteUserSubmit = async (event) => {
+    const handleAddUserSubmit = async (event) => {
         event.preventDefault();
-        console.log('handleInviteUserSubmit', userEmail);
+        console.log('handleAddUserSubmit', userEmail);
         // prevent double submit
         if (loading || error) return;
-        setLoading(true);
 
-        getAccountByEmail(userEmail).then((account_found) => {
-            if (account_found) {
-                if (account_found.id !== user.id) {
-                    getUserById(account_found.id).then((user_found) => {
-                        if (user_found) {
-                            handleCreateChat(user_found);
-                        }
-                        if (!user_found) {
-                            const name = account_found.first_name + " " + account_found.last_name;
-                            console.log("user not found create to users table", account_found.id, name);
-                            addUser(account_found.id, name).then((user_created) => {
-                                handleCreateChat(user_created);
-                            });
+
+        if ((userEmail || userPhone)) {
+            var re = /\S+@\S+\.\S+/;
+            ;
+            if (!userPhone && !re.test(userEmail)) {
+                setError("Invalid email");
+                return;
+            }
+
+            setLoading(true);
+            getAccountByEmail(userEmail).then((account_found) => {
+                console.log('account_found', account_found);
+                if (account_found) {
+                    if (account_found.id === user.id) {
+                        setError("Invalid email");
+                        setLoading(false);
+                    }
+                    checkSubscription(account_found.id).then((result) => {
+                        if (!result) {
+                            // if user is subscribed, continue to chat
+                            // getUserById(account_found.id).then((user_found) => {
+                            //     //User Found, check Subscription by ID
+                            //     if (user_found) {
+                            //         handleCreateChat(user_found);
+                            //     }
+                            //     if (!user_found) {
+                            //         const name = account_found.first_name + " " + account_found.last_name;
+                            //         console.log("user not found create to users table", account_found.id, name);
+                            //         addUser(account_found.id, name).then((user_created) => {
+                            //             handleCreateChat(user_created);
+                            //         });
+                            //     }
+                            // });
                         }
                     });
-                    return;
                 }
-            }
-            setError("Contact not found!");
-            setLoading(false);
-        });
+                // Contact not found, show subscription note
+                setShowSub(true);
+                setLoading(false);
+            });
+
+            // // TODO: Check subscription of email or phone
+            // // if Subscribed continue adding User
+
+            // return;
+            return;
+        }
+        setError("Please enter an email address or a phone number!");
+
+
     };
 
     const handleQRSubmit = async (qr_code) => {
@@ -201,10 +232,30 @@ function AddContact({user, handleChatRoomID}) {
 
                         <form
                             onSubmit={(e) => {
-                                handleInviteUserSubmit(e);
+                                handleAddUserSubmit(e);
                             }}
                         >
-                            {!readQR && <><div className="relative text-gray-600 focus-within:text-gray-400">
+                            {showSub && <div className="flex flex-col justify-center">
+                                <div className="pt-5 pb-10 text-center">
+                                    {userEmail && <>The email address <b>{userEmail}</b> is not yet subscribed to our Conva Messaging App.</>}
+                                    {userPhone && <>The phone number <b>{userPhone}</b> is not yet subscribed to our Conva Messaging App.</>}
+                                </div>
+                                <div className="flex self-end">
+                                    <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
+                                        onClick={() => {
+                                            setShowSub(false);
+                                        }}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="bg-primary hover:bg-secondary text-white font-base p-2 px-4 rounded">
+                                        <span className="py-2">Send an Invitation</span>
+                                    </button>
+                                </div>
+                            </div>}
+
+                            {!showSub && !readQR && <><div className="relative text-gray-600 focus-within:text-gray-400">
                                 <input
                                     aria-placeholder="Email"
                                     placeholder="Email"
@@ -212,9 +263,9 @@ function AddContact({user, handleChatRoomID}) {
                                     className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                     onChange={(e) => {
                                         setError("");
+                                        setUserPhone("");
                                         setUserEmail(e.target.value);
                                     }}
-                                    required
                                     value={userEmail}
                                 />
                             </div>
@@ -226,6 +277,8 @@ function AddContact({user, handleChatRoomID}) {
                                         type="text"
                                         className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                         onChange={(e) => {
+                                            setError("");
+                                            setUserEmail("");
                                             setUserPhone(e.target.value);
                                         }}
                                         value={userPhone}
@@ -257,7 +310,7 @@ function AddContact({user, handleChatRoomID}) {
                                         <span className="py-2">Cancel</span>
                                     </button>
                                 </div>}
-                            {!readQR && <div className="mt-4 flex flex-col">
+                            {!showSub && !readQR && <div className="mt-4 flex flex-col">
                                 <div className="flex self-end">
                                     <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
                                         onClick={() => {
@@ -267,14 +320,14 @@ function AddContact({user, handleChatRoomID}) {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-primary hover:bg-secondary text-white font-base w-24 px-4 rounded">
+                                        className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 rounded">
 
                                         {loading && <svg fill='none' className="w-10 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
                                             <path clipRule='evenodd'
                                                 d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
                                                 fill='currentColor' fillRule='evenodd' />
                                         </svg>}
-                                        {!loading && <span className="py-2">Add</span>}
+                                        {!loading && <span className="py-2">Add Contact</span>}
                                     </button>
 
                                 </div>
