@@ -15,7 +15,7 @@ function Connect({user, chatRoom}) {
         checkSubscription(user.id).then((apps) => {
             if (apps) {
                 // find Connect App subscription
-                const connect = apps.find((item) => (item.application.id == "893ae9d6-27c7-446d-9ac0-c49c38cc63e7"));
+                const connect = apps.find((item) => (item.application.id === "893ae9d6-27c7-446d-9ac0-c49c38cc63e7"));
                 if (connect) {
                     setIsOpen(true);
                     return;
@@ -101,7 +101,7 @@ function Connect({user, chatRoom}) {
                         </div>}
                         {!checking && <div className="flex flex-col justify-center">
                             <div className="py-10 flex justify-center text-center">
-                                Sorry, you are not currently subscribed. <br /> To continue using audio and video calls, <br />Please subscribe to our Clinica Connect App.
+                                Sorry, you are not currently subscribed. <br /> To continue using audio and video calls, <br />please subscribe to our Clinica Connect App.
                             </div>
                             <button
                                 type="button"
