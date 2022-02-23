@@ -29,6 +29,7 @@ const Chat = () => {
     const [openChat, setOpenChat] = useState(false);
     const [openInfo, setOpenInfo] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
+    const [lastNotif, setLastNotif] = useState(null);
 
     const [forceOpenChat, setForceOpenChat] = useState(false);
     const [chatRoomID, setChatRoomID] = useState(null);
@@ -434,16 +435,22 @@ const Chat = () => {
                     }
                     : item));
 
-            // notify recipients
-            const user_notif = value.chatRoomUsers.items.find((items) => (items.chatRoomUserUserId === user.id && items.notification));
-            if (value.lastMessageBy !== user.id && user_notif && value.lastMessage && value.newMessages === 0) {
-                console.log('Notification', user_notif, value.newMessages);
-                if (Notification.permission === 'granted') {
-                    navigator.serviceWorker.getRegistration().then(function (reg) {
-                        reg.showNotification("Message from " + value.name, {body: value.lastMessage});
-                    });
+            // notify recipients for new messages
+            setLastNotif((message) => {
+                console.log('Notification', lastNotif, message, value.lastMessage);
+                if (message !== value.lastMessage) {
+                    const user_notif = value.chatRoomUsers.items.find((items) => (items.chatRoomUserUserId === user.id && items.notification));
+                    if (value.lastMessageBy !== user.id && user_notif && value.lastMessage && value.newMessages === 0) {
+                        console.log('Notification', user_notif, value.newMessages);
+                        if (Notification.permission === 'granted') {
+                            navigator.serviceWorker.getRegistration().then(function (reg) {
+                                reg.showNotification("Message from " + value.name, {body: value.lastMessage});
+                            });
+                        }
+                    }
                 }
-            }
+                return value.lastMessage;
+            });
         }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);

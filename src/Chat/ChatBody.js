@@ -103,11 +103,9 @@ function ChatBody({
                 if (messageText) {
                     messageInput.current.focus();
                 }
-                console.log('chatRoom.newMessages', chatRoom.newMessages);
-                // edit chatroom last message
-                // count unread messages
-                const newMessage = messageList.filter((item) => (item.status !== "READ")).length;
-
+                // edit chatroom last message and count unread messages
+                const newMessage = messageList.filter((item) => (
+                    item.userMessageId === user.id && item.status !== "READ")).length;
                 editChatRoom({
                     id: chatRoom.id,
                     newMessages: newMessage + 1,
