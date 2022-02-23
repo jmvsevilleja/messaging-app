@@ -440,11 +440,11 @@ const Chat = () => {
                 console.log('Notification', lastNotif, message, value.lastMessage);
                 if (message !== value.lastMessage) {
                     const user_notif = value.chatRoomUsers.items.find((items) => (items.chatRoomUserUserId === user.id && items.notification));
-                    if (value.lastMessageBy !== user.id && user_notif && value.lastMessage && value.newMessages === 0) {
+                    if (value.lastMessageBy !== user.id && user_notif && value.lastMessage) {
                         console.log('Notification', user_notif, value.newMessages);
                         if (Notification.permission === 'granted') {
                             navigator.serviceWorker.getRegistration().then(function (reg) {
-                                reg.showNotification("Message from " + value.name, {body: value.lastMessage});
+                                reg.showNotification("Message from " + value.name, {icon: "/icon-512x512.png", body: value.lastMessage});
                             });
                         }
                     }
