@@ -70,7 +70,8 @@ const Chat = () => {
         // update offline status
         editUser({
             id: user.id,
-            online: online
+            online: online,
+            lastOnlineAt: Math.round(new Date().getTime() / 1000)
         })
     };
 
@@ -319,10 +320,10 @@ const Chat = () => {
 
         console.log("USER: ", user.id);
 
-        // update online status
-        //setInterval(function () {
-        handleUserOnline(true);
-        //}, 300 * 1000);
+        // update online status every 15 min
+        setInterval(function () {
+            handleUserOnline(true);
+        }, 900000);
 
         getChatRooms(user.id).then((result) => {
             updateChatRoomList(result);
