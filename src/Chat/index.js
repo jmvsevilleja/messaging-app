@@ -43,7 +43,7 @@ const Chat = () => {
     }
 
     useEffect(() => {
-        setDarkMode(localStorage.getItem("dark_mode") == "true");
+        setDarkMode(localStorage.getItem("dark_mode") === "true");
     }, []);
 
     const handleLogout = async () => {
@@ -157,10 +157,10 @@ const Chat = () => {
                             ? {...item, status: value.status}
                             : item)
                     );
-                    //     if (user && user.id === value.userMessageId) {
-                    //         // update removing counter
-                    //         handleCounterMessage(value.chatRoom.id);
-                    //     }
+                    if (user && user.id === value.userMessageId) {
+                        // update removing counter
+                        handleCounterMessage(value.chatRoom.id);
+                    }
                 }
             }
             // remove deleted message
@@ -424,7 +424,7 @@ const Chat = () => {
                         chatroom: {
                             ...item.chatroom,
                             lastMessage: value.lastMessage,
-                            // newMessages: value.newMessages,
+                            newMessages: value.newMessages,
                             updatedAt: value.updatedAt,
                             ...(value.group ? {
                                 name: value.name,

@@ -105,9 +105,12 @@ function ChatBody({
                 }
                 console.log('chatRoom.newMessages', chatRoom.newMessages);
                 // edit chatroom last message
+                // count unread messages
+                const newMessage = messageList.filter((item) => (item.status !== "READ")).length;
+
                 editChatRoom({
                     id: chatRoom.id,
-                    //newMessages: (chatRoom.newMessages * 1) + 1,
+                    newMessages: newMessage + 1,
                     name: chatRoom.group ? chatRoom.name : user.name,
                     lastMessage: messageText,
                     lastMessageBy: user.id,
@@ -323,7 +326,7 @@ function ChatBody({
                         <div className="flex justify-center items-center absolute inset-x-0 bottom-16">
                             <div>
                                 <svg
-                                    className="fill-current text-primary"
+                                    className="fill-current text-primary dark:text-slate-400"
                                     viewBox="0 0 15 3"
                                     width="30"
                                     height="10"
@@ -357,7 +360,7 @@ function ChatBody({
                                     </circle>
                                 </svg>
                             </div>
-                            <div className="text-sm text-primary ml-2">{userTyping}</div>
+                            <div className="text-sm text-primary dark:text-slate-400 ml-2">{userTyping}</div>
                         </div>}
                     {selectedFiles.length !== 0 && <div className="absolute z-20 inset-x-0 bottom-16 bg-white dark:bg-slate-900 bg-opacity-90 overflow-y-auto scrollable  p-2">
                         {selectedFiles.map((file, index) => {
