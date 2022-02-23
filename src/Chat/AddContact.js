@@ -3,7 +3,7 @@ import {Dialog} from "@headlessui/react";
 import {getUserById, getChatRooms, getAccountById, getAccountByEmail} from "../api/queries";
 import {addUser, addChatRoom, addChatRoomUser} from "../api/mutations";
 import QrReader from 'react-qr-reader'
-import {checkSubscription} from "../api/api";
+import {checkSubscription, sendInvitation} from "../api/api";
 
 function AddContact({user, handleChatRoomID}) {
 
@@ -15,6 +15,9 @@ function AddContact({user, handleChatRoomID}) {
     const [error, setError] = useState("");
     const [readQR, setreadQR] = useState(false);
     const [showSub, setShowSub] = useState(false);
+    const [inviting, setInviting] = useState(false);
+    const [invited, setInvited] = useState(null);
+
 
     const handleScan = data => {
         if (data) {
@@ -35,6 +38,7 @@ function AddContact({user, handleChatRoomID}) {
         setShowSub(false);
         setCountryCode("");
         setUserPhone("");
+        setInvited(false);
     }
 
     const handleCreateChat = async (selected_user) => {
@@ -73,6 +77,15 @@ function AddContact({user, handleChatRoomID}) {
         });
     };
 
+    const handleSendInvite = async () => {
+        console.log('handleSendInvite', userEmail);
+        setInviting(true);
+        sendInvitation(user.name, userEmail, countryCode + userPhone).then((result) => {
+            console.log('sendInvitation', result);
+            setInvited(true);
+            setInviting(false);
+        })
+    }
     const handleAddUserSubmit = async (event) => {
         event.preventDefault();
         console.log('handleAddUserSubmit', userEmail);
@@ -463,7 +476,7 @@ function AddContact({user, handleChatRoomID}) {
                                 handleAddUserSubmit(e);
                             }}
                         >
-                            {showSub && <div className="flex flex-col justify-center">
+                            {!invited && showSub && <div className="flex flex-col justify-center">
                                 <div className="pt-5 pb-10 text-center">
                                     {userEmail && <>The email address <b>{userEmail}</b> is not yet subscribed to our Conva Messaging App.</>}
                                     {userPhone && <>The phone number <b>+{countryCode} {userPhone}</b> is not yet subscribed to our Conva Messaging App.</>}
@@ -472,17 +485,40 @@ function AddContact({user, handleChatRoomID}) {
                                     <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
                                         onClick={() => {
                                             setShowSub(false);
+                                            setInviting(false);
                                         }}>
                                         Cancel
                                     </button>
                                     <button
-                                        type="submit"
-                                        className="bg-primary hover:bg-secondary text-white font-base p-2 px-4 rounded">
-                                        <span className="py-2">Send an Invitation</span>
+                                        type="button"
+                                        className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 rounded"
+                                        onClick={() => {
+                                            handleSendInvite(false);
+                                        }}>
+                                        {inviting && <svg fill='none' className="w-10 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                                            <path clipRule='evenodd'
+                                                d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                                                fill='currentColor' fillRule='evenodd' />
+                                        </svg>}
+                                        {!inviting && <span className="py-2">Send an Invitation</span>}
                                     </button>
                                 </div>
                             </div>}
+                            {invited && <div className="flex flex-col justify-center">
+                                <div className="p-5 text-center">
+                                    Invitation Sent
+                                </div>
+                                <div className="flex self-end">
+                                    <button type="button"
+                                        className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 py-2 rounded"
+                                        onClick={() => {
+                                            handleReset();
+                                        }}>
+                                        Ok
+                                    </button>
 
+                                </div>
+                            </div>}
                             {!showSub && !readQR && <><div className="relative text-gray-600 focus-within:text-gray-400">
                                 <input
                                     aria-placeholder="Email"
@@ -503,13 +539,13 @@ function AddContact({user, handleChatRoomID}) {
                                         <select
                                             className="text-gray-600 rounded p-2 my-3 mr-2 w-40 bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                             name="countryCode"
-                                            value={countryCode}
+                                            defaultValue={countryCode}
                                             onChange={(e) => {
                                                 setCountryCode(e.target.value);
                                             }}
                                         >
                                             {countryCodes && countryCodes.map(
-                                                ({code, value, label}) => <option key={code} value={value} selected={countryCode === value}>{label}</option>
+                                                ({code, value, label}) => <option key={code} value={value}>{label}</option>
                                             )}
                                         </select>
                                         <input
