@@ -108,10 +108,11 @@ function AddContact({user, handleChatRoomID}) {
                     if (account_found.id === user.id) {
                         setError("Invalid email");
                         setLoading(false);
+                        return;
                     }
                     const ignoreNote = await checkSubscription(account_found.id).then((apps) => {
                         if (apps) {
-                            const conva = apps.find((item) => (item.application.id === "893ae9d6-27c7-446d-9ac0-c49c38cc63e7"));
+                            const conva = apps.find((item) => (item.application.id === "2f7a4695-6ccb-467a-b1eb-d9f0394529bf"));
                             console.log('CONVA', conva);
                             if (conva) {
                                 //if user is subscribed, continue to chat

@@ -2,6 +2,7 @@ import React from "react";
 import Image from "./image";
 import File from "./file";
 import MessageDropdown from "./messageDropdown"
+import {decryptMessage} from "../utilities/encryption";
 
 function handleDownloadFile(url, name) {
     fetch(url)
@@ -20,11 +21,12 @@ function handleDownloadFile(url, name) {
         .catch(() => alert('Download failed. Please try again.'));
 }
 
-function Message({user_id, message, chatroom}) {
+function Message({user, message, chatroom}) {
 
-    const names = Object.fromEntries((chatroom.users.map(item => [item.user.id, item.user.name])));
-
-    const isme = user_id === message.userMessageId;
+    const message_user = chatroom.users.find(item => (item.user.id === message.userMessageId));
+    const name = message_user ? message_user.user.name : "";
+    const public_key = message_user ? message_user.user.publicKey : "";
+    const isme = user.id === message.userMessageId;
     var dateobj = new Date(message.createdAt);
     const created = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
 
@@ -35,7 +37,7 @@ function Message({user_id, message, chatroom}) {
             }
         >
 
-            {!isme && <p className="text-xs text-primary dark:text-white font-medium">{names[message.userMessageId]}</p>}
+            {!isme && <p className="text-xs text-primary dark:text-white font-medium">{name}</p>}
 
             {message.type === 'AUDIO' && message.audio &&
                 <div className={"flex w-full relative " + (isme ? "justify-end items-end" : "justify-start items-start")}>
@@ -86,7 +88,7 @@ function Message({user_id, message, chatroom}) {
             {message.content && <div className="relative">
                 {(message.type === "TEXT" || message.type === "LINK") && <MessageDropdown isme={isme} message={message} />}
                 <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-100 dark:bg-gray-200 rounded-tl-none")}>
-                    <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{message.content}</p>
+                    <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{decryptMessage(message.content, public_key)}</p>
                 </div></div >}
             <div className="flex items-center justify-between">
                 {message.bookmark &&

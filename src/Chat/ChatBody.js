@@ -11,6 +11,7 @@ import Connect from "./Connect";
 import ConvoLogo from '../logo.svg';
 import {uploadFile} from "../api/api";
 import Resizer from "react-image-file-resizer";
+import {encrypt, getSharedKey} from "../utilities/encryption";
 
 const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -54,9 +55,9 @@ function ChatBody({
     const handleSubmitMessage = async (e) => {
         e.preventDefault();
         if (isUploading) {return;}
-        // prepare input
+        // prepare encryption
         const input = {
-            content: messageText, // the message content the user submitted (from state)
+            content: encrypt(getSharedKey(user.publicKey), messageText), // the message content the user submitted (from state)
             chatRoomMessagesId: chatRoom.id,
             userMessageId: user.id, // this is the id of the current user
             status: "SENT",
@@ -315,7 +316,7 @@ function ChatBody({
                                 <Message
                                     message={message}
                                     chatroom={chatRoom}
-                                    user_id={user.id}
+                                    user={user}
                                     key={message.id}
                                 />
                             ))}

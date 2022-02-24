@@ -80,6 +80,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
               name
               online
               imageUri
+              publicKey
             }
           }
         }
