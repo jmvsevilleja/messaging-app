@@ -6,14 +6,14 @@ import Picture from "./Picture";
 function ChatProfile({
     user,
     openProfile,
-    handleCloseProfile,
+    handleCloseProfile
 }) {
 
     return (
         <div>
             <div
                 id="sidebar"
-                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar  bg-white  duration-200 ease-in-out " + (openProfile ? "translate-x-0" : "-translate-x-full")}
+                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar  bg-white dark:bg-slate-900  duration-200 ease-in-out " + (openProfile ? "translate-x-0" : "-translate-x-full")}
             >
                 <div className="justify-between item-center p-5 py-8">
                     <div className="flex items-center" >
@@ -33,7 +33,7 @@ function ChatProfile({
                             </svg>
 
                         </button>
-                        <div className=" font-bold text-gray-600">Profile</div>
+                        <div className=" font-bold text-gray-600 dark:text-white">Profile</div>
                     </div>
                 </div>
                 <div className="flex flex-col items-center p-5 pt-0">
@@ -44,7 +44,7 @@ function ChatProfile({
                     />
                     <div className="relative">
                         <div className="flex items-center mt-4 ml-2">
-                            <span className="block font-bold text-lg text-gray-600">
+                            <span className="block font-bold text-lg text-gray-600 dark:text-white">
                                 {user.name}
                             </span>
                         </div>
@@ -53,7 +53,7 @@ function ChatProfile({
                             user={user}
                         />}
                     </div>
-                    {user && <span className="block text-sm text-gray-600 truncate overflow-hidden">
+                    {user && <span className="block text-sm text-gray-600 dark:text-slate-400 truncate overflow-hidden">
                         {user.status}
                     </span>}
 

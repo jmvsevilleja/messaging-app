@@ -35,7 +35,7 @@ function Message({user_id, message, chatroom}) {
             }
         >
 
-            {!isme && <p className="text-xs text-primary font-medium">{names[message.userMessageId]}</p>}
+            {!isme && <p className="text-xs text-primary dark:text-white font-medium">{names[message.userMessageId]}</p>}
 
             {message.type === 'AUDIO' && message.audio &&
                 <div className={"flex w-full relative " + (isme ? "justify-end items-end" : "justify-start items-start")}>
@@ -47,7 +47,7 @@ function Message({user_id, message, chatroom}) {
                 <div className="relative">
                     <div>
                         {message.image.map((file, index) => {
-                            return (file.name && file.path &&
+                            return (file && file.name && file.path &&
                                 <div className="flex items-center w-48 m-2 mx-0" key={file.name}>
                                     <Image file={file} src={file.path} />
                                     <button className=" text-gray-400 hover:text-gray-500 rounded border-gray-400 border ml-2"
@@ -72,7 +72,7 @@ function Message({user_id, message, chatroom}) {
             {message.type === 'FILE' && message.file &&
                 <div>
                     {message.file.map((file, index) => {
-                        return (file.name && file.path &&
+                        return (file && file.name && file.path &&
                             <div className="flex items-center m-2 mx-0 relative" key={file.name}>
                                 <File file={file} src={file.path}
                                     handleDownloadFile={handleDownloadFile} />
@@ -85,7 +85,7 @@ function Message({user_id, message, chatroom}) {
             }
             {message.content && <div className="relative">
                 {(message.type === "TEXT" || message.type === "LINK") && <MessageDropdown isme={isme} message={message} />}
-                <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-50 rounded-tl-none")}>
+                <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-100 dark:bg-gray-200 rounded-tl-none")}>
                     <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{message.content}</p>
                 </div></div >}
             <div className="flex items-center justify-between">

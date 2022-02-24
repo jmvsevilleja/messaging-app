@@ -19,7 +19,7 @@ function ChatSidebarProfile({
                     />}
 
                     <div className="flex items-center text-gray-400 hover:text-gray-500">
-                        <span className="block ml-2 font-bold text-base text-gray-600">
+                        <span className="block ml-2 font-bold text-base text-gray-600 dark:text-white">
                             {user && user.name}
                         </span>
                         <svg className="w-3 h-3 shrink-0 ml-1 mb-1 fill-current" viewBox="0 0 12 12">
