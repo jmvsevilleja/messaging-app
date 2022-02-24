@@ -65,6 +65,15 @@ export const getSharedKey = (public_key) => {
     );
 }
 
+export const decryptMessage = (message, public_key) => {
+    try {
+        if (message) {
+            return decrypt(getSharedKey(public_key), message);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
 // const obj = "Message";
 // const encrypted = encrypt(sharedKey, obj);
 // try {

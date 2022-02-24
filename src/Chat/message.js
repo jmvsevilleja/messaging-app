@@ -2,7 +2,7 @@ import React from "react";
 import Image from "./image";
 import File from "./file";
 import MessageDropdown from "./messageDropdown"
-import {decrypt, getSharedKey} from "../utilities/encryption";
+import {decryptMessage} from "../utilities/encryption";
 
 function handleDownloadFile(url, name) {
     fetch(url)
@@ -29,16 +29,6 @@ function Message({user, message, chatroom}) {
     const isme = user.id === message.userMessageId;
     var dateobj = new Date(message.createdAt);
     const created = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
-
-    const decryptMessage = (message, public_key) => {
-        try {
-            if (message) {
-                return decrypt(getSharedKey(public_key), message);
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    }
 
     return (
         <div
