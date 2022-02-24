@@ -1,4 +1,5 @@
 import React from "react";
+import {decryptMessage} from "../utilities/encryption";
 
 function ChatInfo({
     chatRoom,
@@ -6,9 +7,14 @@ function ChatInfo({
     openInfoBookmark,
     handleCloseChatInfoBookmark,
 }) {
-    // const [userStatus, setUserStatus] = useState(user.status);
-    const names = Object.fromEntries((chatRoom.users.map(item => [item.user.id, item.user.name])));
 
+    const getUserObject = (message) => {
+        const message_user = chatRoom.users.find(item => (item.user.id === message.userMessageId));
+        return {
+            name: message_user ? message_user.user.name : "",
+            public_key: message_user ? message_user.user.publicKey : ""
+        }
+    }
     return (
         <div>
             <div
@@ -42,10 +48,10 @@ function ChatInfo({
                         .filter((item) => item.bookmark)
                         .map((message) => (<div key={message.id}>
                             {message.content && <>
-                                <p className="text-xs text-primary dark:text-slate-400 font-medium">{names[message.userMessageId]}</p>
+                                <p className="text-xs text-primary dark:text-slate-400 font-medium">{getUserObject(message).name}</p>
                                 <div className="shadow-md mb-1 rounded-lg p-2 text-sm text-white bg-primary text-left">
                                     <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>
-                                        {message.content}
+                                        {decryptMessage(message.content, getUserObject(message).public_key)}
                                     </p>
                                 </div></>}
                         </div>))}

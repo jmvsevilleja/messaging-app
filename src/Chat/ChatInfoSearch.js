@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {decryptMessage} from "../utilities/encryption";
 
 function getTextWithHighlights(text, searchText) {
     const regex = new RegExp(searchText, 'gi');
@@ -6,7 +7,7 @@ function getTextWithHighlights(text, searchText) {
     return <span dangerouslySetInnerHTML={{__html: newText}} />;
 }
 
-function ChatInfo({
+function ChatInfoSearch({
     chatRoom,
     messageList,
     openInfoSearch,
@@ -15,15 +16,26 @@ function ChatInfo({
     const [searchText, setSearchText] = useState("");
     const [searchMessageList, setSearchMessageList] = useState([]);
 
-    const names = Object.fromEntries((chatRoom.users.map(item => [item.user.id, item.user.name])));
+    const getUserObject = (message) => {
+        const message_user = chatRoom.users.find(item => (item.user.id === message.userMessageId));
+        return {
+            name: message_user ? message_user.user.name : "",
+            public_key: message_user ? message_user.user.publicKey : ""
+        }
+    }
 
     useEffect(() => {
         if (!searchText) {
             setSearchMessageList([]);
             return;
         }
-
-        setSearchMessageList(messageList.filter(item =>
+        // Decrypt messages.
+        setSearchMessageList(messageList.map((item) => {
+            return {
+                ...item,
+                content: decryptMessage(item.content, getUserObject(item).public_key)
+            }
+        }).filter(item =>
             item.content.toLowerCase().includes(searchText.toLowerCase())
         ));
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,7 +100,7 @@ function ChatInfo({
                             )
                             .map((message) => (<div key={message.id}>
                                 {message.content && <>
-                                    <p className="text-xs text-primary dark:text-slate-400 font-medium">{names[message.userMessageId]}</p>
+                                    <p className="text-xs text-primary dark:text-slate-400 font-medium">{getUserObject(message).name}</p>
                                     <div className="shadow-md mb-1 rounded-lg p-2 text-white bg-primary text-left">
                                         <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>
                                             {getTextWithHighlights(message.content, searchText)}
@@ -103,4 +115,4 @@ function ChatInfo({
         </div>);
 }
 
-export default ChatInfo;
+export default ChatInfoSearch;
