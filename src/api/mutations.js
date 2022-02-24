@@ -1,4 +1,5 @@
 import {API, graphqlOperation} from "aws-amplify";
+
 import {
     createUser,
     createChatRoom,
@@ -11,17 +12,21 @@ import {
     updateChatRoom,
     updateChatRoomUser
 } from "../graphql/custom-mutations";
+import {generateKeyPair} from "../utilities/encryption";
+
 
 export const addUser = async (user_id, user_name) => {
     if (!user_id || !user_name) return;
     try {
+        const {secretKey} = generateKeyPair();
         return await API.graphql(
             graphqlOperation(createUser, {
                 input: {
                     id: user_id,
                     name: user_name,
                     status: "Hi there! I'm using Conva",
-                    type: "USER"
+                    type: "USER",
+                    publicKey: secretKey.toString()
                 }
             })
         ).then(({data: {createUser}}) => {
