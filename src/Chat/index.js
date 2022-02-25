@@ -321,6 +321,7 @@ const Chat = () => {
         console.log("USER: ", user.id);
 
         // update online status every 15 min
+        handleUserOnline(true);
         setInterval(function () {
             handleUserOnline(true);
         }, 900000);
