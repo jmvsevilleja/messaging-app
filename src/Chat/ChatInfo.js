@@ -22,7 +22,6 @@ function ChatInfo({
     handleCloseInfo,
 }) {
     const [notification, setNotification] = useState(null);
-
     const [openInfoSearch, setOpenInfoSearch] = useState(false);
     const [openInfoBookmark, setOpenInfoBookmark] = useState(false);
     const [openInfoMedia, setOpenInfoMedia] = useState(false);
@@ -40,11 +39,14 @@ function ChatInfo({
     useEffect(() => {
         if (chatRoom.users && notification !== null) {
             const user_notif = chatRoom.users.find((selected) => (selected.user.id === user.id));
-            if (user_notif) { // edit only deleted users
+            if (user_notif) {
                 editChatRoomUser({
                     id: user_notif.id,
                     notification: notification,
                 });
+            }
+            if (notification) {
+                Notification.requestPermission();
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
