@@ -76,7 +76,7 @@ function ChatInfo({
                 openInfoBookmark={openInfoBookmark}
                 handleCloseChatInfoBookmark={handleCloseChatInfoBookmark} />}
             {user && <ChatInfoMedia
-                user={user}
+                chatRoom={chatRoom}
                 messageList={messageList}
                 openInfoMedia={openInfoMedia}
                 handleCloseChatInfoMedia={handleCloseChatInfoMedia} />}

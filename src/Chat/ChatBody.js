@@ -73,27 +73,40 @@ function ChatBody({
         if (selectedImages.length !== 0) {
             // Upload file before submitting
             input.type = "IMAGE";
-            input.image = await Promise.all(selectedImages.map(async (file, key) => {
+            const images = await Promise.all(selectedImages.map(async (file, key) => {
                 console.log("Image file", file, file.type);
                 setIsUploading(true);
                 return uploadFile(file);
             }));
+            input.image = images.map((item) => {
+                return {
+                    name: item.name,
+                    path: encrypt(getSharedKey(user.publicKey), item.path)
+                }
+            });
         }
 
         if (selectedFiles.length !== 0) {
             input.type = "FILE";
-            input.file = await Promise.all(selectedFiles.map(async (file, key) => {
+            const files = await Promise.all(selectedFiles.map(async (file, key) => {
                 console.log("Document file", file, file.type);
                 setIsUploading(true);
                 return uploadFile(file);
             }));
+            input.file = files.map((item) => {
+                return {
+                    name: item.name,
+                    path: encrypt(getSharedKey(user.publicKey), item.path)
+                }
+            });
         }
 
         if (recordedAudio) {
             input.type = "AUDIO";
             setIsUploading(true);
             recordedAudio.name = 'audio-file-' + Date.now() + '.mp3';
-            input.audio = await uploadFile(recordedAudio);
+            const audio = await uploadFile(recordedAudio);
+            input.audio = encrypt(getSharedKey(user.publicKey), audio);
         }
 
         try {

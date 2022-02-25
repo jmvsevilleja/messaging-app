@@ -3,7 +3,7 @@ import axios from "axios";
 export const uploadFile = async (file) => {
     try {
         return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
-            filename: file.name
+            filename: Date.now() + '-' + file.name
         }, {headers: {"X-ROUTE": "public"}}).then(async res => {
             if (res.status === 200) {
                 const {presigned_url, public_url, filename} = res.data.message;
@@ -12,7 +12,7 @@ export const uploadFile = async (file) => {
                     if (res.status === 200) {
                         console.log("Upload Success", filename, public_url);
                         return {
-                            name: filename,
+                            name: file.name,
                             path: public_url
                         }
                     }
