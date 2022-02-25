@@ -110,3 +110,21 @@ export const listUsers = /* GraphQL */ `
     }
   }
 `;
+export const getUser = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      id
+      name
+      type
+      imageUri
+      status
+      lastOnlineAt
+      online
+      publicKey
+      createdAt
+      updatedAt
+      userChatRoomId
+      userChatRoomUserId
+    }
+  }
+`;
