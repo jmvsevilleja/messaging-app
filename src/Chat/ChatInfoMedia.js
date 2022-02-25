@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Tab} from '@headlessui/react'
 import Media from "./media"
 
@@ -7,17 +7,11 @@ function classNames(...classes) {
 }
 
 function ChatInfo({
-    user,
+    chatRoom,
     messageList,
     openInfoMedia,
     handleCloseChatInfoMedia,
 }) {
-    // const [userStatus, setUserStatus] = useState(user.status);
-
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     let [categories] = useState({
         Media: [],
         Links: [],
@@ -86,6 +80,7 @@ function ChatInfo({
                                                 .map((message) => (
                                                     // map each message into the message component with message as props
                                                     <Media
+                                                        chatRoom={chatRoom}
                                                         message={message}
                                                         key={message.id}
                                                     />
@@ -106,6 +101,7 @@ function ChatInfo({
                                                 .map((message) => (
                                                     // map each message into the message component with message as props
                                                     <Media
+                                                        chatRoom={chatRoom}
                                                         message={message}
                                                         key={message.id}
                                                     />
@@ -126,6 +122,7 @@ function ChatInfo({
                                                 .map((message) => (
                                                     // map each message into the message component with message as props
                                                     <Media
+                                                        chatRoom={chatRoom}
                                                         message={message}
                                                         key={message.id}
                                                     />
