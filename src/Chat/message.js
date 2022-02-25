@@ -29,7 +29,7 @@ function Message({user, message, chatroom}) {
     const isme = user.id === message.userMessageId;
     var dateobj = new Date(message.createdAt);
     const created = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
-
+    const message_content = decryptMessage(message.content, public_key);
     return (
         <div
             className={
@@ -41,7 +41,7 @@ function Message({user, message, chatroom}) {
 
             {message.type === 'AUDIO' && message.audio &&
                 <div className={"flex w-full relative " + (isme ? "justify-end items-end" : "justify-start items-start")}>
-                    <audio className="my-2 inline-flex mr-8" src={message.audio.path} controls controlsList="nodownload noplaybackrate" />
+                    <audio className="my-2 inline-flex mr-8" src={decryptMessage(message.audio.path, public_key)} controls controlsList="nodownload noplaybackrate" />
                     <MessageDropdown isme={isme} message={message} />
                 </div>
             }
@@ -49,12 +49,13 @@ function Message({user, message, chatroom}) {
                 <div className="relative">
                     <div>
                         {message.image.map((file, index) => {
-                            return (file && file.name && file.path &&
+                            const file_path = file ? decryptMessage(file.path, public_key) : "";
+                            return (file && file.name && file_path &&
                                 <div className="flex items-center w-48 m-2 mx-0" key={file.name}>
-                                    <Image file={file} src={file.path} />
+                                    <Image file={file} src={file_path} />
                                     <button className=" text-gray-400 hover:text-gray-500 rounded border-gray-400 border ml-2"
                                         onClick={(e) => {
-                                            handleDownloadFile(file.path, file.name);
+                                            handleDownloadFile(file_path, file.name);
                                         }}
                                     >
                                         <div className="sr-only">Download</div>
@@ -74,9 +75,11 @@ function Message({user, message, chatroom}) {
             {message.type === 'FILE' && message.file &&
                 <div>
                     {message.file.map((file, index) => {
-                        return (file && file.name && file.path &&
+                        const file_path = file ? decryptMessage(file.path, public_key) : "";
+                        return (file && file.name && file_path &&
                             <div className="flex items-center m-2 mx-0 relative" key={file.name}>
-                                <File file={file} src={file.path}
+                                <File
+                                    file={file} src={file_path}
                                     handleDownloadFile={handleDownloadFile} />
                                 <MessageDropdown isme={isme} message={message} />
                             </div>
@@ -85,10 +88,10 @@ function Message({user, message, chatroom}) {
                     })}
                 </div>
             }
-            {message.content && <div className="relative">
+            {message_content && <div className="relative">
                 {(message.type === "TEXT" || message.type === "LINK") && <MessageDropdown isme={isme} message={message} />}
                 <div className={"pr-8 break-normal xs:break-normal xl:max-w-xl shadow-md mb-1 rounded-lg p-2 text-base text-left" + (isme ? " text-white bg-primary rounded-tr-none" : " text-primary bg-gray-100 dark:bg-gray-200 rounded-tl-none")}>
-                    <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{decryptMessage(message.content, public_key)}</p>
+                    <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>{message_content}</p>
                 </div></div >}
             <div className="flex items-center justify-between">
                 {message.bookmark &&

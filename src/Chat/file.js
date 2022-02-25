@@ -1,12 +1,12 @@
 import React from "react";
 
-function File({file, handleDownloadFile}) {
+function File({file, src, handleDownloadFile}) {
 
     return (
         <>
             <button className="pr-8 text-gray-400 hover:text-gray-500"
                 onClick={(e) => {
-                    handleDownloadFile(file.path, file.name);
+                    handleDownloadFile(src, file.name);
                 }}
             >
                 <div className="inline-flex break-all shadow-md mb-1 rounded-lg p-2 text-sm text-left bg-gray-50 rounded-tl-none">
