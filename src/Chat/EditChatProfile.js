@@ -40,6 +40,7 @@ function EditChatProfile({user}) {
         let changes = {
             id: user.id,
             name: userName,
+            status: userAbout
         }
         if (selectedImage) {
             uploadFile(selectedImage).then((file) => {
