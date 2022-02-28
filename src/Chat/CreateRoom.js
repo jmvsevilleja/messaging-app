@@ -27,7 +27,7 @@ function CreateRoom({user, chatRoomList, handleChatRoomID}) {
 
     useEffect(() => {
         setSearchUserList(userList.filter(item =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+            item.name ? item.name.toLowerCase().includes(searchText.toLowerCase()) : ""
         ));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchText, userList]);
