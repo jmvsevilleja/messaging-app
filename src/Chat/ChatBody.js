@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {addMessage, editChatRoomUser} from "../api/mutations";
+import {addMessage, editChatRoomUser, editChatRoom} from "../api/mutations";
 
 import Message from "./message";
 import Image from "./image";
 import AudioRecorder from "./AudioRecorder";
 import AudioPlayer from "./AudioPlayer";
 import Picture from "./Picture";
+import Connect from "./Connect";
 
 import ConvoLogo from '../logo.svg';
-import axios from "axios";
+import {uploadFile} from "../api/api";
 import Resizer from "react-image-file-resizer";
+import {encrypt, getSharedKey} from "../utilities/encryption";
 
 const resizeFile = (file) =>
     new Promise((resolve) => {
@@ -46,22 +48,16 @@ function ChatBody({
     const [recordedAudio, setRecordedAudio] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
 
-
     const messageInput = React.useRef(null);
     const fileRef = React.useRef();
     const imageRef = React.useRef();
 
-
-    const handleOpenConnect = async (e) => {
-        console.log('Open Connect');
-    };
-
     const handleSubmitMessage = async (e) => {
         e.preventDefault();
         if (isUploading) {return;}
-        // prepare input
+        // prepare encryption
         const input = {
-            content: messageText, // the message content the user submitted (from state)
+            content: encrypt(getSharedKey(user.publicKey), messageText), // the message content the user submitted (from state)
             chatRoomMessagesId: chatRoom.id,
             userMessageId: user.id, // this is the id of the current user
             status: "SENT",
@@ -77,85 +73,64 @@ function ChatBody({
         if (selectedImages.length !== 0) {
             // Upload file before submitting
             input.type = "IMAGE";
-            input.image = await Promise.all(selectedImages.map(async (file, key) => {
+            const images = await Promise.all(selectedImages.map(async (file, key) => {
                 console.log("Image file", file, file.type);
                 setIsUploading(true);
-                return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
-                    filename: file.name
-                }, {headers: {"X-ROUTE": "public"}}).then(async res => {
-                    if (res.status === 200) {
-                        const {presigned_url, public_url, filename} = res.data.message;
-                        console.log('Uploading ... ', filename);
-                        return await axios.put(presigned_url, file, {headers: {"Content-Type": file.type}}).then(async res => {
-                            if (res.status === 200) {
-                                console.log("Upload Success", filename, public_url);
-                                return {
-                                    name: filename,
-                                    path: public_url
-                                }
-                            }
-                        });
-                    }
-                });
+                return uploadFile(file);
             }));
+            input.image = images.map((item) => {
+                return {
+                    name: item.name,
+                    path: encrypt(getSharedKey(user.publicKey), item.path)
+                }
+            });
         }
 
         if (selectedFiles.length !== 0) {
             input.type = "FILE";
-            input.file = await Promise.all(selectedFiles.map(async (file, key) => {
+            const files = await Promise.all(selectedFiles.map(async (file, key) => {
                 console.log("Document file", file, file.type);
                 setIsUploading(true);
-                return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
-                    filename: file.name
-                }, {headers: {"X-ROUTE": "public"}}).then(async res => {
-                    if (res.status === 200) {
-                        const {presigned_url, public_url, filename} = res.data.message;
-                        console.log('Uploading ... ', filename);
-                        return await axios.put(presigned_url, file, {headers: {"Content-Type": file.type}}).then(async res => {
-                            if (res.status === 200) {
-                                console.log("Upload Success", filename, public_url);
-                                return {
-                                    name: filename,
-                                    path: public_url
-                                }
-                            }
-                        });
-                    }
-                });
+                return uploadFile(file);
             }));
+            input.file = files.map((item) => {
+                return {
+                    name: item.name,
+                    path: encrypt(getSharedKey(user.publicKey), item.path)
+                }
+            });
         }
 
         if (recordedAudio) {
             input.type = "AUDIO";
             setIsUploading(true);
-            const filename = 'audio-file-' + Date.now() + '.mp3';
-            input.audio = await axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/attachment`, {
-                filename: filename
-            }, {headers: {"X-ROUTE": "public"}}).then(async res => {
-                if (res.status === 200) {
-                    const {presigned_url, public_url} = res.data.message;
-                    console.log('Uploading ... ', filename);
-                    return await axios.put(presigned_url, recordedAudio, {headers: {"Content-Type": recordedAudio.type}}).then(async res => {
-                        if (res.status === 200) {
-                            console.log("Upload Success", filename, public_url);
-                            return {
-                                name: filename,
-                                path: public_url
-                            }
-                        }
-                    });
-                }
-            });
+            recordedAudio.name = 'audio-file-' + Date.now() + '.mp3';
+            const audio = await uploadFile(recordedAudio);
+            input.audio = encrypt(getSharedKey(user.publicKey), audio);
         }
 
         try {
+            // add message
             addMessage(input).then(() => {
                 handleResetChat();
                 setMessageText("");
                 if (messageText) {
                     messageInput.current.focus();
                 }
+                // edit chatroom last message and count unread messages
+                const newMessage = messageList.filter((item) => (
+                    item.userMessageId === user.id && item.status !== "READ")).length;
+                editChatRoom({
+                    id: chatRoom.id,
+                    newMessages: newMessage + 1,
+                    name: chatRoom.group ? chatRoom.name : user.name,
+                    lastMessage: messageText,
+                    lastMessageBy: user.id,
+                });
             });
+
+
+
         } catch (err) {
             console.error(err);
         }
@@ -267,7 +242,7 @@ function ChatBody({
     }, [messageList]);
     return (
         <div
-            className="bg-white grow flex flex-col md:translate-x-0 transform transition-transform duration-300 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200"
+            className="bg-white dark:bg-slate-900 grow flex flex-col md:translate-x-0 transform transition-transform duration-200 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200 dark:border-gray-500"
         >
             {nectus && !(openChat) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
@@ -279,13 +254,13 @@ function ChatBody({
             {!nectus && !(openChat || Object.keys(chatRoom).length !== 0) && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
                     <div className="">
-                        <img className=" w-96" src={ConvoLogo} alt="Conva" />
+                        <img className="w-96" src={ConvoLogo} alt="Conva" />
                     </div>
                 </div>
             )}
             {Object.keys(chatRoom).length !== 0 && (
                 <div className="w-full h-full flex flex-col overflow-hidden">
-                    <div className="justify-between item-center border-b border-gray-300 p-3 xs:p-5">
+                    <div className="justify-between item-center border-b border-gray-300 dark:border-gray-500 p-3 xs:p-5">
                         <span className="flex items-center overflow-hidden">
                             {!nectus && <button
                                 className="md:hidden text-gray-400 hover:text-gray-500 mr-4"
@@ -312,37 +287,22 @@ function ChatBody({
                             )}
                             <div className="w-full overflow-hidden">
                                 <div className="flex items-center">
-                                    <span className="block ml-2 font-bold text-base text-gray-600">
+                                    <span className="block ml-2 font-bold text-base text-gray-600 dark:text-white">
                                         {" "}
                                         {chatRoom && chatRoom.name}
                                     </span>
 
                                 </div>
                                 {chatRoom.group &&
-                                    <span className="block ml-2 text-sm text-gray-600 truncate overflow-hidden">
+                                    <span className="block ml-2 text-sm text-gray-600 dark:text-slate-400 truncate overflow-hidden">
                                         {chatRoom.users
                                             .filter((item) => (
-                                                item.user.online
+                                                item.user.online && !item.deleted
                                             )).length + " "}
                                         Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                                     </span>}
                             </div>
-                            <div className="flex mx-1"
-                                onClick={handleOpenConnect}>
-                                <button className="text-primary hover:text-secondary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div className="flex mx-1 mr-4"
-                                onClick={handleOpenConnect}>
-                                <button className="text-primary hover:text-secondary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                                    </svg>
-                                </button>
-                            </div>
+                            {chatRoom && chatRoom.users && <Connect user={user} chatRoom={chatRoom} />}
                             <div className="flex"
                                 onClick={handleOpenInfo}>
                                 <button className="text-gray-400 hover:text-gray-500">
@@ -369,7 +329,7 @@ function ChatBody({
                                 <Message
                                     message={message}
                                     chatroom={chatRoom}
-                                    user_id={user.id}
+                                    user={user}
                                     key={message.id}
                                 />
                             ))}
@@ -378,7 +338,7 @@ function ChatBody({
                         <div className="flex justify-center items-center absolute inset-x-0 bottom-16">
                             <div>
                                 <svg
-                                    className="fill-current text-primary"
+                                    className="fill-current text-primary dark:text-slate-400"
                                     viewBox="0 0 15 3"
                                     width="30"
                                     height="10"
@@ -412,9 +372,9 @@ function ChatBody({
                                     </circle>
                                 </svg>
                             </div>
-                            <div className="text-sm text-primary ml-2">{userTyping}</div>
+                            <div className="text-sm text-primary dark:text-slate-400 ml-2">{userTyping}</div>
                         </div>}
-                    {selectedFiles.length !== 0 && <div className="absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
+                    {selectedFiles.length !== 0 && <div className="absolute z-20 inset-x-0 bottom-16 bg-white dark:bg-slate-900 bg-opacity-90 overflow-y-auto scrollable  p-2">
                         {selectedFiles.map((file, index) => {
                             return (
                                 <div key={file.name}>
@@ -449,7 +409,7 @@ function ChatBody({
                             )
                         })}
                     </div>}
-                    {selectedImages.length !== 0 && <div className="flex justify-start md:justify-center items-center absolute inset-x-0 bottom-16 bg-white bg-opacity-90 overflow-y-auto scrollable  p-2">
+                    {selectedImages.length !== 0 && <div className="flex z-20 justify-start md:justify-center items-center absolute inset-x-0 bottom-16 bg-white dark:bg-slate-900 bg-opacity-90 overflow-y-auto scrollable  p-2">
                         {selectedImages.map((file, index) => {
                             const objectURL = URL.createObjectURL(file);
                             return (
@@ -477,7 +437,7 @@ function ChatBody({
                             )
                         })}
                     </div>}
-                    {recordedAudio && <div className="absolute inset-x-0 bottom-16 bg-white bg-opacity-90 p-2">
+                    {recordedAudio && <div className="absolute z-20 inset-x-0 bottom-16 bg-white dark:bg-slate-900 bg-opacity-90 p-2">
                         <AudioPlayer recordedAudio={recordedAudio} isUploading={isUploading} handleDeleteAudioUpload={handleDeleteAudioUpload} />
                     </div>}
                     <form

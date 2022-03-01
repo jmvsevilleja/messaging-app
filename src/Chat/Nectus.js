@@ -151,17 +151,32 @@ const Chat = () => {
         }));
         subscriptions.sub12 = subOnUpdateMessageByChatRoomMessagesId(chatroom.id, ((value) => {
             if (value.userMessageId === user.id) {
-                // Update all message status
-                setMessageList((list) =>
-                    list.map((item) => item.id === value.id
-                        ? {...item, status: value.status}
-                        : item)
-                );
-                if (user && user.id === value.userMessageId) {
-                    // update removing counter
-                    handleCounterMessage(value.chatRoom.id);
+                // Update all unread message status
+                if (value.status === 'READ') {
+                    setMessageList((list) =>
+                        list.map((item) => item.id === value.id
+                            ? {...item, status: value.status}
+                            : item)
+                    );
+                    //     if (user && user.id === value.userMessageId) {
+                    //         // update removing counter
+                    //         handleCounterMessage(value.chatRoom.id);
+                    //     }
                 }
             }
+            // remove deleted message
+            if (value.deleted) {
+                setMessageList((list) =>
+                    list.filter((item) => !(item.id === value.id && !item.deleted))
+                );
+                return;
+            }
+            // update bookmark message
+            setMessageList((list) =>
+                list.map((item) => item.id === value.id
+                    ? {...item, bookmark: value.bookmark}
+                    : item)
+            );
         }));
         subscriptions.sub13 = subOnUpdateChatRoomUserByChatRoomChatRoomUsersId(chatroom.id, ((value) => {
             // update typing/deleted in current chatroom
@@ -423,6 +438,7 @@ const Chat = () => {
                 user={user}
                 openInfo={openInfo}
                 chatRoom={chatRoom}
+                messageList={messageList}
                 handleCloseInfo={handleCloseInfo}
             />
         </div>

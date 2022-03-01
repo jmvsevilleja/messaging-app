@@ -1,27 +1,29 @@
-import React, {useEffect} from "react";
+import React from "react";
+import {decryptMessage} from "../utilities/encryption";
 
 function ChatInfo({
-    user,
+    chatRoom,
     messageList,
     openInfoBookmark,
     handleCloseChatInfoBookmark,
 }) {
-    // const [userStatus, setUserStatus] = useState(user.status);
 
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-
+    const getUserObject = (message) => {
+        const message_user = chatRoom.users.find(item => (item.user.id === message.userMessageId));
+        return {
+            name: message_user ? message_user.user.name : "",
+            public_key: message_user ? message_user.user.publicKey : ""
+        }
+    }
     return (
         <div>
             <div
                 id="sidebar"
-                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar bg-white duration-200 ease-in-out " + (openInfoBookmark ? "translate-x-0" : "translate-x-full")}
+                className={"flex flex-col absolute z-40 left-0 top-0 w-full h-screen no-scrollbar bg-white dark:bg-slate-900 duration-200 ease-in-out transition-transform " + (openInfoBookmark ? "translate-x-0" : "translate-x-full")}
             >
-                <div className="justify-between item-center p-5 py-8 bg-white">
+                <div className="justify-between item-center p-5 py-8">
                     <div className="flex items-center justify-between" >
-                        <div className=" font-bold text-gray-600">Bookmarks</div>
+                        <div className=" font-bold text-gray-600 dark:text-white">Bookmarks</div>
                         <button
                             className="text-gray-400 hover:text-gray-500"
                             onClick={handleCloseChatInfoBookmark}
@@ -34,14 +36,30 @@ function ChatInfo({
 
                     </div>
                 </div>
-                <div className="justify-between item-center p-5">
-                    {messageList && messageList.filter((item) => item.pin === true).length === 0 && <div className="p-2 flex justify-center text-sm">No Bookmarks</div>}
-
+                <div className="scrollable px-10 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-120px)]">
+                    {messageList && messageList.filter((item) => item.bookmark === true).length === 0 && <div className="p-2 flex justify-center text-sm dark:text-slate-400">No Bookmarks</div>}
+                    {messageList && messageList.length !== 0 && messageList
+                        // sort messages oldest to newest client-side
+                        .sort((a, b) =>
+                            b.createdAt.localeCompare(
+                                a.createdAt
+                            )
+                        )
+                        .filter((item) => item.bookmark)
+                        .map((message) => (<div key={message.id}>
+                            {message.content && <>
+                                <p className="text-xs text-primary dark:text-slate-400 font-medium">{getUserObject(message).name}</p>
+                                <div className="shadow-md mb-1 rounded-lg p-2 text-sm text-white bg-primary text-left">
+                                    <p className={"text-sm xs:text-base" + (message.type === "LINK" ? " break-all" : "")}>
+                                        {decryptMessage(message.content, getUserObject(message).public_key)}
+                                    </p>
+                                </div></>}
+                        </div>))}
                 </div>
 
             </div>
 
-        </div>);
+        </div >);
 }
 
 export default ChatInfo;

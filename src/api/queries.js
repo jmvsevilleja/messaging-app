@@ -1,6 +1,7 @@
 import {API, graphqlOperation} from 'aws-amplify'
-import {getUser, getUserAccount, queryUserAccountsByEmailIndex} from "../graphql/queries";
+import {getUserAccount, queryUserAccountsByEmailIndex} from "../graphql/queries";
 import {
+    getUser,
     messageByChatRoomMessagesId,
     chatRoomUserByChatRoomUserUserId
 } from "../graphql/custom-queries";

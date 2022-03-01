@@ -34,6 +34,7 @@ export const messageByChatRoomMessagesId = /* GraphQL */ `
           status
           userMessageId
           createdAt
+          bookmark
       }
       nextToken
     }
@@ -64,6 +65,7 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
         group
         imageUri
         lastMessage
+        lastMessageBy
         newMessages
         updatedAt
         chatRoomAdminId
@@ -72,11 +74,13 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
             id
             typing
             deleted
+            notification
             user {
               id
               name
               online
               imageUri
+              publicKey
             }
           }
         }
@@ -103,6 +107,24 @@ export const listUsers = /* GraphQL */ `
         publicKey
       }
       nextToken
+    }
+  }
+`;
+export const getUser = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      id
+      name
+      type
+      imageUri
+      status
+      lastOnlineAt
+      online
+      publicKey
+      createdAt
+      updatedAt
+      userChatRoomId
+      userChatRoomUserId
     }
   }
 `;

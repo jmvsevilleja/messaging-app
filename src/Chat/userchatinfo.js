@@ -14,12 +14,12 @@ function User({user, admin, you}) {
                 />
                 <div className="w-full overflow-hidden">
                     <div className="flex justify-between overflow-hidden">
-                        <span className="block ml-2 font-medium text-base text-gray-600 text-left">{user.name}</span>
+                        <span className="block ml-2 font-medium text-base text-gray-600 dark:text-slate-400 text-left">{user.name}</span>
                     </div>
                 </div>
                 <div className="text-right">
-                    {admin && < div className="text-md text-primary font-bold">Admin</div>}
-                    {you && <div className="text-md">You</div>}
+                    {admin && < div className="text-md text-primary dark:text-white font-bold">Admin</div>}
+                    {you && <div className="text-md dark:text-slate-400">You</div>}
                 </div>
             </div>
         </li >

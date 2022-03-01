@@ -30,7 +30,7 @@ function Image({file, src}) {
                 <div className="flex items-center justify-center min-h-screen">
                     <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
 
-                    <div className="inline-block overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl mx-5">
+                    <div className="inline-block overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl m-5">
                         <div className="relative">
                             <button className="absolute top-3 right-3 text-white hover:text-gray-400 drop-shadow"
                                 onClick={(e) => {
