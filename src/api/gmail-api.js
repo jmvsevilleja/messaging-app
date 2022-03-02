@@ -6,8 +6,8 @@ export const signIn = () => {
 
 export const initGmailClient = () => {
     return new Promise((resolve, reject) => {
-        const API_KEY = "AIzaSyBkdhrgYMxYn2VrnNTwDZ36Yuv7bDbMsKU";
-        const CLIENT_ID = "911418227165-bn1m389pbmkgg0hfnhoce8nshthorre5.apps.googleusercontent.com";
+        const API_KEY = "AIzaSyBjFh6ULZQB62XwtR-GvP3TDbKUppgMi5o";
+        const CLIENT_ID = "444488633099-te5s6q419o9po89b8nes2hg9l4lhq05h.apps.googleusercontent.com";
 
         // Array of API discovery doc URLs for APIs
         const DISCOVERY_DOCS = [
