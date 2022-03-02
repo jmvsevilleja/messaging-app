@@ -5,7 +5,7 @@ import Login from './Login';
 import Chat from './Chat';
 import Email from './Email';
 import NectusChat from './Chat/Nectus';
-
+import PrivacyPolicy from './Pages/privacy';
 function App() {
   return (
     <div>
@@ -16,6 +16,7 @@ function App() {
           <Route exact path="/chat" element={<Chat />}></Route>
           <Route exact path="/email" element={<Email />}></Route>
           <Route exact path="/nectus-chat" element={<NectusChat />}></Route>
+          <Route exact path="/privacy-policy" element={<PrivacyPolicy />}></Route>
           <Route exact path="/*" element={<Login />}></Route>
         </Routes>
       </Router>
