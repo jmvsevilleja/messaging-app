@@ -107,7 +107,9 @@ export const updateUser = /* GraphQL */ `
     updateUser(input: $input, condition: $condition) {
       id
       name
+      status
       online
+      imageUri
     }
   }
 `;

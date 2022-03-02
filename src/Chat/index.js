@@ -345,6 +345,14 @@ const Chat = () => {
         }));
 
         subscriptions.sub3 = subOnUpdateUser(((value) => {
+            setUser((item) => {
+                if (item.id === value.id) {
+                    item.name = value.name
+                    item.status = value.status
+                    item.imageUri = value.imageUri
+                }
+                return item;
+            })
             setChatRoomList((list) => list.map((items) => {
                 return {
                     ...items,
@@ -357,7 +365,10 @@ const Chat = () => {
                                     ...item,
                                     user: {
                                         ...item.user,
-                                        online: value.online
+                                        online: value.online,
+                                        name: value.name,
+                                        status: value.status,
+                                        imageUri: value.imageUri
                                     }
                                 } : item
                             ))
@@ -375,7 +386,10 @@ const Chat = () => {
                                 ...item,
                                 user: {
                                     ...item.user,
-                                    online: value.online
+                                    online: value.online,
+                                    name: value.name,
+                                    status: value.status,
+                                    imageUri: value.imageUri
                                 }
                             } : item
                         ))
