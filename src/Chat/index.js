@@ -251,6 +251,11 @@ const Chat = () => {
     };
 
     // Open chat toggle
+    const handleEmail = () => {
+        //console.log('TEST123');
+        navigate(`/email`);
+    }
+
     const handleCloseChat = async () => {
         setOpenChat(false);
     }
@@ -527,6 +532,7 @@ const Chat = () => {
                             handleChatRoomID={handleChatRoomID}
                             toggleDarkMode={toggleDarkMode}
                             darkMode={darkMode}
+                            handleEmail={handleEmail}
                         />
 
                         {/* Messages body */}

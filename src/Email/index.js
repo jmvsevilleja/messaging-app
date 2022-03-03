@@ -7,13 +7,21 @@ import EmailBody from "./EmailBody";
 import EmailInfo from "./EmailInfo";
 
 import {signOut, signIn, checkSignInStatus, mountScripts} from "../api/gmail-api";
+import {getMessages, getMessage} from "../api/gmail-api";
 
 const Email = () => {
-    const [user, setUser] = useState(null);
-    const [sign, setSign] = useState(null);
-    const [googleUser, setGoogleUser] = useState({
+    let navigate = useNavigate();
+
+    const [messageList, setMessageList] = useState(null);
+    const [message, setMessage] = useState(null);
+
+    const [isSigned, setisSigned] = useState(false);
+    const [isLoading, setIsLoading] = useState(null);
+    const [messageID, setMessageID] = useState(null);
+    const [openMessage, setOpenMessage] = useState(null);
+    const [user, setUser] = useState({
         signInStatus: 'SIGNED_OUT',
-        googleUser: undefined
+        user: null
     });
     const [darkMode, setDarkMode] = useState(false);
 
@@ -21,19 +29,27 @@ const Email = () => {
         checkSignInStatus()
             .then(onSignInSuccess)
             .catch(_ => {
-                setGoogleUser({
-                    signInStatus: 'AUTH_FAIL'
-                });
+                setisSigned(false);
             });
     }
 
-    const onSignInSuccess = (googleUser) => {
-        console.log(googleUser);
-        setGoogleUser({
+    const onSignInSuccess = (user) => {
+        //console.log('user', user);
+        setUser({
             signInStatus: 'AUTH_SUCCESS',
-            googleUser: googleUser
+            user: user
         });
+
+        setisSigned(true);
+        setIsLoading(true);
+        getMessages(null, 100).then((result) => {
+            //console.log('getMessages', result);
+            setMessageList(result);
+            setIsLoading(false);
+        });
+
     }
+
     // HANDLE FUNCTIONS
     useEffect(() => {
         mountScripts().then(() => {
@@ -41,15 +57,38 @@ const Email = () => {
         });
 
         setDarkMode(localStorage.getItem("dark_mode") === "true");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleSignIn = () => {
+
+    const handleGoogleSignInButton = () => {
         signIn().then(onSignInSuccess);
     };
 
-    const handleSignOut = () => {
-        signOut();
+    const handleGoogleSignOut = () => {
+        signOut().then(() => {
+            setMessage(null);
+            setOpenMessage(false);
+            setisSigned(false);
+        });
     };
+
+    const handleMessage = (message_id) => {
+        setOpenMessage(true);
+        if (messageID !== message_id) {
+            getMessage(message_id).then((result) => {
+                setMessage(result);
+            });
+            setMessageID(message_id);
+        }
+    }
+    const handleCloseMessage = () => {
+        setOpenMessage(false);
+    }
+
+    const handleChat = () => {
+        navigate(`/chat`);
+    }
 
     return (
         <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>
@@ -61,17 +100,21 @@ const Email = () => {
                         <div>
                             <EmailSidebar
                                 user={user}
+                                isLoading={isLoading}
+                                openMessage={openMessage}
+                                messageList={messageList}
+                                isSigned={isSigned}
+                                handleMessage={handleMessage}
+                                handleGoogleSignInButton={handleGoogleSignInButton}
+                                handleGoogleSignOut={handleGoogleSignOut}
+                                handleChat={handleChat}
                             />
-                            <div>
-                                <button onClick={handleSignIn}>SignIn Google</button>
-                                <button onClick={handleSignOut}>SignOut Google</button>
-                                <p> Sign status: {googleUser.signInStatus} </p>
-                            </div>
                         </div>
 
                         {/* Messages body */}
                         <EmailBody
-                            user={user}
+                            message={message}
+                            handleCloseMessage={handleCloseMessage}
                         />
                     </div>
                 </main>
@@ -79,7 +122,6 @@ const Email = () => {
             {false &&
                 <EmailInfo
                     user={user}
-
                 />}
         </div>
     );
