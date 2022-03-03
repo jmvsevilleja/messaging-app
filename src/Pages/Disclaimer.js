@@ -4,7 +4,7 @@ const DisclaimerPage = () => {
     return <div>
         <div className="w-full flex justify-between px-4 py-2 border-b border-gray-100">
             <div className="pl-2 md:pl-4">
-                <img className="h-14 w-auto" src={ConvoLogo} />
+                <img className="h-14 w-auto" src={ConvoLogo} alt="Conva Messenger" />
             </div>
         </div>
         <div className="flex justify-center bg-primary py-20">
