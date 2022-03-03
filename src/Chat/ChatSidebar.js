@@ -20,7 +20,8 @@ function ChatSidebar({
     handleChatRoom,
     handleChatRoomID,
     toggleDarkMode,
-    darkMode
+    darkMode,
+    handleEmail,
 }) {
 
     const [searchText, setSearchText] = useState("");
@@ -63,7 +64,7 @@ function ChatSidebar({
     return (
         <div
             id="messages-sidebar"
-            className={"bg-white dark:bg-slate-900 absolute z-20 top-0 bottom-0 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out w-full md:w-72 lg:w-80 xl:w-96"
+            className={"bg-white dark:bg-slate-900 absolute z-20 top-0 bottom-0 md:static md:top-auto md:bottom-auto md:translate-x-0 transform transition-transform duration-200 ease-in-out w-full md:w-96 lg:w-96 xl:w-96"
                 + (!openChat ? " translate-x-0" : " -translate-x-full")}
         >
 
@@ -114,6 +115,20 @@ function ChatSidebar({
                         </div>
 
                     </div>}
+                <div className="justify-between item-center mb-5">
+                    <div className="flex justify-left items-center text-sm w-full" >
+                        <button type="button"
+                            className="bg-primary text-white shadow-md rounded px-2 mr-4 py-1">Chat</button>
+                        <button type="button"
+                            onClick={handleEmail}
+                            className="bg-white  shadow-md rounded px-2 mr-4 py-1">Google</button>
+                        <button type="button"
+                            className="bg-white shadow-md rounded px-2 mr-4 py-1">Outlook</button>
+                        <button type="button"
+                            className="bg-white shadow-md rounded px-2 mr-4 py-1">iCloud</button>
+
+                    </div>
+                </div>
                 <div className="relative text-gray-600 focus-within:text-gray-400">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                         <svg
@@ -143,7 +158,7 @@ function ChatSidebar({
                 </div>
             </div>
 
-            <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)] w-full md:w-72 lg:w-80 xl:w-96">
+            <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-200px)] w-full md:w-96 lg:w-96 xl:w-96">
                 {!user && <ListingWithThumbnail height={300} width={200} />}
                 <ul>
                     {user && searchChatRoomList.length !== 0 &&
