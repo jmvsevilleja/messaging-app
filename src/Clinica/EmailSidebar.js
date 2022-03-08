@@ -22,7 +22,7 @@ function EmailSidebar({
         >
             <div className="flex justify-between item-center p-5 py-5">
                 <div className="flex items-center" >
-                    <div className=" font-bold text-gray-600 dark:text-white">iCloud</div>
+                    <div className=" font-bold text-gray-600 dark:text-white">Clinica Mail</div>
                 </div>
                 {isSigned && <button type="button"
                     onClick={handleGoogleSignOut}

@@ -52,9 +52,9 @@ const Email = () => {
 
     // HANDLE FUNCTIONS
     useEffect(() => {
-        mountScripts().then(() => {
-            window.gapi.load("client:auth2", initClient);
-        });
+        // mountScripts().then(() => {
+        //     window.gapi.load("client:auth2", initClient);
+        // });
 
         setDarkMode(localStorage.getItem("dark_mode") === "true");
         // eslint-disable-next-line react-hooks/exhaustive-deps
