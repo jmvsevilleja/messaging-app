@@ -1,6 +1,7 @@
 import React from "react";
 import Messages from "./Messages";
 import GoogleButton from 'react-google-button'
+import Nav from "../components/Nav";
 
 function EmailSidebar({
     isSigned,
@@ -24,33 +25,18 @@ function EmailSidebar({
                     <div className=" font-bold text-gray-600 dark:text-white">Email</div>
                 </div>
             </div>
-            <div className="justify-between item-center px-5 mb-5">
-                <div className="flex justify-left items-center text-sm w-full" >
-                    <button type="button"
-                        onClick={handleChat}
-                        className="bg-white shadow-md rounded px-2 mr-4 py-1">Chat</button>
-                    <button type="button"
-                        onClick={handleGoogleSignIn}
-                        className="bg-primary text-white shadow-md rounded px-2 mr-4 py-1">Google</button>
-                    <button type="button"
-                        className="bg-white shadow-md rounded px-2 mr-4 py-1">Outlook</button>
-                    <button type="button"
-                        className="bg-white shadow-md rounded px-2 mr-4 py-1">iCloud</button>
-                    {isSigned && <button type="button"
-                        onClick={handleGoogleSignOut}
-                        className="bg-white shadow-md rounded px-2 mr-4 py-1 text-gray-400 hover:text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                    </button>}
-                </div>
-            </div>
-            {!isSigned && <div className="flex items-center justify-center h-[calc(100vh-130px)]">
+            <div className="px-5"><Nav /></div>
+            {!isSigned && <div className="flex flex-col items-center justify-center h-[calc(100vh-130px)]">
                 <GoogleButton
                     onClick={handleGoogleSignInButton}
-                /></div>}
+                />
+                <div className="m-5 text-base text-gray-600 dark:text-slate-400 text-center">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc dignissim fermentum dolor, vitae elementum eros mattis ac. Pellentesque semper facilisis libero sed finibus. Nulla facilisi. Mauris convallis interdum ante, vel ornare tellus sollicitudin.
+                </div>
+                <a className="text-base text-gray-500 hover:text-gray-600" href="/privacy-policy">privacy policy</a>
+            </div>}
             {isSigned && isLoading && <div className="flex items-center justify-center h-[calc(100vh-130px)]">
-                <div className="text-primary opacity-50">
+                <div className="text-gray-600 dark:text-slate-400 opacity-50">
                     <svg fill='none' className="w-40 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
                         <path clipRule='evenodd'
                             d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
