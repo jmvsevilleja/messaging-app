@@ -6,8 +6,8 @@ import EmailSidebar from "./EmailSidebar";
 import EmailBody from "./EmailBody";
 import EmailInfo from "./EmailInfo";
 
-import {signOut, signIn, checkSignInStatus, mountScripts} from "../api/gmail-api";
-import {getMessages, getMessage} from "../api/gmail-api";
+import {signOut, signIn, checkSignInStatus, mountScripts} from "./api/api";
+import {getMessages, getMessage} from "./api/api";
 
 const Email = () => {
     let navigate = useNavigate();
@@ -52,9 +52,9 @@ const Email = () => {
 
     // HANDLE FUNCTIONS
     useEffect(() => {
-        mountScripts().then(() => {
-            window.gapi.load("client:auth2", initClient);
-        });
+        // mountScripts().then(() => {
+        //     window.gapi.load("client:auth2", initClient);
+        // });
 
         setDarkMode(localStorage.getItem("dark_mode") === "true");
         // eslint-disable-next-line react-hooks/exhaustive-deps

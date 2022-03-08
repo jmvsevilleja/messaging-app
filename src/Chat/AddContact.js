@@ -536,9 +536,9 @@ function AddContact({user, handleChatRoomID}) {
                             </div>
                                 <div className="flex justify-center -my-2"><span className="text-sm text-primary">or</span></div>
                                 <div className="relative text-gray-600 focus-within:text-gray-400">
-                                    <div className="flex justify-center">
+                                    <div className="justify-center grid grid-cols-1 xs:grid-cols-2 gap-2">
                                         <select
-                                            className="text-gray-600 rounded p-2 my-3 mr-2 w-40 bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                            className="text-gray-600 rounded p-2 my-3 w-full bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                             name="countryCode"
                                             defaultValue={countryCode}
                                             onChange={(e) => {

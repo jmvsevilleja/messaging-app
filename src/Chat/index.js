@@ -16,7 +16,6 @@ import {
 import ChatSidebar from "./ChatSidebar";
 import ChatBody from "./ChatBody";
 import ChatInfo from "./ChatInfo";
-
 import "./index.css";
 
 let subscriptions = {};
@@ -251,11 +250,6 @@ const Chat = () => {
     };
 
     // Open chat toggle
-    const handleEmail = () => {
-        //console.log('TEST123');
-        navigate(`/email`);
-    }
-
     const handleCloseChat = async () => {
         setOpenChat(false);
     }
@@ -532,7 +526,6 @@ const Chat = () => {
                             handleChatRoomID={handleChatRoomID}
                             toggleDarkMode={toggleDarkMode}
                             darkMode={darkMode}
-                            handleEmail={handleEmail}
                         />
 
                         {/* Messages body */}

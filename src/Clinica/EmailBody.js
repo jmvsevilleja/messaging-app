@@ -78,7 +78,7 @@ function EmailBody({
                     </span>
                 </div>
                 <div className="h-full">
-                    {message && <iframe width="100%" height="100%" ref={iframeRef} />}
+                    {message && <iframe title="iframe" width="100%" height="100%" ref={iframeRef} />}
                 </div>
             </div>}
 
