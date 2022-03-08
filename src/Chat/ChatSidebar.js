@@ -10,6 +10,7 @@ import ChatSettingQR from "./ChatSettingQR";
 import AvatarWithText from "./loader/AvatarWithText";
 import ListingWithThumbnail from "./loader/ListingWithThumbnail";
 import ChatSidebarProfile from "./ChatSidebarProfile";
+import Nav from "../components/Nav";
 
 function ChatSidebar({
     user,
@@ -21,7 +22,6 @@ function ChatSidebar({
     handleChatRoomID,
     toggleDarkMode,
     darkMode,
-    handleEmail,
 }) {
 
     const [searchText, setSearchText] = useState("");
@@ -92,7 +92,7 @@ function ChatSidebar({
 
             < div className="my-3 px-5">
                 {user &&
-                    <div className="flex relative justify-between item-center p-3 px-0 mb-6 pb-0">
+                    <div className="flex relative justify-between item-center p-3 px-0 mb-5 pb-0">
                         <ChatSidebarProfile
                             user={user}
                             handleLogout={handleLogout}
@@ -115,20 +115,7 @@ function ChatSidebar({
                         </div>
 
                     </div>}
-                <div className="justify-between item-center mb-5">
-                    <div className="flex justify-left items-center text-sm w-full" >
-                        <button type="button"
-                            className="bg-primary text-white shadow-md rounded px-2 mr-4 py-1">Chat</button>
-                        <button type="button"
-                            onClick={handleEmail}
-                            className="bg-white  shadow-md rounded px-2 mr-4 py-1">Google</button>
-                        <button type="button"
-                            className="bg-white shadow-md rounded px-2 mr-4 py-1">Outlook</button>
-                        <button type="button"
-                            className="bg-white shadow-md rounded px-2 mr-4 py-1">iCloud</button>
-
-                    </div>
-                </div>
+                <Nav />
                 <div className="relative text-gray-600 focus-within:text-gray-400">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                         <svg
