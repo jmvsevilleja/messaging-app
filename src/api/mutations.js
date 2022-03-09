@@ -18,7 +18,7 @@ import {generateKeyPair} from "../utilities/encryption";
 export const addUser = async (user_id, user_name) => {
     if (!user_id || !user_name) return;
     try {
-        const {secretKey} = generateKeyPair();
+        const secretKey = generateKeyPair();
         return await API.graphql(
             graphqlOperation(createUser, {
                 input: {
@@ -26,7 +26,7 @@ export const addUser = async (user_id, user_name) => {
                     name: user_name,
                     status: "Hi there! I'm using Conva",
                     type: "USER",
-                    publicKey: secretKey.toString()
+                    publicKey: secretKey
                 }
             })
         ).then(({data: {createUser}}) => {
