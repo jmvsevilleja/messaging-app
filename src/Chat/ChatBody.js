@@ -106,7 +106,10 @@ function ChatBody({
             setIsUploading(true);
             recordedAudio.name = 'audio-file-' + Date.now() + '.mp3';
             const audio = await uploadFile(recordedAudio);
-            input.audio = encrypt(getSharedKey(user.publicKey), audio);
+            input.audio = {
+                name: audio.name,
+                path: encrypt(getSharedKey(user.publicKey), audio.path)
+            }
         }
 
         try {

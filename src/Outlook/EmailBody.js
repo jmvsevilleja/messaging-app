@@ -18,9 +18,9 @@ function EmailBody({
             body.style.margin = "0px";
             body.style.fontFamily = "Arial, Helvetica, sans-serif";
             body.style.fontSize = "13px";
-            body.innerHTML = message.body;
-            const subject = message.result.messageHeaders.find((item) => item.name === 'Subject').value;
-            const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
+            body.innerHTML = message.body.content;
+            const subject = message.subject;
+            const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
             //console.log(message);
             setMessageTitle(subject)
             setMessageSubTitle(from)
