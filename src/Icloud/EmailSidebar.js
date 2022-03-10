@@ -2,6 +2,7 @@ import React from "react";
 import Messages from "./Messages";
 import Nav from "../components/Nav";
 import ConvoLogo from '../logo.svg';
+import AddAccount from './AddAccount';
 
 function EmailSidebar({
     isSigned,
@@ -9,9 +10,8 @@ function EmailSidebar({
     openMessage,
     messageList,
     handleMessage,
-    handleGoogleSignIn,
-    handleGoogleSignInButton,
-    handleGoogleSignOut,
+    handleIcloudSignIn,
+    handleIcloudSignOut,
     handleChat
 }) {
     return (
@@ -25,7 +25,7 @@ function EmailSidebar({
                     <div className=" font-bold text-gray-600 dark:text-white">iCloud</div>
                 </div>
                 {isSigned && <button type="button"
-                    onClick={handleGoogleSignOut}
+                    onClick={handleIcloudSignOut}
                     className="text-gray-400 hover:text-gray-500">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -44,6 +44,7 @@ function EmailSidebar({
                     Access your accounts anytime, anywhere! Monitor your emails by reading, replying, and communicate with multimedia content.
                     <br /><br />With convenience and efficiency, experience the latest features of managing your emails on the go.
                 </div>
+                <AddAccount handleIcloudSignIn={handleIcloudSignIn} />
                 <div className="m-5 text-sm font-base text-black dark:text-slate-400">
                     Read our&nbsp;
                     <a className="mt-5 text-primary hover:text-secondary" href="/privacy-policy">Privacy policy</a>
@@ -61,11 +62,11 @@ function EmailSidebar({
             {isSigned && !isLoading && <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)] w-full md:w-96">
                 <ul>
                     {messageList && messageList.length !== 0 && messageList
-                        .map((message) => (<li key={message.result.id}>
+                        .map((message) => (<li key={message.id}>
                             <Messages
                                 message={message}
                                 handleEmail={() => {
-                                    handleMessage(message.result.id)
+                                    handleMessage(message.id)
                                 }}
                             />
                         </li>
