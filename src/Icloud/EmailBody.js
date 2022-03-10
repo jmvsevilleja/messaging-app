@@ -5,7 +5,8 @@ import ConvoLogo from '../logo.svg';
 function EmailBody({
     message,
     handleCloseMessage,
-    handleEmailReply
+    handleEmailReply,
+    isLoadingBody
 }) {
 
     const iframeRef = React.useRef(null);
@@ -18,9 +19,11 @@ function EmailBody({
             body.style.margin = "0px";
             body.style.fontFamily = "Arial, Helvetica, sans-serif";
             body.style.fontSize = "13px";
-            body.innerHTML = message.body;
-            const subject = message.result.messageHeaders.find((item) => item.name === 'Subject').value;
-            const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
+            body.innerHTML = message.snippet + '<base target="_blank">';
+
+
+            const subject = message.subject;
+            const from = message.from
             //console.log(message);
             setMessageTitle(subject)
             setMessageSubTitle(from)
@@ -32,14 +35,23 @@ function EmailBody({
         <div
             className="bg-white dark:bg-slate-900 grow flex flex-col md:translate-x-0 transform transition-transform duration-200 ease-in-out h-screen overflow-hidden border-0 md:border-l border-gray-200 dark:border-gray-500"
         >
-            {!message && (
+            {isLoadingBody && (
+                <div className="h-screen w-full flex flex-col justify-center items-center p-2">
+                    <div className=" text-primary opacity-50"><svg fill='none' className="w-40 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                        <path clipRule='evenodd'
+                            d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                            fill='currentColor' fillRule='evenodd' />
+                    </svg></div>
+                </div>
+            )}
+            {!isLoadingBody && !message && (
                 <div className="h-screen w-full flex flex-col justify-center items-center p-2">
                     <div className="">
                         <img className="w-96" src={ConvoLogo} alt="Conva" />
                     </div>
                 </div>
             )}
-            {message && <div className="w-full h-full flex flex-col overflow-hidden">
+            {!isLoadingBody && message && <div className="w-full h-full flex flex-col overflow-hidden">
                 <div className="justify-between item-center border-b border-gray-300 dark:border-gray-500 p-3 xs:p-5">
                     <span className="flex items-center overflow-hidden">
                         {true && <button
