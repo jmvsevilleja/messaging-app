@@ -31,6 +31,7 @@ const Email = () => {
 
     const [isSigned, setIsSigned] = useState(isAuthenticated);
     const [isLoading, setIsLoading] = useState(null);
+    const [isLoadingBody, setIsLoadingBody] = useState(null);
     const [messageID, setMessageID] = useState(null);
     const [openMessage, setOpenMessage] = useState(null);
     const [user, setUser] = useState({
@@ -84,6 +85,7 @@ const Email = () => {
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
+        setIsLoadingBody(true);
         if (messageID !== message_id) {
             instance
                 .acquireTokenSilent({
@@ -92,7 +94,7 @@ const Email = () => {
                 })
                 .then((response) => {
                     getMessage(response.accessToken, message_id).then((response) => {
-                        console.log('response', response);
+                        setIsLoadingBody(false);
                         setMessage(response);
                     });
                 });
@@ -133,6 +135,7 @@ const Email = () => {
                         <EmailBody
                             message={message}
                             handleCloseMessage={handleCloseMessage}
+                            isLoadingBody={isLoadingBody}
                         />
                     </div>
                 </main>
