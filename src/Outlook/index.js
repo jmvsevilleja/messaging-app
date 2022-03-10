@@ -1,21 +1,35 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "./index.css";
+import {PublicClientApplication} from "@azure/msal-browser";
+import {MsalProvider} from "@azure/msal-react";
+import {msalConfig} from "./authConfig";
+import {loginRequest} from "./authConfig";
+import {
+    useIsAuthenticated,
+    useMsal,
+} from "@azure/msal-react";
+
 
 import EmailSidebar from "./EmailSidebar";
 import EmailBody from "./EmailBody";
 import EmailInfo from "./EmailInfo";
 
-import {signOut, signIn, checkSignInStatus, mountScripts} from "./api/api";
 import {getMessages, getMessage} from "./api/api";
 
+const msalInstance = new PublicClientApplication(msalConfig);
+
 const Email = () => {
+
     let navigate = useNavigate();
+    const {instance, accounts} = useMsal();
+
+    const isAuthenticated = useIsAuthenticated();
 
     const [messageList, setMessageList] = useState(null);
     const [message, setMessage] = useState(null);
 
-    const [isSigned, setisSigned] = useState(false);
+    const [isSigned, setIsSigned] = useState(isAuthenticated);
     const [isLoading, setIsLoading] = useState(null);
     const [messageID, setMessageID] = useState(null);
     const [openMessage, setOpenMessage] = useState(null);
@@ -25,60 +39,63 @@ const Email = () => {
     });
     const [darkMode, setDarkMode] = useState(false);
 
-    const initClient = () => {
-        checkSignInStatus()
-            .then(onSignInSuccess)
-            .catch(_ => {
-                setisSigned(false);
-            });
-    }
-
-    const onSignInSuccess = (user) => {
-        //console.log('user', user);
-        setUser({
-            signInStatus: 'AUTH_SUCCESS',
-            user: user
-        });
-
-        setisSigned(true);
-        setIsLoading(true);
-        getMessages(null, 100).then((result) => {
-            //console.log('getMessages', result);
-            setMessageList(result);
-            setIsLoading(false);
-        });
-
-    }
-
     // HANDLE FUNCTIONS
     useEffect(() => {
-        // mountScripts().then(() => {
-        //     window.gapi.load("client:auth2", initClient);
-        // });
+        if (isAuthenticated) {
+            setIsLoading(true);
+
+            instance
+                .acquireTokenSilent({
+                    ...loginRequest,
+                    account: accounts[0],
+                })
+                .then((response) => {
+                    getMessages(response.accessToken).then((response) => {
+                        console.log('response', response);
+
+                        setMessageList(response.value);
+                        setIsLoading(false);
+                    });
+                });
+        }
 
         setDarkMode(localStorage.getItem("dark_mode") === "true");
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isSigned]);
 
 
-    const handleGoogleSignInButton = () => {
-        signIn().then(onSignInSuccess);
+    const handleOutlookSignIn = () => {
+        instance.loginPopup(loginRequest).then((result) => {
+            console.log('handleOutlookSignIn', result);
+            setIsSigned(true);
+        }).catch(e => {
+            console.log(e);
+        });
+
     };
 
-    const handleGoogleSignOut = () => {
-        signOut().then(() => {
-            setMessage(null);
-            setOpenMessage(false);
-            setisSigned(false);
+    const handleOutlookSignOut = () => {
+        instance.logoutPopup({
+            //postLogoutRedirectUri: "/outlook",
+            //mainWindowRedirectUri: "/outlook"
         });
+        setIsSigned(false);
     };
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
         if (messageID !== message_id) {
-            getMessage(message_id).then((result) => {
-                setMessage(result);
-            });
+            instance
+                .acquireTokenSilent({
+                    ...loginRequest,
+                    account: accounts[0],
+                })
+                .then((response) => {
+                    getMessage(response.accessToken, message_id).then((response) => {
+                        console.log('response', response);
+                        setMessage(response);
+                    });
+                });
             setMessageID(message_id);
         }
     }
@@ -91,6 +108,7 @@ const Email = () => {
     }
 
     return (
+
         <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>
             {/* Content area */}
             <div className="relative flex flex-col flex-1 overflow-hidden">
@@ -105,8 +123,8 @@ const Email = () => {
                                 messageList={messageList}
                                 isSigned={isSigned}
                                 handleMessage={handleMessage}
-                                handleGoogleSignInButton={handleGoogleSignInButton}
-                                handleGoogleSignOut={handleGoogleSignOut}
+                                handleOutlookSignIn={handleOutlookSignIn}
+                                handleOutlookSignOut={handleOutlookSignOut}
                                 handleChat={handleChat}
                             />
                         </div>
@@ -124,7 +142,15 @@ const Email = () => {
                     user={user}
                 />}
         </div>
+
     );
 }
 
-export default Email;
+
+export default function App() {
+    return (
+        <MsalProvider instance={msalInstance}>
+            <Email />
+        </MsalProvider>
+    );
+}

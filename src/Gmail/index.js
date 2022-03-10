@@ -15,7 +15,7 @@ const Email = () => {
     const [messageList, setMessageList] = useState(null);
     const [message, setMessage] = useState(null);
 
-    const [isSigned, setisSigned] = useState(false);
+    const [isSigned, setIsSigned] = useState(true);
     const [isLoading, setIsLoading] = useState(null);
     const [messageID, setMessageID] = useState(null);
     const [openMessage, setOpenMessage] = useState(null);
@@ -29,7 +29,7 @@ const Email = () => {
         checkSignInStatus()
             .then(onSignInSuccess)
             .catch(_ => {
-                setisSigned(false);
+                setIsSigned(false);
             });
     }
 
@@ -40,7 +40,7 @@ const Email = () => {
             user: user
         });
 
-        setisSigned(true);
+        setIsSigned(true);
         setIsLoading(true);
         getMessages(null, 100).then((result) => {
             //console.log('getMessages', result);
@@ -69,7 +69,7 @@ const Email = () => {
         signOut().then(() => {
             setMessage(null);
             setOpenMessage(false);
-            setisSigned(false);
+            setIsSigned(false);
         });
     };
 
