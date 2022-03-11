@@ -17,6 +17,7 @@ const Email = () => {
 
     const [isSigned, setIsSigned] = useState(true);
     const [isLoading, setIsLoading] = useState(null);
+    const [isLoadingBody, setIsLoadingBody] = useState(null);
     const [messageID, setMessageID] = useState(null);
     const [openMessage, setOpenMessage] = useState(null);
     const [user, setUser] = useState({
@@ -75,8 +76,10 @@ const Email = () => {
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
+        setIsLoadingBody(true);
         if (messageID !== message_id) {
             getMessage(message_id).then((result) => {
+                setIsLoadingBody(false);
                 setMessage(result);
             });
             setMessageID(message_id);
@@ -115,6 +118,7 @@ const Email = () => {
                         <EmailBody
                             message={message}
                             handleCloseMessage={handleCloseMessage}
+                            isLoadingBody={isLoadingBody}
                         />
                     </div>
                 </main>
