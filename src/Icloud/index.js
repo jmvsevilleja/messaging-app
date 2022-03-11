@@ -6,17 +6,16 @@ import EmailSidebar from "./EmailSidebar";
 import EmailBody from "./EmailBody";
 import EmailInfo from "./EmailInfo";
 
-import {signOut, signIn, checkSignInStatus, mountScripts} from "./api/api";
 import {getMessages, getMessage} from "./api/api";
 
 const Email = () => {
-    let navigate = useNavigate();
 
     const [messageList, setMessageList] = useState(null);
     const [message, setMessage] = useState(null);
 
-    const [isSigned, setisSigned] = useState(false);
+    const [isSigned, setIsSigned] = useState(false);
     const [isLoading, setIsLoading] = useState(null);
+    const [isLoadingBody, setIsLoadingBody] = useState(null);
     const [messageID, setMessageID] = useState(null);
     const [openMessage, setOpenMessage] = useState(null);
     const [user, setUser] = useState({
@@ -25,24 +24,16 @@ const Email = () => {
     });
     const [darkMode, setDarkMode] = useState(false);
 
-    const initClient = () => {
-        checkSignInStatus()
-            .then(onSignInSuccess)
-            .catch(_ => {
-                setisSigned(false);
-            });
-    }
-
-    const onSignInSuccess = (user) => {
+    const onSignInSuccess = (secret) => {
         //console.log('user', user);
         setUser({
             signInStatus: 'AUTH_SUCCESS',
             user: user
         });
 
-        setisSigned(true);
+        setIsSigned(true);
         setIsLoading(true);
-        getMessages(null, 100).then((result) => {
+        getMessages(secret).then((result) => {
             //console.log('getMessages', result);
             setMessageList(result);
             setIsLoading(false);
@@ -52,31 +43,34 @@ const Email = () => {
 
     // HANDLE FUNCTIONS
     useEffect(() => {
-        // mountScripts().then(() => {
-        //     window.gapi.load("client:auth2", initClient);
-        // });
-
+        const secret = localStorage.getItem("icloud");
+        if (secret) {
+            onSignInSuccess(secret);
+        }
         setDarkMode(localStorage.getItem("dark_mode") === "true");
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
-    const handleGoogleSignInButton = () => {
-        signIn().then(onSignInSuccess);
+    const handleIcloudSignIn = () => {
+        const secret = localStorage.getItem("icloud");
+        if (secret) {
+            onSignInSuccess(secret);
+        }
     };
 
-    const handleGoogleSignOut = () => {
-        signOut().then(() => {
-            setMessage(null);
-            setOpenMessage(false);
-            setisSigned(false);
-        });
+    const handleIcloudSignOut = () => {
+        localStorage.removeItem("icloud");
+        setIsSigned(false);
     };
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
+        setIsLoadingBody(true);
         if (messageID !== message_id) {
-            getMessage(message_id).then((result) => {
+            const secret = localStorage.getItem("icloud");
+            getMessage(secret, message_id).then((result) => {
+                setIsLoadingBody(false);
                 setMessage(result);
             });
             setMessageID(message_id);
@@ -84,10 +78,6 @@ const Email = () => {
     }
     const handleCloseMessage = () => {
         setOpenMessage(false);
-    }
-
-    const handleChat = () => {
-        navigate(`/chat`);
     }
 
     return (
@@ -105,9 +95,8 @@ const Email = () => {
                                 messageList={messageList}
                                 isSigned={isSigned}
                                 handleMessage={handleMessage}
-                                handleGoogleSignInButton={handleGoogleSignInButton}
-                                handleGoogleSignOut={handleGoogleSignOut}
-                                handleChat={handleChat}
+                                handleIcloudSignIn={handleIcloudSignIn}
+                                handleIcloudSignOut={handleIcloudSignOut}
                             />
                         </div>
 
@@ -115,6 +104,7 @@ const Email = () => {
                         <EmailBody
                             message={message}
                             handleCloseMessage={handleCloseMessage}
+                            isLoadingBody={isLoadingBody}
                         />
                     </div>
                 </main>
