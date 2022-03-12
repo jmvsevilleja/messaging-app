@@ -176,6 +176,34 @@ export const getMessage = async (messageId) => {
     };
 };
 
+export const replyMessage = (headers, body, callback) => {
+    let email = "";
+
+    const headersClone = {...headers};
+    headersClone["Content-Type"] = "text/html; charset='UTF-8'";
+    headersClone["Content-Transfer-Encoding"] = "base64";
+
+    for (let header in headersClone) {
+        email += `${header}: ${headersClone[header]}\r\n`;
+    }
+
+    email += `\r\n<html><body>${body}</body></html>`;
+
+    const encodedEmail = unescape(encodeURIComponent(email));
+
+    const sendRequest = window.gapi.client.gmail.users.messages.send({
+        userId: "me",
+        resource: {
+            raw: window
+                .btoa(encodedEmail)
+                .replace(/\+/g, "-")
+                .replace(/\//g, "_"),
+        },
+    });
+
+    sendRequest.execute(callback);
+};
+
 export const sendMessage = ({headers, body}) => {
     let email = "";
 
@@ -203,7 +231,7 @@ export const getProfile = async (userId = "me") => {
 }
 
 export const getMessages = async (unread = false, maxResults = 10, userId = "me") => {
-    let q = "";
+    let q = "in:inbox";
     if (!!unread) {
         q = "is:unread";
     }

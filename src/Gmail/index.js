@@ -76,8 +76,8 @@ const Email = () => {
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
-        setIsLoadingBody(true);
         if (messageID !== message_id) {
+            setIsLoadingBody(true);
             getMessage(message_id).then((result) => {
                 setIsLoadingBody(false);
                 setMessage(result);
