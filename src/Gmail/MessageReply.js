@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import {replyMessage} from "./api/api";
+import {sendMessage} from "./api/api";
 
-function ReplyMessage({message}) {
-    //console.log(message.result.messageHeaders);
+function MessageReply({message, messageReply, closeMessageReply}) {
 
-    const [isOpen, setIsOpen] = useState(false);
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -16,7 +14,7 @@ function ReplyMessage({message}) {
 
     useEffect(() => {
         const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
-        const subject = "RE: " + message.result.messageHeaders.find((item) => item.name === 'Subject').value;
+        const subject = "Re: " + message.result.messageHeaders.find((item) => item.name === 'Subject').value;
         const replayMsgId = message.result.messageHeaders.find((item) => item.name === 'Message-ID');
         setUserEmail(from);
         setUserSubject(subject);
@@ -24,9 +22,9 @@ function ReplyMessage({message}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message]);
 
-    const handleReplyMessage = async (event) => {
+    const handleMessageReply = async (event) => {
         event.preventDefault();
-        console.log('handleReplyMessage', userEmail);
+        console.log('handleMessageReply', userEmail);
         // prevent double submit
         if (loading || error) return;
 
@@ -35,12 +33,11 @@ function ReplyMessage({message}) {
             return;
         }
 
-        replyMessage({
+        sendMessage({
             To: userEmail,
             Subject: userSubject,
             "In-Reply-To": replyMsgId ? replyMsgId.value : '',
         }, userMessage, () => {
-            console.log('replyMessage done');
             setSent(true);
         });
 
@@ -48,22 +45,10 @@ function ReplyMessage({message}) {
 
     return (
         <>
-            {replyMsgId && <button
-                type="button"
-                onClick={() => {
-                    setIsOpen(true);
-                }}
-                className="outline-none bg-white text-gray-600 font-base rounded font-base py-1 px-2 border shadow-md text-sm"
-                title="Reply Message"
-            ><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg></button>}
             {
-                isOpen && <Dialog
-                    open={isOpen}
-                    onClose={() => {
-                        setIsOpen(false);
-                    }}
+                messageReply && <Dialog
+                    open={messageReply}
+                    onClose={closeMessageReply}
                     className="fixed z-30 inset-0 overflow-y-auto"
                 >
                     <div className="flex items-center justify-center min-h-screen">
@@ -102,9 +87,7 @@ function ReplyMessage({message}) {
                                 <div className="flex self-end">
                                     <button type="button"
                                         className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 py-2 rounded"
-                                        onClick={() => {
-                                            setIsOpen(false)
-                                        }}>
+                                        onClick={closeMessageReply}>
                                         Ok
                                     </button>
 
@@ -112,7 +95,7 @@ function ReplyMessage({message}) {
                             </div>}
                             {!sent && <form
                                 onSubmit={(e) => {
-                                    handleReplyMessage(e);
+                                    handleMessageReply(e);
                                 }}
                             >
                                 {<div className="relative text-gray-600">
@@ -125,7 +108,8 @@ function ReplyMessage({message}) {
                                         //     setError("");
                                         //     setUserEmail(e.target.value);
                                         // }}
-                                        readonly
+                                        readOnly
+                                        disabled
                                         value={userEmail}
                                     />
                                     <input
@@ -137,10 +121,12 @@ function ReplyMessage({message}) {
                                         //     setError("");
                                         //     setUserSubject(e.target.value);
                                         // }}
-                                        readonly
+                                        readOnly
+                                        disabled
                                         value={userSubject}
                                     />
                                     <textarea
+                                        autoFocus
                                         aria-placeholder="Message"
                                         placeholder="Message"
                                         type="text"
@@ -159,9 +145,7 @@ function ReplyMessage({message}) {
                                 {<div className="mt-4 flex flex-col">
                                     <div className="flex self-end">
                                         <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
-                                            onClick={() => {
-                                                setIsOpen(false);
-                                            }}>
+                                            onClick={closeMessageReply}>
                                             Cancel
                                         </button>
                                         <button
@@ -187,4 +171,4 @@ function ReplyMessage({message}) {
     )
 }
 
-export default ReplyMessage
+export default MessageReply

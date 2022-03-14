@@ -33,7 +33,12 @@ const Email = () => {
                 setIsSigned(false);
             });
     }
-
+    const onDeleteSuccess = (user) => {
+        //console.log('user', user);
+        setOpenMessage(false);
+        setMessage(null);
+        onSignInSuccess();
+    }
     const onSignInSuccess = (user) => {
         //console.log('user', user);
         setUser({
@@ -44,11 +49,9 @@ const Email = () => {
         setIsSigned(true);
         setIsLoading(true);
         getMessages(null, 100).then((result) => {
-            //console.log('getMessages', result);
             setMessageList(result);
             setIsLoading(false);
         });
-
     }
 
     // HANDLE FUNCTIONS
@@ -119,6 +122,7 @@ const Email = () => {
                             message={message}
                             handleCloseMessage={handleCloseMessage}
                             isLoadingBody={isLoadingBody}
+                            onDeleteSuccess={onDeleteSuccess}
                         />
                     </div>
                 </main>

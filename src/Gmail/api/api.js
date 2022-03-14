@@ -176,7 +176,23 @@ export const getMessage = async (messageId) => {
     };
 };
 
-export const replyMessage = (headers, body, callback) => {
+export const deleteMessage = (userId, messageId) => {
+    return window.gapi.client.gmail.users.messages
+        .trash({
+            userId: userId,
+            id: messageId,
+        })
+        .then((resp) => {
+            if (resp.status === 200) {
+                return true;
+            }
+        })
+        .catch((error) => {
+            console.log("error: ", error);
+        });
+};
+
+export const sendMessage = (headers, body, callback) => {
     let email = "";
 
     const headersClone = {...headers};
@@ -188,42 +204,16 @@ export const replyMessage = (headers, body, callback) => {
     }
 
     email += `\r\n<html><body>${body}</body></html>`;
-
     const encodedEmail = unescape(encodeURIComponent(email));
 
     const sendRequest = window.gapi.client.gmail.users.messages.send({
         userId: "me",
         resource: {
-            raw: window
-                .btoa(encodedEmail)
-                .replace(/\+/g, "-")
-                .replace(/\//g, "_"),
-        },
-    });
-
-    sendRequest.execute(callback);
-};
-
-export const sendMessage = ({headers, body}) => {
-    let email = "";
-
-    const headersClone = {...headers};
-    headersClone["Content-Type"] = "text/html; charset='UTF-8'";
-    headersClone["Content-Transfer-Encoding"] = "base64";
-
-    for (let header in headersClone) {
-        email += `${header}: ${headersClone[header]}\r\n`;
-    }
-
-    email += `\r\n<html><body>${body}</body></html>`;
-    const encodedEmail = unescape(encodeURIComponent(email));
-
-    return window.gapi.client.gmail.users.messages.send({
-        userId: "me",
-        resource: {
             raw: window.btoa(encodedEmail).replace(/\+/g, "-").replace(/\//g, "_")
         }
     });
+
+    sendRequest.execute(callback);
 };
 
 export const getProfile = async (userId = "me") => {
