@@ -51,7 +51,7 @@ export const msalConfig = {
  */
 export const loginRequest = {
     prompt: "select_account",
-    scopes: ["User.Read", "Mail.Read"]
+    scopes: ["User.Read", "Mail.Read", "Mail.ReadWrite", "Mail.Send"]
 };
 
 /**
@@ -60,5 +60,6 @@ export const loginRequest = {
  */
 export const graphConfig = {
     graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
-    graphMailEndpoint: "https://graph.microsoft.com/v1.0/me/messages"
+    graphMailEndpoint: "https://graph.microsoft.com/v1.0/me/messages",
+    graphSendMailEndpoint: "https://graph.microsoft.com/v1.0/me/sendMail"
 };

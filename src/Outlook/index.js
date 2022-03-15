@@ -10,12 +10,11 @@ import {
     useMsal,
 } from "@azure/msal-react";
 
-
 import EmailSidebar from "./EmailSidebar";
 import EmailBody from "./EmailBody";
 import EmailInfo from "./EmailInfo";
 
-import {getMessages, getMessage} from "./api/api";
+import {getMessages, getMessage, deleteMessage} from "./api/api";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
@@ -43,21 +42,7 @@ const Email = () => {
     // HANDLE FUNCTIONS
     useEffect(() => {
         if (isAuthenticated) {
-            setIsLoading(true);
-
-            instance
-                .acquireTokenSilent({
-                    ...loginRequest,
-                    account: accounts[0],
-                })
-                .then((response) => {
-                    getMessages(response.accessToken).then((response) => {
-                        console.log('response', response);
-
-                        setMessageList(response.value);
-                        setIsLoading(false);
-                    });
-                });
+            handleGetMessages();
         }
 
         setDarkMode(localStorage.getItem("dark_mode") === "true");
@@ -65,6 +50,22 @@ const Email = () => {
     }, [isSigned]);
 
 
+    const handleGetMessages = () => {
+        setIsLoading(true);
+        instance
+            .acquireTokenSilent({
+                ...loginRequest,
+                account: accounts[0],
+            })
+            .then((response) => {
+                getMessages(response.accessToken).then((response) => {
+                    console.log('response', response);
+
+                    setMessageList(response.value);
+                    setIsLoading(false);
+                });
+            });
+    }
     const handleOutlookSignIn = () => {
         instance.loginPopup(loginRequest).then((result) => {
             console.log('handleOutlookSignIn', result);
@@ -85,8 +86,8 @@ const Email = () => {
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
-        setIsLoadingBody(true);
         if (messageID !== message_id) {
+            setIsLoadingBody(true);
             instance
                 .acquireTokenSilent({
                     ...loginRequest,
@@ -101,12 +102,32 @@ const Email = () => {
             setMessageID(message_id);
         }
     }
+
+    const handleMessageDelete = (message_id) => {
+        instance
+            .acquireTokenSilent({
+                ...loginRequest,
+                account: accounts[0],
+            })
+            .then((response) => {
+                deleteMessage(response.accessToken, message_id).then((response) => {
+                    setOpenMessage(false);
+                    setMessage(null);
+                    handleGetMessages();
+                });
+            });
+    }
+
     const handleCloseMessage = () => {
         setOpenMessage(false);
     }
 
     const handleChat = () => {
         navigate(`/chat`);
+    }
+
+    const refreshMessages = () => {
+        handleGetMessages();
     }
 
     return (
@@ -128,6 +149,7 @@ const Email = () => {
                                 handleOutlookSignIn={handleOutlookSignIn}
                                 handleOutlookSignOut={handleOutlookSignOut}
                                 handleChat={handleChat}
+                                refreshMessages={refreshMessages}
                             />
                         </div>
 
@@ -136,6 +158,7 @@ const Email = () => {
                             message={message}
                             handleCloseMessage={handleCloseMessage}
                             isLoadingBody={isLoadingBody}
+                            handleMessageDelete={handleMessageDelete}
                         />
                     </div>
                 </main>
