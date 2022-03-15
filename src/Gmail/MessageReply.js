@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'
 
 function MessageReply({message, messageReply, closeMessageReply}) {
 
@@ -125,19 +127,19 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                         disabled
                                         value={userSubject}
                                     />
-                                    <textarea
-                                        autoFocus
-                                        aria-placeholder="Message"
-                                        placeholder="Message"
-                                        type="text"
-                                        rows="5"
-                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none "
-                                        onChange={(e) => {
-                                            setError("");
-                                            setUserMessage(e.target.value);
+                                    <ReactQuill
+                                        modules={{
+                                            toolbar: [
+                                                [{'header': [1, 2, false]}],
+                                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                                                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+                                                ['link']
+                                            ],
                                         }}
-                                        value={userMessage}
-                                    />
+                                        theme="snow" value={userMessage} onChange={(html) => {
+                                            setError("");
+                                            setUserMessage(html);
+                                        }} />
 
                                 </div>
                                 }
