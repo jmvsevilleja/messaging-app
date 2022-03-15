@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import {replyMessage} from "./api/api";
+import {sendMessage} from "./api/api";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-function MessageCreate({message}) {
+function MessageCreate() {
     //console.log(message.result.messageHeaders);
 
     const [isOpen, setIsOpen] = useState(false);
@@ -12,52 +14,57 @@ function MessageCreate({message}) {
     const [userEmail, setUserEmail] = useState("");
     const [userSubject, setUserSubject] = useState("");
     const [userMessage, setUserMessage] = useState("");
-    const [replyMsgId, setReplyMsgId] = useState(null);
 
     useEffect(() => {
-        const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
-        const subject = "RE: " + message.result.messageHeaders.find((item) => item.name === 'Subject').value;
-        const replayMsgId = message.result.messageHeaders.find((item) => item.name === 'Message-ID');
-        setUserEmail(from);
-        setUserSubject(subject);
-        setReplyMsgId(replayMsgId);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [message]);
+    }, []);
 
     const handleMessageCreate = async (event) => {
         event.preventDefault();
         console.log('handleMessageCreate', userEmail);
         // prevent double submit
         if (loading || error) return;
-
+        if (userEmail === "") {
+            setError("Enter an email");
+            return;
+        }
+        if (userSubject === "") {
+            setError("Enter a subject");
+            return;
+        }
         if (userMessage === "") {
             setError("Enter a message");
             return;
         }
+        var re = /\S+@\S+\.\S+/;
+        if (!re.test(userEmail)) {
+            setError("Invalid email");
+            return;
+        }
 
-        replyMessage({
+        sendMessage({
             To: userEmail,
             Subject: userSubject,
-            "In-Reply-To": replyMsgId ? replyMsgId.value : '',
         }, userMessage, () => {
             console.log('replyMessage done');
             setSent(true);
         });
-
     }
+
 
     return (
         <>
-            {replyMsgId && <button
-                type="button"
+            <button className="ml-5 border rounded-full flex justify-center p-2 px-4 bg-white shadow-md text-base text-primary  hover:border-primary"
+                title="Create Message"
                 onClick={() => {
                     setIsOpen(true);
                 }}
-                className="outline-none bg-white text-gray-600 font-base rounded font-base py-1 px-2 border shadow-md text-sm"
-                title="Reply Message"
-            ><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg></button>}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg> Compose
+            </button>
             {
                 isOpen && <Dialog
                     open={isOpen}
@@ -73,7 +80,7 @@ function MessageCreate({message}) {
                             <Dialog.Title
                                 as="h3"
                                 className="mb-3 text-lg font-medium leading-6 text-gray-600"
-                            >Reply
+                            >New Message
                             </Dialog.Title>
                             {error &&
                                 <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">
@@ -103,6 +110,10 @@ function MessageCreate({message}) {
                                     <button type="button"
                                         className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 py-2 rounded"
                                         onClick={() => {
+                                            setUserEmail("");
+                                            setUserSubject("");
+                                            setUserMessage("");
+                                            setSent(false);
                                             setIsOpen(false)
                                         }}>
                                         Ok
@@ -120,41 +131,38 @@ function MessageCreate({message}) {
                                         aria-placeholder="Email"
                                         placeholder="Email"
                                         type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-200 border-none focus:text-gray-700 ring-0 outline-none"
-                                        // onChange={(e) => {
-                                        //     setError("");
-                                        //     setUserEmail(e.target.value);
-                                        // }}
-                                        readonly
-                                        disabled
+                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                        onChange={(e) => {
+                                            setError("");
+                                            setUserEmail(e.target.value);
+                                        }}
                                         value={userEmail}
                                     />
                                     <input
                                         aria-placeholder="Subject"
                                         placeholder="Subject"
                                         type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-200 border-none focus:text-gray-700 ring-0 outline-none"
-                                        // onChange={(e) => {
-                                        //     setError("");
-                                        //     setUserSubject(e.target.value);
-                                        // }}
-                                        readonly
-                                        disabled
-                                        value={userSubject}
-                                    />
-                                    <textarea
-                                        autofocus
-                                        aria-placeholder="Message"
-                                        placeholder="Message"
-                                        type="text"
-                                        rows="5"
-                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none "
+                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                         onChange={(e) => {
                                             setError("");
-                                            setUserMessage(e.target.value);
+                                            setUserSubject(e.target.value);
                                         }}
-                                        value={userMessage}
+                                        value={userSubject}
                                     />
+
+                                    <ReactQuill
+                                        modules={{
+                                            toolbar: [
+                                                [{'header': [1, 2, false]}],
+                                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                                                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+                                                ['link']
+                                            ],
+                                        }}
+                                        theme="snow" value={userMessage} onChange={(html) => {
+                                            setError("");
+                                            setUserMessage(html);
+                                        }} />
 
                                 </div>
                                 }
@@ -163,6 +171,9 @@ function MessageCreate({message}) {
                                     <div className="flex self-end">
                                         <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
                                             onClick={() => {
+                                                setUserEmail("");
+                                                setUserSubject("");
+                                                setUserMessage("");
                                                 setIsOpen(false);
                                             }}>
                                             Cancel

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import "./index.css";
 
 import EmailSidebar from "./EmailSidebar";
@@ -10,7 +9,6 @@ import {signOut, signIn, checkSignInStatus, mountScripts} from "./api/api";
 import {getMessages, getMessage} from "./api/api";
 
 const Email = () => {
-    let navigate = useNavigate();
 
     const [messageList, setMessageList] = useState(null);
     const [message, setMessage] = useState(null);
@@ -92,8 +90,8 @@ const Email = () => {
         setOpenMessage(false);
     }
 
-    const handleChat = () => {
-        navigate(`/chat`);
+    const refreshMessages = () => {
+        onSignInSuccess();
     }
 
     return (
@@ -113,7 +111,7 @@ const Email = () => {
                                 handleMessage={handleMessage}
                                 handleGoogleSignInButton={handleGoogleSignInButton}
                                 handleGoogleSignOut={handleGoogleSignOut}
-                                handleChat={handleChat}
+                                refreshMessages={refreshMessages}
                             />
                         </div>
 
