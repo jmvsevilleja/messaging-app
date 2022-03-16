@@ -56,9 +56,9 @@ function EmailBody({
                 }
             `;
             head.append(style);
-            body.style.margin = "20px";
+            body.style.lineHeight = "1.2";
             body.style.fontFamily = "Arial, Helvetica, sans-serif";
-            body.style.fontSize = "13px";
+            body.style.fontSize = "14px";
             body.innerHTML = message.body + '<base target="_blank">';
             const subject = message.result.messageHeaders.find((item) => item.name === 'Subject').value;
             const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
@@ -200,7 +200,7 @@ function EmailBody({
 
                     </span>
                 </div>
-                <div className="h-full">
+                <div className="h-full m-4">
                     {message && <iframe id="iframe" title="iframe" width="100%" height="100%" ref={iframeRef} />}
                 </div>
             </div>}

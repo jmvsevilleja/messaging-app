@@ -12,17 +12,26 @@ function MessageReply({message, messageForward, closeMessageForward}) {
     const [userEmail, setUserEmail] = useState("");
     const [userSubject, setUserSubject] = useState("");
     const [userMessage, setUserMessage] = useState("");
-    const [replyMsgId, setReplyMsgId] = useState(null);
 
     useEffect(() => {
         //const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
-        const subject = "Fw: " + message.result.messageHeaders.find((item) => item.name === 'Subject').value;
-        const replayMsgId = message.result.messageHeaders.find((item) => item.name === 'Message-ID');
+        const subject = message.result.messageHeaders.find((item) => item.name === 'Subject').value;
+        const fwd_subject = "Fw: " + subject;
+        const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
+        const date = new Date(message.result.messageHeaders.find((item) => item.name === 'Date').value);
+        const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
-        setUserSubject(subject);
-        setReplyMsgId(replayMsgId);
+        let email = "";
+        email += `<br />------------------------------<br />`;
+        email += `From: ${from} <br />`;
+        email += `Date: ${date_value} <br />`;
+        email += `Subject: ${subject} <br />`;
+        email += `${message.body}`;
+
+        setUserMessage(email);
+        setUserSubject(fwd_subject);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [message]);
+    }, [message, messageForward]);
 
     const handleMessageForward = async (event) => {
         event.preventDefault();
@@ -30,27 +39,16 @@ function MessageReply({message, messageForward, closeMessageForward}) {
         // prevent double submit
         if (loading || error) return;
 
-        const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
-        const date = new Date(message.result.messageHeaders.find((item) => item.name === 'Date').value);
-        const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
-
-
-        let email = "";
-        email += `From: ${from} <br />`;
-        email += `Date: ${date_value} <br />`;
-        email += `Subject: ${userSubject} <br />`;
-        email += `To: ${userEmail} <br />`;
-        email += `<br /><br /> ${userMessage}`;
-        email += `<br /><br /> ${message.body}`;
         const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
         //console.log(filteredSubject);
+        setLoading(true);
         sendMessage({
             To: userEmail,
             Subject: filteredSubject,
-        }, email, () => {
+        }, userMessage, () => {
             setSent(true);
+            setLoading(false);
         });
-
     }
 
     return (
@@ -69,7 +67,7 @@ function MessageReply({message, messageForward, closeMessageForward}) {
                             <Dialog.Title
                                 as="h3"
                                 className="mb-3 text-lg font-medium leading-6 text-gray-600"
-                            >Foward
+                            >Forward
                             </Dialog.Title>
                             {error &&
                                 <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">

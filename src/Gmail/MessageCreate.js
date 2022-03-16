@@ -42,13 +42,14 @@ function MessageCreate() {
             setError("Invalid email");
             return;
         }
-
+        setLoading(true);
         sendMessage({
             To: userEmail,
             Subject: userSubject,
         }, userMessage, () => {
             console.log('replyMessage done');
             setSent(true);
+            setLoading(false);
         });
     }
 

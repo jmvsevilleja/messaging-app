@@ -26,7 +26,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
 
     const handleMessageReply = async (event) => {
         event.preventDefault();
-        console.log('handleMessageReply', userEmail);
+        console.log('handleMessageReply', message);
         // prevent double submit
         if (loading || error) return;
 
@@ -34,13 +34,25 @@ function MessageReply({message, messageReply, closeMessageReply}) {
             setError("Enter a message");
             return;
         }
+        const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
+        const date = new Date(message.result.messageHeaders.find((item) => item.name === 'Date').value);
+        const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
+        let email = "";
+        email += `<br /> ${userMessage} <br />------------------------------<br />`;
+        email += `From: ${from} <br />`;
+        email += `Date: ${date_value} <br />`;
+        email += `Subject: ${userSubject} <br />`;
+        email += `${message.body}`;
+        const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
 
+        setLoading(true);
         sendMessage({
             To: userEmail,
-            Subject: userSubject,
+            Subject: filteredSubject,
             "In-Reply-To": replyMsgId ? replyMsgId.value : '',
-        }, userMessage, () => {
+        }, email, () => {
             setSent(true);
+            setLoading(false);
         });
 
     }
