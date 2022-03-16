@@ -48,7 +48,7 @@ function MessageCreate() {
             setError("Invalid email");
             return;
         }
-
+        setLoading(true);
         instance
             .acquireTokenSilent({
                 ...loginRequest,
@@ -70,13 +70,13 @@ function MessageCreate() {
                             }
                         ],
                     },
+                    "saveToSentItems": "false"
                 }, () => {
                     console.log('sendMessage done');
                     setSent(true);
+                    setLoading(false);
                 });
             });
-
-
     }
 
 

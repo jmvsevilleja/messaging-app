@@ -3,9 +3,15 @@ import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'
+import {loginRequest} from "./authConfig";
+import {
+    useMsal,
+} from "@azure/msal-react";
+
 
 function MessageReply({message, messageReply, closeMessageReply}) {
 
+    const {instance, accounts} = useMsal();
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -15,8 +21,8 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     const [replyMsgId, setReplyMsgId] = useState(null);
 
     useEffect(() => {
-        console.log('Message', message);
-        const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
+        //console.log('Message', message);
+        const from = message.from ? message.from.emailAddress.name : '';
         const subject = "Re: " + message.subject;
         const replayMsgId = "";//message.result.messageHeaders.find((item) => item.name === 'Message-ID');
         setUserEmail(from);
@@ -36,13 +42,47 @@ function MessageReply({message, messageReply, closeMessageReply}) {
             return;
         }
 
-        sendMessage({
-            To: userEmail,
-            Subject: userSubject,
-            "In-Reply-To": replyMsgId ? replyMsgId.value : '',
-        }, userMessage, () => {
-            setSent(true);
-        });
+        const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
+        const date = new Date(message.sentDateTime);
+        const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
+
+        let email = "";
+        email += `<br /> ${userMessage} <br />------------------------------<br />`;
+        email += `From: ${from} <br />`;
+        email += `Date: ${date_value} <br />`;
+        email += `Subject: ${userSubject} <br />`;
+        email += `${message.body.content}`;
+        const filteredSubject = "Fw: " + userSubject.replace(/[\u1000-\uFFFF]/gm, "");
+        //console.log(filteredSubject);
+        setLoading(true);
+        instance
+            .acquireTokenSilent({
+                ...loginRequest,
+                account: accounts[0],
+            })
+            .then((response) => {
+                sendMessage(response.accessToken, {
+                    "message": {
+                        "subject": filteredSubject,
+                        "body": {
+                            "contentType": "HTML",
+                            "content": email
+                        },
+                        "toRecipients": [
+                            {
+                                "emailAddress": {
+                                    "address": userEmail
+                                }
+                            }
+                        ],
+                    },
+                    "saveToSentItems": "false"
+                }, () => {
+                    console.log('sendMessage done');
+                    setSent(true);
+                    setLoading(false);
+                });
+            });
 
     }
 

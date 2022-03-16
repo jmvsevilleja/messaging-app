@@ -42,11 +42,12 @@ function EmailBody({
 
     useEffect(() => {
         if (message) {
-            console.log(message);
+            // console.log(message);
             const {body} = iframeRef.current.contentWindow.document;
-            body.style.margin = "20px";
+            //body.head.innerHTML = "<style>p{margin:0}</style>";
+            body.style.lineHeight = "1.2";
             body.style.fontFamily = "Arial, Helvetica, sans-serif";
-            body.style.fontSize = "13px";
+            body.style.fontSize = "14px";
             body.innerHTML = message.body.content + '<base target="_blank">';;
             const subject = message.subject;
             const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
@@ -187,7 +188,7 @@ function EmailBody({
                         </div>
                     </span>
                 </div>
-                <div className="h-full">
+                <div className="h-full m-4">
                     {message && <iframe id="iframe" title="iframe" width="100%" height="100%" ref={iframeRef} />}
                 </div>
             </div>}

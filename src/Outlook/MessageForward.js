@@ -4,25 +4,39 @@ import {sendMessage} from "./api/api";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+import {loginRequest} from "./authConfig";
+import {
+    useMsal,
+} from "@azure/msal-react";
+
 function MessageReply({message, messageForward, closeMessageForward}) {
 
+    const {instance, accounts} = useMsal();
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [userEmail, setUserEmail] = useState("");
     const [userSubject, setUserSubject] = useState("");
     const [userMessage, setUserMessage] = useState("");
-    const [replyMsgId, setReplyMsgId] = useState(null);
 
     useEffect(() => {
+        //console.log(message);
+        const subject = message.subject;
+        const fwd_subject = "Fw: " + subject;
+        const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
+        const date = new Date(message.sentDateTime);
+        const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
-        const subject = "Fw: " + message.subject;
-        const replayMsgId = "asdf";//message.result.messageHeaders.find((item) => item.name === 'Message-ID');
-
-        setUserSubject(subject);
-        setReplyMsgId(replayMsgId);
+        let email = "";
+        email += `<br />------------------------------<br />`;
+        email += `From: ${from} <br />`;
+        email += `Date: ${date_value} <br />`;
+        email += `Subject: ${subject} <br />`;
+        email += `${message.body.content}`;
+        setUserMessage(email);
+        setUserSubject(fwd_subject);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [message]);
+    }, [message, messageForward]);
 
     const handleMessageForward = async (event) => {
         event.preventDefault();
@@ -30,27 +44,37 @@ function MessageReply({message, messageForward, closeMessageForward}) {
         // prevent double submit
         if (loading || error) return;
 
-        const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
-        const date = new Date(message.sentDateTime);
-        const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
-
-
-        let email = "";
-        email += `From: ${from} <br />`;
-        email += `Date: ${date_value} <br />`;
-        email += `Subject: ${userSubject} <br />`;
-        email += `To: ${userEmail} <br />`;
-        email += `<br /><br /> ${userMessage}`;
-        email += `<br /><br /> ${message.body}`;
-        const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
+        const filteredSubject = "Fw: " + userSubject.replace(/[\u1000-\uFFFF]/gm, "");
         //console.log(filteredSubject);
-        sendMessage({
-            To: userEmail,
-            Subject: filteredSubject,
-        }, email, () => {
-            setSent(true);
-        });
-
+        setLoading(true);
+        instance
+            .acquireTokenSilent({
+                ...loginRequest,
+                account: accounts[0],
+            })
+            .then((response) => {
+                sendMessage(response.accessToken, {
+                    "message": {
+                        "subject": filteredSubject,
+                        "body": {
+                            "contentType": "HTML",
+                            "content": userMessage
+                        },
+                        "toRecipients": [
+                            {
+                                "emailAddress": {
+                                    "address": userEmail
+                                }
+                            }
+                        ],
+                    },
+                    "saveToSentItems": "false"
+                }, () => {
+                    console.log('sendMessage done');
+                    setSent(true);
+                    setLoading(false);
+                });
+            });
     }
 
     return (
@@ -69,7 +93,7 @@ function MessageReply({message, messageForward, closeMessageForward}) {
                             <Dialog.Title
                                 as="h3"
                                 className="mb-3 text-lg font-medium leading-6 text-gray-600"
-                            >Foward
+                            >Forward
                             </Dialog.Title>
                             {error &&
                                 <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">
