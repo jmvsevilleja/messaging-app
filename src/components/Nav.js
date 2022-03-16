@@ -13,7 +13,7 @@ export default function Nav() {
 
   return (
     <>
-      <div className="justify-between item-center mb-5">
+      <div className="justify-between item-center mb-5 text-primary">
         <div className="justify-left items-center text-sm w-full grid grid-cols-5 xs:grid-cols-5 gap-1" >
           <button type="button"
             onClick={() => {
