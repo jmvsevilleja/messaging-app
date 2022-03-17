@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import "./index.css";
 
 import EmailSidebar from "./EmailSidebar";
@@ -66,8 +65,8 @@ const Email = () => {
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
-        setIsLoadingBody(true);
         if (messageID !== message_id) {
+            setIsLoadingBody(true);
             const secret = localStorage.getItem("icloud");
             getMessage(secret, message_id).then((result) => {
                 setIsLoadingBody(false);
@@ -79,7 +78,17 @@ const Email = () => {
     const handleCloseMessage = () => {
         setOpenMessage(false);
     }
+    const refreshMessages = () => {
+        const secret = localStorage.getItem("icloud");
+        onSignInSuccess(secret);
+    }
 
+    const onDeleteSuccess = () => {
+        const secret = localStorage.getItem("icloud");
+        setOpenMessage(false);
+        setMessage(null);
+        onSignInSuccess(secret);
+    }
     return (
         <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>
             {/* Content area */}
@@ -97,6 +106,7 @@ const Email = () => {
                                 handleMessage={handleMessage}
                                 handleIcloudSignIn={handleIcloudSignIn}
                                 handleIcloudSignOut={handleIcloudSignOut}
+                                refreshMessages={refreshMessages}
                             />
                         </div>
 
@@ -105,6 +115,7 @@ const Email = () => {
                             message={message}
                             handleCloseMessage={handleCloseMessage}
                             isLoadingBody={isLoadingBody}
+                            onDeleteSuccess={onDeleteSuccess}
                         />
                     </div>
                 </main>

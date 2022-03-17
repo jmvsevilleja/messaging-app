@@ -37,6 +37,7 @@ export const isHTML = str => {
 export const getMessage = async (secret, message_id) => {
 
     return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages/${message_id}`, {
+        "client": 'icloud',
         "secret": secret,
     }).then(({status, data: {message}}) => {
         if (status === 200) {
@@ -48,37 +49,92 @@ export const getMessage = async (secret, message_id) => {
     });
 };
 
-export const sendMessage = ({headers, body}) => {
+export const sendMessage = async (secret, to, subject, body, callback) => {
     let email = "";
-
-    const headersClone = {...headers};
-    headersClone["Content-Type"] = "text/html; charset='UTF-8'";
-    headersClone["Content-Transfer-Encoding"] = "base64";
-
-    for (let header in headersClone) {
-        email += `${header}: ${headersClone[header]}\r\n`;
-    }
-
     email += `\r\n<html><body>${body}</body></html>`;
     const encodedEmail = unescape(encodeURIComponent(email));
 
-    return window.gapi.client.gmail.users.messages.send({
-        userId: "me",
-        resource: {
-            raw: window.btoa(encodedEmail).replace(/\+/g, "-").replace(/\//g, "_")
+    return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages-new`, {
+        "client": 'icloud',
+        "secret": secret,
+        "body": encodedEmail,
+        "recipient": to,
+        "subject": subject,
+    }).then(({status, data: {message}}) => {
+        if (status === 200) {
+            //const {presigned_url, public_url, filename} = res.data.message;
+            console.log('SEND MESSAGE', message);
+            callback();
         }
     });
 };
 
+export const replyMessage = async (secret, message_id, body, callback) => {
+    let email = "";
+    email += `\r\n<html><body>${body}</body></html>`;
+    const encodedEmail = unescape(encodeURIComponent(email));
+
+    return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages/${message_id}/reply`, {
+        "client": 'icloud',
+        "secret": secret,
+        "message_body": encodedEmail,
+    }).then(({status, data: {message}}) => {
+        if (status === 200) {
+            //const {presigned_url, public_url, filename} = res.data.message;
+            console.log('SEND MESSAGE', message);
+            callback();
+        }
+    });
+};
+
+export const forwardMessage = async (secret, message_id, to, body, callback) => {
+    let email = "";
+    email += `\r\n<html><body>${body}</body></html>`;
+    const encodedEmail = unescape(encodeURIComponent(email));
+
+    return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages/${message_id}/forward`, {
+        "client": 'icloud',
+        "secret": secret,
+        "message_body": encodedEmail,
+        "recipient": to,
+    }).then(({status, data: {message}}) => {
+        if (status === 200) {
+            //const {presigned_url, public_url, filename} = res.data.message;
+            console.log('SEND MESSAGE', message);
+            callback();
+        }
+    });
+};
 export const getMessages = async (secret) => {
     try {
         return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages`, {
+            "client": 'icloud',
             "secret": secret
         }).then(({status, data: {message}}) => {
             if (status === 200) {
                 //const {presigned_url, public_url, filename} = res.data.message;
                 console.log('GET MESSAGES', message);
                 return message;
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const deleteMessage = async (secret, message_id, callback) => {
+    try {
+        return axios.delete(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages/${message_id}`, {
+            data: {
+                "client": 'icloud',
+                "secret": secret
+            }
+        }).then(({status, data: {message}}) => {
+            if (status === 200 && message === 'Success') {
+                //const {presigned_url, public_url, filename} = res.data.message;
+                console.log('DELETE MESSAGE', message);
+                callback();
             }
         });
 

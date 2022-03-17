@@ -3,6 +3,7 @@ import Messages from "./Messages";
 import Nav from "../components/Nav";
 import ConvoLogo from '../logo.svg';
 import AddAccount from './AddAccount';
+import MessageCreate from './MessageCreate';
 
 function EmailSidebar({
     isSigned,
@@ -12,7 +13,7 @@ function EmailSidebar({
     handleMessage,
     handleIcloudSignIn,
     handleIcloudSignOut,
-    handleChat
+    refreshMessages
 }) {
     return (
         <div
@@ -59,6 +60,20 @@ function EmailSidebar({
                             d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
                             fill='currentColor' fillRule='evenodd' />
                     </svg></div></div>}
+            {isSigned && !isLoading && <div className="flex justify-center mb-3 px-5">
+                <div className="w-full flex justify-center items-center">
+                    <MessageCreate />
+                </div>
+                <div className="flex items-center">
+                    <button className="text-gray-400 hover:text-gray-500"
+                        title="Refresh"
+                        onClick={refreshMessages}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>}
             {isSigned && !isLoading && <div className="scrollable px-5 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-130px)] w-full md:w-96">
                 <ul>
                     {messageList && messageList.length !== 0 && messageList
