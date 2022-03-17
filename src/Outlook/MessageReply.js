@@ -18,16 +18,13 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     const [userEmail, setUserEmail] = useState("");
     const [userSubject, setUserSubject] = useState("");
     const [userMessage, setUserMessage] = useState("");
-    const [replyMsgId, setReplyMsgId] = useState(null);
 
     useEffect(() => {
         //console.log('Message', message);
         const from = message.from ? message.from.emailAddress.name : '';
         const subject = "Re: " + message.subject;
-        const replayMsgId = "";//message.result.messageHeaders.find((item) => item.name === 'Message-ID');
         setUserEmail(from);
         setUserSubject(subject);
-        setReplyMsgId(replayMsgId);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message]);
 
@@ -41,7 +38,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
             setError("Enter a message");
             return;
         }
-
+        const subject = message.subject;
         const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
         const date = new Date(message.sentDateTime);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
@@ -50,9 +47,9 @@ function MessageReply({message, messageReply, closeMessageReply}) {
         email += `<br /> ${userMessage} <br />------------------------------<br />`;
         email += `From: ${from} <br />`;
         email += `Date: ${date_value} <br />`;
-        email += `Subject: ${userSubject} <br />`;
+        email += `Subject: ${subject} <br />`;
         email += `${message.body.content}`;
-        const filteredSubject = "Fw: " + userSubject.replace(/[\u1000-\uFFFF]/gm, "");
+        const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
         //console.log(filteredSubject);
         setLoading(true);
         instance

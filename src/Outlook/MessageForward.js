@@ -44,7 +44,7 @@ function MessageReply({message, messageForward, closeMessageForward}) {
         // prevent double submit
         if (loading || error) return;
 
-        const filteredSubject = "Fw: " + userSubject.replace(/[\u1000-\uFFFF]/gm, "");
+        const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
         //console.log(filteredSubject);
         setLoading(true);
         instance
