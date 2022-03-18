@@ -27,3 +27,29 @@
 .toggle-checkbox:checked + .toggle-label {
     background-color: #213766;
 }
+
+.ql-container {
+    border-bottom-left-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+    background: #fefcfc;
+    height: 18em;
+}
+
+/* Snow Theme */
+.ql-snow.ql-toolbar {
+    display: block;
+    background: #eaecec;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+/* Bubble Theme */
+.ql-bubble .ql-editor {
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+}
+
+.ql-editor {
+    min-height: 18em;
+    font-size: 15px;
+}

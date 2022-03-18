@@ -1,22 +1,20 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import "./index.css";
 
 import EmailSidebar from "./EmailSidebar";
 import EmailBody from "./EmailBody";
 import EmailInfo from "./EmailInfo";
 
-import {signOut, signIn, checkSignInStatus, mountScripts} from "./api/api";
 import {getMessages, getMessage} from "./api/api";
 
 const Email = () => {
-    let navigate = useNavigate();
 
     const [messageList, setMessageList] = useState(null);
     const [message, setMessage] = useState(null);
 
-    const [isSigned, setisSigned] = useState(false);
+    const [isSigned, setIsSigned] = useState(false);
     const [isLoading, setIsLoading] = useState(null);
+    const [isLoadingBody, setIsLoadingBody] = useState(null);
     const [messageID, setMessageID] = useState(null);
     const [openMessage, setOpenMessage] = useState(null);
     const [user, setUser] = useState({
@@ -25,24 +23,16 @@ const Email = () => {
     });
     const [darkMode, setDarkMode] = useState(false);
 
-    const initClient = () => {
-        checkSignInStatus()
-            .then(onSignInSuccess)
-            .catch(_ => {
-                setisSigned(false);
-            });
-    }
-
-    const onSignInSuccess = (user) => {
+    const onSignInSuccess = (secret) => {
         //console.log('user', user);
         setUser({
             signInStatus: 'AUTH_SUCCESS',
             user: user
         });
 
-        setisSigned(true);
+        setIsSigned(true);
         setIsLoading(true);
-        getMessages(null, 100).then((result) => {
+        getMessages(secret).then((result) => {
             //console.log('getMessages', result);
             setMessageList(result);
             setIsLoading(false);
@@ -52,31 +42,37 @@ const Email = () => {
 
     // HANDLE FUNCTIONS
     useEffect(() => {
-        // mountScripts().then(() => {
-        //     window.gapi.load("client:auth2", initClient);
-        // });
-
+        const secret = localStorage.getItem("clinica");
+        if (secret) {
+            onSignInSuccess(secret);
+        }
         setDarkMode(localStorage.getItem("dark_mode") === "true");
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
-    const handleGoogleSignInButton = () => {
-        signIn().then(onSignInSuccess);
+    const handleClinicaSignIn = () => {
+        const secret = localStorage.getItem("clinica");
+        if (secret) {
+            onSignInSuccess(secret);
+        }
     };
 
-    const handleGoogleSignOut = () => {
-        signOut().then(() => {
-            setMessage(null);
-            setOpenMessage(false);
-            setisSigned(false);
-        });
+    const handleClinicaSignOut = () => {
+        localStorage.removeItem("clinica");
+        setOpenMessage(false);
+        setIsLoadingBody(false);
+        setMessage(null);
+        setIsSigned(false);
     };
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
         if (messageID !== message_id) {
-            getMessage(message_id).then((result) => {
+            setIsLoadingBody(true);
+            const secret = localStorage.getItem("clinica");
+            getMessage(secret, message_id).then((result) => {
+                setIsLoadingBody(false);
                 setMessage(result);
             });
             setMessageID(message_id);
@@ -85,11 +81,21 @@ const Email = () => {
     const handleCloseMessage = () => {
         setOpenMessage(false);
     }
-
-    const handleChat = () => {
-        navigate(`/chat`);
+    const handleBodyLoading = () => {
+        setIsLoadingBody(true);
+    }
+    const refreshMessages = () => {
+        const secret = localStorage.getItem("clinica");
+        onSignInSuccess(secret);
     }
 
+    const onDeleteSuccess = () => {
+        const secret = localStorage.getItem("clinica");
+        setOpenMessage(false);
+        setMessage(null);
+        setIsLoadingBody(false);
+        onSignInSuccess(secret);
+    }
     return (
         <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>
             {/* Content area */}
@@ -105,9 +111,9 @@ const Email = () => {
                                 messageList={messageList}
                                 isSigned={isSigned}
                                 handleMessage={handleMessage}
-                                handleGoogleSignInButton={handleGoogleSignInButton}
-                                handleGoogleSignOut={handleGoogleSignOut}
-                                handleChat={handleChat}
+                                handleClinicaSignIn={handleClinicaSignIn}
+                                handleClinicaSignOut={handleClinicaSignOut}
+                                refreshMessages={refreshMessages}
                             />
                         </div>
 
@@ -115,6 +121,9 @@ const Email = () => {
                         <EmailBody
                             message={message}
                             handleCloseMessage={handleCloseMessage}
+                            isLoadingBody={isLoadingBody}
+                            handleBodyLoading={handleBodyLoading}
+                            onDeleteSuccess={onDeleteSuccess}
                         />
                     </div>
                 </main>

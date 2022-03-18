@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import "./index.css";
 
 import EmailSidebar from "./EmailSidebar";
@@ -10,7 +9,6 @@ import {signOut, signIn, checkSignInStatus, mountScripts} from "./api/api";
 import {getMessages, getMessage} from "./api/api";
 
 const Email = () => {
-    let navigate = useNavigate();
 
     const [messageList, setMessageList] = useState(null);
     const [message, setMessage] = useState(null);
@@ -33,7 +31,12 @@ const Email = () => {
                 setIsSigned(false);
             });
     }
-
+    const onDeleteSuccess = (user) => {
+        //console.log('user', user);
+        setOpenMessage(false);
+        setMessage(null);
+        onSignInSuccess();
+    }
     const onSignInSuccess = (user) => {
         //console.log('user', user);
         setUser({
@@ -44,11 +47,9 @@ const Email = () => {
         setIsSigned(true);
         setIsLoading(true);
         getMessages(null, 100).then((result) => {
-            //console.log('getMessages', result);
             setMessageList(result);
             setIsLoading(false);
         });
-
     }
 
     // HANDLE FUNCTIONS
@@ -76,8 +77,8 @@ const Email = () => {
 
     const handleMessage = (message_id) => {
         setOpenMessage(true);
-        setIsLoadingBody(true);
         if (messageID !== message_id) {
+            setIsLoadingBody(true);
             getMessage(message_id).then((result) => {
                 setIsLoadingBody(false);
                 setMessage(result);
@@ -89,8 +90,8 @@ const Email = () => {
         setOpenMessage(false);
     }
 
-    const handleChat = () => {
-        navigate(`/chat`);
+    const refreshMessages = () => {
+        onSignInSuccess();
     }
 
     return (
@@ -110,7 +111,7 @@ const Email = () => {
                                 handleMessage={handleMessage}
                                 handleGoogleSignInButton={handleGoogleSignInButton}
                                 handleGoogleSignOut={handleGoogleSignOut}
-                                handleChat={handleChat}
+                                refreshMessages={refreshMessages}
                             />
                         </div>
 
@@ -119,6 +120,7 @@ const Email = () => {
                             message={message}
                             handleCloseMessage={handleCloseMessage}
                             isLoadingBody={isLoadingBody}
+                            onDeleteSuccess={onDeleteSuccess}
                         />
                     </div>
                 </main>
