@@ -1,17 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import {sendMessage} from "./api/api";
+import {replyMessage} from "./api/api";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'
-import {loginRequest} from "./authConfig";
-import {
-    useMsal,
-} from "@azure/msal-react";
-
 
 function MessageReply({message, messageReply, closeMessageReply}) {
 
-    const {instance, accounts} = useMsal();
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -20,9 +14,9 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
-        //console.log('Message', message);
-        const from = message.from ? message.from.emailAddress.name : '';
-        const subject = "Re: " + message.subject;
+        const subject = message.subject;
+        const from = message.from;
+
         setUserEmail(from);
         setUserSubject(subject);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,7 +24,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
 
     const handleMessageReply = async (event) => {
         event.preventDefault();
-        console.log('handleMessageReply', userEmail);
+        console.log('handleMessageReply', message);
         // prevent double submit
         if (loading || error) return;
 
@@ -38,49 +32,25 @@ function MessageReply({message, messageReply, closeMessageReply}) {
             setError("Enter a message");
             return;
         }
-        const subject = message.subject;
-        const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
-        const date = new Date(message.sentDateTime);
+        const from = message.from;
+        const date = new Date(message.date);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
-
         let email = "";
         email += `<br /> ${userMessage} <br />------------------------------<br />`;
         email += `From: ${from} <br />`;
         email += `Date: ${date_value} <br />`;
-        email += `Subject: ${subject} <br />`;
-        email += `${message.body.content}`;
-        const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
-        //console.log(filteredSubject);
-        setLoading(true);
-        instance
-            .acquireTokenSilent({
-                ...loginRequest,
-                account: accounts[0],
-            })
-            .then((response) => {
-                sendMessage(response.accessToken, {
-                    "message": {
-                        "subject": filteredSubject,
-                        "body": {
-                            "contentType": "HTML",
-                            "content": email
-                        },
-                        "toRecipients": [
-                            {
-                                "emailAddress": {
-                                    "address": userEmail
-                                }
-                            }
-                        ],
-                    },
-                    "saveToSentItems": "false"
-                }, () => {
-                    console.log('sendMessage done');
-                    setSent(true);
-                    setLoading(false);
-                });
-            });
+        email += `Subject: ${userSubject} <br />`;
+        const message_body = message ? message.snippet.replace(/=09/g, "").replace(/=\s\s/g, "").replace(/=E2=80=99/g, "'") : '';
+        email += `${message_body}`;
+        //const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
 
+        setLoading(true);
+        const secret = localStorage.getItem("icloud");
+        replyMessage(secret, message.id, email, () => {
+            console.log('replyMessage done');
+            setSent(true);
+            setLoading(false);
+        });
     }
 
     return (

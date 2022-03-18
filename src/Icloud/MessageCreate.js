@@ -2,16 +2,12 @@ import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'
-import {loginRequest} from "./authConfig";
-import {
-    useMsal,
-} from "@azure/msal-react";
+import 'react-quill/dist/quill.snow.css';
 
+function MessageCreate() {
+    //console.log(message.result.messageHeaders);
 
-function MessageReply({message, messageReply, closeMessageReply}) {
-
-    const {instance, accounts} = useMsal();
+    const [isOpen, setIsOpen] = useState(false);
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -20,75 +16,60 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
-        //console.log('Message', message);
-        const from = message.from ? message.from.emailAddress.name : '';
-        const subject = "Re: " + message.subject;
-        setUserEmail(from);
-        setUserSubject(subject);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [message]);
 
-    const handleMessageReply = async (event) => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleMessageCreate = async (event) => {
         event.preventDefault();
-        console.log('handleMessageReply', userEmail);
+        console.log('handleMessageCreate', userEmail);
         // prevent double submit
         if (loading || error) return;
-
+        if (userEmail === "") {
+            setError("Enter an email");
+            return;
+        }
+        if (userSubject === "") {
+            setError("Enter a subject");
+            return;
+        }
         if (userMessage === "") {
             setError("Enter a message");
             return;
         }
-        const subject = message.subject;
-        const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
-        const date = new Date(message.sentDateTime);
-        const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
-
-        let email = "";
-        email += `<br /> ${userMessage} <br />------------------------------<br />`;
-        email += `From: ${from} <br />`;
-        email += `Date: ${date_value} <br />`;
-        email += `Subject: ${subject} <br />`;
-        email += `${message.body.content}`;
-        const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
-        //console.log(filteredSubject);
+        var re = /\S+@\S+\.\S+/;
+        if (!re.test(userEmail)) {
+            setError("Invalid email");
+            return;
+        }
         setLoading(true);
-        instance
-            .acquireTokenSilent({
-                ...loginRequest,
-                account: accounts[0],
-            })
-            .then((response) => {
-                sendMessage(response.accessToken, {
-                    "message": {
-                        "subject": filteredSubject,
-                        "body": {
-                            "contentType": "HTML",
-                            "content": email
-                        },
-                        "toRecipients": [
-                            {
-                                "emailAddress": {
-                                    "address": userEmail
-                                }
-                            }
-                        ],
-                    },
-                    "saveToSentItems": "false"
-                }, () => {
-                    console.log('sendMessage done');
-                    setSent(true);
-                    setLoading(false);
-                });
-            });
-
+        const secret = localStorage.getItem("icloud");
+        sendMessage(secret, userEmail, userSubject, userMessage, () => {
+            console.log('sendMessage done');
+            setSent(true);
+            setLoading(false);
+        });
     }
+
 
     return (
         <>
+            <button className="ml-5 border rounded-full flex justify-center p-2 px-4 bg-white shadow-md text-base text-primary  hover:border-primary"
+                title="Create Message"
+                onClick={() => {
+                    setIsOpen(true);
+                }}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg> Compose
+            </button>
             {
-                messageReply && <Dialog
-                    open={messageReply}
-                    onClose={closeMessageReply}
+                isOpen && <Dialog
+                    open={isOpen}
+                    onClose={() => {
+                        setIsOpen(false);
+                    }}
                     className="fixed z-30 inset-0 overflow-y-auto"
                 >
                     <div className="flex items-center justify-center min-h-screen">
@@ -98,7 +79,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                             <Dialog.Title
                                 as="h3"
                                 className="mb-3 text-lg font-medium leading-6 text-gray-600"
-                            >Reply
+                            >New Message
                             </Dialog.Title>
                             {error &&
                                 <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">
@@ -127,7 +108,13 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                 <div className="flex self-end">
                                     <button type="button"
                                         className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 py-2 rounded"
-                                        onClick={closeMessageReply}>
+                                        onClick={() => {
+                                            setUserEmail("");
+                                            setUserSubject("");
+                                            setUserMessage("");
+                                            setSent(false);
+                                            setIsOpen(false)
+                                        }}>
                                         Ok
                                     </button>
 
@@ -135,7 +122,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                             </div>}
                             {!sent && <form
                                 onSubmit={(e) => {
-                                    handleMessageReply(e);
+                                    handleMessageCreate(e);
                                 }}
                             >
                                 {<div className="relative text-gray-600">
@@ -143,28 +130,25 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                         aria-placeholder="Email"
                                         placeholder="Email"
                                         type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-200 border-none focus:text-gray-700 ring-0 outline-none"
-                                        // onChange={(e) => {
-                                        //     setError("");
-                                        //     setUserEmail(e.target.value);
-                                        // }}
-                                        readOnly
-                                        disabled
+                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                        onChange={(e) => {
+                                            setError("");
+                                            setUserEmail(e.target.value);
+                                        }}
                                         value={userEmail}
                                     />
                                     <input
                                         aria-placeholder="Subject"
                                         placeholder="Subject"
                                         type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-200 border-none focus:text-gray-700 ring-0 outline-none"
-                                        // onChange={(e) => {
-                                        //     setError("");
-                                        //     setUserSubject(e.target.value);
-                                        // }}
-                                        readOnly
-                                        disabled
+                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                        onChange={(e) => {
+                                            setError("");
+                                            setUserSubject(e.target.value);
+                                        }}
                                         value={userSubject}
                                     />
+
                                     <ReactQuill
                                         modules={{
                                             toolbar: [
@@ -185,7 +169,12 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                 {<div className="mt-4 flex flex-col">
                                     <div className="flex self-end">
                                         <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
-                                            onClick={closeMessageReply}>
+                                            onClick={() => {
+                                                setUserEmail("");
+                                                setUserSubject("");
+                                                setUserMessage("");
+                                                setIsOpen(false);
+                                            }}>
                                             Cancel
                                         </button>
                                         <button
@@ -211,4 +200,4 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     )
 }
 
-export default MessageReply
+export default MessageCreate

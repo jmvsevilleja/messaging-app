@@ -1,17 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import {sendMessage} from "./api/api";
+import {forwardMessage} from "./api/api";
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'
-import {loginRequest} from "./authConfig";
-import {
-    useMsal,
-} from "@azure/msal-react";
+import 'react-quill/dist/quill.snow.css';
 
+function MessageReply({message, messageForward, closeMessageForward}) {
 
-function MessageReply({message, messageReply, closeMessageReply}) {
-
-    const {instance, accounts} = useMsal();
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -20,75 +14,49 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
-        //console.log('Message', message);
-        const from = message.from ? message.from.emailAddress.name : '';
-        const subject = "Re: " + message.subject;
-        setUserEmail(from);
-        setUserSubject(subject);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [message]);
-
-    const handleMessageReply = async (event) => {
-        event.preventDefault();
-        console.log('handleMessageReply', userEmail);
-        // prevent double submit
-        if (loading || error) return;
-
-        if (userMessage === "") {
-            setError("Enter a message");
-            return;
-        }
         const subject = message.subject;
-        const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
-        const date = new Date(message.sentDateTime);
+        const fwd_subject = "Fw: " + subject;
+        const from = message.from;
+        const date = new Date(message.date);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
         let email = "";
-        email += `<br /> ${userMessage} <br />------------------------------<br />`;
+        email += `<br />------------------------------<br />`;
         email += `From: ${from} <br />`;
         email += `Date: ${date_value} <br />`;
         email += `Subject: ${subject} <br />`;
-        email += `${message.body.content}`;
-        const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
+        const message_body = message ? message.snippet.replace(/=09/g, "").replace(/=\s\s/g, "").replace(/=E2=80=99/g, "'") : '';
+        email += `${message_body}`;
+
+        setUserMessage(email);
+        setUserSubject(fwd_subject);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [message, messageForward]);
+
+    const handleMessageForward = async (event) => {
+        event.preventDefault();
+        console.log('handleMessageForward', userEmail);
+        // prevent double submit
+        if (loading || error) return;
+
+        //const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
         //console.log(filteredSubject);
         setLoading(true);
-        instance
-            .acquireTokenSilent({
-                ...loginRequest,
-                account: accounts[0],
-            })
-            .then((response) => {
-                sendMessage(response.accessToken, {
-                    "message": {
-                        "subject": filteredSubject,
-                        "body": {
-                            "contentType": "HTML",
-                            "content": email
-                        },
-                        "toRecipients": [
-                            {
-                                "emailAddress": {
-                                    "address": userEmail
-                                }
-                            }
-                        ],
-                    },
-                    "saveToSentItems": "false"
-                }, () => {
-                    console.log('sendMessage done');
-                    setSent(true);
-                    setLoading(false);
-                });
-            });
-
+        const secret = localStorage.getItem("icloud");
+        forwardMessage(secret, message.id, userEmail, userMessage, () => {
+            console.log('forwardMessage done');
+            setSent(true);
+            setLoading(false);
+        });
     }
 
     return (
         <>
+
             {
-                messageReply && <Dialog
-                    open={messageReply}
-                    onClose={closeMessageReply}
+                messageForward && <Dialog
+                    open={messageForward}
+                    onClose={closeMessageForward}
                     className="fixed z-30 inset-0 overflow-y-auto"
                 >
                     <div className="flex items-center justify-center min-h-screen">
@@ -98,7 +66,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                             <Dialog.Title
                                 as="h3"
                                 className="mb-3 text-lg font-medium leading-6 text-gray-600"
-                            >Reply
+                            >Forward
                             </Dialog.Title>
                             {error &&
                                 <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">
@@ -127,7 +95,10 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                 <div className="flex self-end">
                                     <button type="button"
                                         className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 py-2 rounded"
-                                        onClick={closeMessageReply}>
+                                        onClick={() => {
+                                            setSent(false);
+                                            closeMessageForward();
+                                        }}>
                                         Ok
                                     </button>
 
@@ -135,7 +106,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                             </div>}
                             {!sent && <form
                                 onSubmit={(e) => {
-                                    handleMessageReply(e);
+                                    handleMessageForward(e);
                                 }}
                             >
                                 {<div className="relative text-gray-600">
@@ -143,20 +114,18 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                         aria-placeholder="Email"
                                         placeholder="Email"
                                         type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-200 border-none focus:text-gray-700 ring-0 outline-none"
-                                        // onChange={(e) => {
-                                        //     setError("");
-                                        //     setUserEmail(e.target.value);
-                                        // }}
-                                        readOnly
-                                        disabled
+                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
+                                        onChange={(e) => {
+                                            setError("");
+                                            setUserEmail(e.target.value);
+                                        }}
                                         value={userEmail}
                                     />
                                     <input
                                         aria-placeholder="Subject"
                                         placeholder="Subject"
                                         type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-200 border-none focus:text-gray-700 ring-0 outline-none"
+                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                         // onChange={(e) => {
                                         //     setError("");
                                         //     setUserSubject(e.target.value);
@@ -185,7 +154,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                 {<div className="mt-4 flex flex-col">
                                     <div className="flex self-end">
                                         <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
-                                            onClick={closeMessageReply}>
+                                            onClick={closeMessageForward}>
                                             Cancel
                                         </button>
                                         <button
