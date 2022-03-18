@@ -81,6 +81,9 @@ const Email = () => {
     const handleCloseMessage = () => {
         setOpenMessage(false);
     }
+    const handleBodyLoading = () => {
+        setIsLoadingBody(true);
+    }
     const refreshMessages = () => {
         const secret = localStorage.getItem("icloud");
         onSignInSuccess(secret);
@@ -119,6 +122,7 @@ const Email = () => {
                             message={message}
                             handleCloseMessage={handleCloseMessage}
                             isLoadingBody={isLoadingBody}
+                            handleBodyLoading={handleBodyLoading}
                             onDeleteSuccess={onDeleteSuccess}
                         />
                     </div>
