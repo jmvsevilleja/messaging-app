@@ -10,9 +10,9 @@ import {deleteMessage} from "./api/api";
 function EmailBody({
     message,
     handleCloseMessage,
-    handleEmailReply,
     isLoadingBody,
-    onDeleteSuccess
+    onDeleteSuccess,
+    handleBodyLoading
 }) {
 
     const iframeRef = React.useRef(null);
@@ -30,6 +30,7 @@ function EmailBody({
     }
     const handleMessageDelete = () => {
         //console.log('message delete', message.result.id);
+        handleBodyLoading();
         const secret = localStorage.getItem("icloud");
         deleteMessage(secret, message.id, () => {
             onDeleteSuccess();
