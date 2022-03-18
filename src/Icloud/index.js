@@ -60,6 +60,9 @@ const Email = () => {
 
     const handleIcloudSignOut = () => {
         localStorage.removeItem("icloud");
+        setOpenMessage(false);
+        setIsLoadingBody(false);
+        setMessage(null);
         setIsSigned(false);
     };
 
@@ -87,6 +90,7 @@ const Email = () => {
         const secret = localStorage.getItem("icloud");
         setOpenMessage(false);
         setMessage(null);
+        setIsLoadingBody(false);
         onSignInSuccess(secret);
     }
     return (

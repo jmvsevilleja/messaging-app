@@ -33,6 +33,23 @@ export const isHTML = str => {
     return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
 }
 
+export const getMessages = async (secret) => {
+    try {
+        return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages`, {
+            "client": 'icloud',
+            "secret": secret
+        }).then(({status, data: {message}}) => {
+            if (status === 200) {
+                //const {presigned_url, public_url, filename} = res.data.message;
+                console.log('GET MESSAGES', message);
+                return message;
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+};
 
 export const getMessage = async (secret, message_id) => {
 
@@ -104,23 +121,6 @@ export const forwardMessage = async (secret, message_id, to, body, callback) => 
             callback();
         }
     });
-};
-export const getMessages = async (secret) => {
-    try {
-        return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages`, {
-            "client": 'icloud',
-            "secret": secret
-        }).then(({status, data: {message}}) => {
-            if (status === 200) {
-                //const {presigned_url, public_url, filename} = res.data.message;
-                console.log('GET MESSAGES', message);
-                return message;
-            }
-        });
-
-    } catch (err) {
-        console.error(err);
-    }
 };
 
 export const deleteMessage = async (secret, message_id, callback) => {
