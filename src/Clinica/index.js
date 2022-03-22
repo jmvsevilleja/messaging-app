@@ -17,19 +17,10 @@ const Email = () => {
     const [isLoadingBody, setIsLoadingBody] = useState(null);
     const [messageID, setMessageID] = useState(null);
     const [openMessage, setOpenMessage] = useState(null);
-    const [user, setUser] = useState({
-        signInStatus: 'SIGNED_OUT',
-        user: null
-    });
+    const [user, setUser] = useState(null);
     const [darkMode, setDarkMode] = useState(false);
 
     const onSignInSuccess = (secret) => {
-        //console.log('user', user);
-        setUser({
-            signInStatus: 'AUTH_SUCCESS',
-            user: user
-        });
-
         setIsSigned(true);
         setIsLoading(true);
         getMessages(secret).then((result) => {
@@ -51,9 +42,10 @@ const Email = () => {
     }, []);
 
 
-    const handleClinicaSignIn = () => {
+    const handleClinicaSignIn = (email) => {
         const secret = localStorage.getItem("clinica");
         if (secret) {
+            setUser(email);
             onSignInSuccess(secret);
         }
     };

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import {sendMessage} from "./api/api";
 import ReactQuill, {Quill} from 'react-quill';
 import ImageResize from 'quill-image-resize-module-react';
 import 'react-quill/dist/quill.snow.css';
 import {uploadFile} from "../api/api";
 import {getEmailSignatureById} from "../api/queries";
+import {addSignature, editSignature} from "../api/mutations";
 
 var quillObj;
 Quill.register('modules/imageResize', ImageResize);
@@ -25,26 +25,21 @@ const imageHandler = async () => {
         uploadFile(file).then((uploaded) => {
             quillObj.getEditor().insertEmbed(range.index, 'image', uploaded.path);
         });
-
     };
 }
 
 function MessageCreate() {
-    //console.log(message.result.messageHeaders);
-
     const [isOpen, setIsOpen] = useState(false);
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [userEmail, setUserEmail] = useState("");
-    const [userSubject, setUserSubject] = useState("");
-    const [userMessage, setUserMessage] = useState("");
+    const [userSignature, setUserSignature] = useState("");
 
     useEffect(() => {
         const user_email = localStorage.getItem("clinica-user");
         getEmailSignatureById(user_email).then((result) => {
             if (result) {
-                setUserMessage(result.signature);
+                setUserSignature(result.signature);
             }
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,47 +48,46 @@ function MessageCreate() {
 
     const handleMessageCreate = async (event) => {
         event.preventDefault();
-        console.log('handleMessageCreate', userEmail);
+        console.log('handleMessageCreate');
         // prevent double submit
         if (loading || error) return;
-        if (userEmail === "") {
-            setError("Enter an email");
+
+        if (userSignature === "") {
+            setError("Enter a signature");
             return;
         }
-        if (userSubject === "") {
-            setError("Enter a subject");
-            return;
-        }
-        if (userMessage === "") {
-            setError("Enter a message");
-            return;
-        }
-        var re = /\S+@\S+\.\S+/;
-        if (!re.test(userEmail)) {
-            setError("Invalid email");
-            return;
-        }
+        const user_email = localStorage.getItem("clinica-user");
+
         setLoading(true);
-        const secret = localStorage.getItem("clinica");
-        sendMessage(secret, userEmail, userSubject, userMessage, () => {
-            console.log('sendMessage done');
-            setSent(true);
-            setLoading(false);
+        console.log('handleMessageCreate', user_email);
+
+        getEmailSignatureById(user_email).then((result) => {
+            if (result) {
+                editSignature(user_email, userSignature).then(() => {
+                    setLoading(false);
+                    setIsOpen(false);
+                })
+            } else {
+                addSignature(user_email, userSignature).then(() => {
+                    setLoading(false);
+                    setIsOpen(false);
+                });
+            };
         });
     }
 
 
     return (
         <>
-            <button className="ml-5 border rounded-full flex justify-center p-2 px-4 bg-white shadow-md text-base text-primary  hover:border-primary"
-                title="Create Message"
+            <button type="button"
                 onClick={() => {
                     setIsOpen(true);
                 }}
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg> Compose
+                className="text-gray-400 hover:text-gray-500 mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
             </button>
             {
                 isOpen && <Dialog
@@ -110,7 +104,7 @@ function MessageCreate() {
                             <Dialog.Title
                                 as="h3"
                                 className="mb-3 text-lg font-medium leading-6 text-gray-600"
-                            >New Message
+                            >Settings
                             </Dialog.Title>
                             {error &&
                                 <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">
@@ -140,9 +134,7 @@ function MessageCreate() {
                                     <button type="button"
                                         className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 py-2 rounded"
                                         onClick={() => {
-                                            setUserEmail("");
-                                            setUserSubject("");
-                                            setUserMessage("");
+                                            setUserSignature("");
                                             setSent(false);
                                             setIsOpen(false)
                                         }}>
@@ -157,29 +149,7 @@ function MessageCreate() {
                                 }}
                             >
                                 {<div className="relative text-gray-600">
-                                    <input
-                                        aria-placeholder="To"
-                                        placeholder="To"
-                                        type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
-                                        onChange={(e) => {
-                                            setError("");
-                                            setUserEmail(e.target.value);
-                                        }}
-                                        value={userEmail}
-                                    />
-                                    <input
-                                        aria-placeholder="Subject"
-                                        placeholder="Subject"
-                                        type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
-                                        onChange={(e) => {
-                                            setError("");
-                                            setUserSubject(e.target.value);
-                                        }}
-                                        value={userSubject}
-                                    />
-
+                                    <div className="">Signature</div>
                                     <ReactQuill
                                         ref={(el) => {
                                             quillObj = el;
@@ -202,9 +172,9 @@ function MessageCreate() {
                                                 }
                                             }
                                         }}
-                                        theme="snow" value={userMessage} onChange={(html) => {
+                                        theme="snow" value={userSignature} onChange={(html) => {
                                             setError("");
-                                            setUserMessage(html);
+                                            setUserSignature(html);
                                         }} />
 
                                 </div>
@@ -214,9 +184,7 @@ function MessageCreate() {
                                     <div className="flex self-end">
                                         <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
                                             onClick={() => {
-                                                setUserEmail("");
-                                                setUserSubject("");
-                                                setUserMessage("");
+                                                setUserSignature("");
                                                 setIsOpen(false);
                                             }}>
                                             Cancel
@@ -230,7 +198,7 @@ function MessageCreate() {
                                                     d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
                                                     fill='currentColor' fillRule='evenodd' />
                                             </svg>}
-                                            {!loading && <span className="py-2">Send</span>}
+                                            {!loading && <span className="py-2">Save</span>}
                                         </button>
 
                                     </div>
