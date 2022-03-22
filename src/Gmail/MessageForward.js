@@ -22,7 +22,7 @@ function MessageReply({message, messageForward, closeMessageForward}) {
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
         let email = "";
-        email += `<br />------------------------------<br />`;
+        email += `<br />---------- Forwarded message ---------<br />`;
         email += `From: ${from} <br />`;
         email += `Date: ${date_value} <br />`;
         email += `Subject: ${subject} <br />`;

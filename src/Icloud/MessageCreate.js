@@ -127,8 +127,8 @@ function MessageCreate() {
                             >
                                 {<div className="relative text-gray-600">
                                     <input
-                                        aria-placeholder="Email"
-                                        placeholder="Email"
+                                        aria-placeholder="To"
+                                        placeholder="To"
                                         type="text"
                                         className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                         onChange={(e) => {
