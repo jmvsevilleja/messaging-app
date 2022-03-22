@@ -1595,6 +1595,36 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
     }
   }
 `;
+export const onCreateEmailSetting = /* GraphQL */ `
+  subscription OnCreateEmailSetting {
+    onCreateEmailSetting {
+      id
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateEmailSetting = /* GraphQL */ `
+  subscription OnUpdateEmailSetting {
+    onUpdateEmailSetting {
+      id
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteEmailSetting = /* GraphQL */ `
+  subscription OnDeleteEmailSetting {
+    onDeleteEmailSetting {
+      id
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateUserAccount = /* GraphQL */ `
   subscription OnCreateUserAccount(
     $id: String
