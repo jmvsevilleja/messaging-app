@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import {getEmailSignatureById} from "../api/queries";
+import Editor from "../components/Editor"
+
 
 function MessageCreate() {
-    //console.log(message.result.messageHeaders);
-
     const [isOpen, setIsOpen] = useState(false);
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -151,20 +150,12 @@ function MessageCreate() {
                                         value={userSubject}
                                     />
 
-                                    <ReactQuill
-                                        modules={{
-                                            toolbar: [
-                                                [{'header': [1, 2, false]}],
-                                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-                                                ['link']
-                                            ],
-                                        }}
-                                        theme="snow" value={userMessage} onChange={(html) => {
+                                    <Editor
+                                        userMessage={userMessage}
+                                        onChange={(html) => {
                                             setError("");
                                             setUserMessage(html);
                                         }} />
-
                                 </div>
                                 }
 

@@ -1,37 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
-import ReactQuill, {Quill} from 'react-quill';
-import ImageResize from 'quill-image-resize-module-react';
-import 'react-quill/dist/quill.snow.css';
-import {uploadFile} from "../api/api";
+import Editor from "../components/Editor"
 import {getEmailSignatureById} from "../api/queries";
-
-var quillObj;
-Quill.register('modules/imageResize', ImageResize);
-
-const imageHandler = async () => {
-    //console.log('imageHandler');
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
-
-    input.onchange = async () => {
-        var file = input.files[0];
-        var formData = new FormData();
-        formData.append('image', file);
-        const range = quillObj.getEditorSelection();
-        uploadFile(file).then((uploaded) => {
-            quillObj.getEditor().insertEmbed(range.index, 'image', uploaded.path);
-        });
-
-    };
-}
+import {decrypt} from "../utilities/icloud";
 
 function MessageCreate() {
-    //console.log(message.result.messageHeaders);
-
     const [isOpen, setIsOpen] = useState(false);
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -41,12 +15,15 @@ function MessageCreate() {
     const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
-        const user_email = localStorage.getItem("clinica-user");
-        getEmailSignatureById(user_email).then((result) => {
-            if (result) {
-                setUserMessage(result.signature);
-            }
-        });
+        const user = localStorage.getItem("clinica");
+        if (user) {
+            const user_email = decrypt(user).username;
+            getEmailSignatureById(user_email).then((result) => {
+                if (result) {
+                    setUserMessage(result.signature);
+                }
+            });
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
@@ -180,29 +157,9 @@ function MessageCreate() {
                                         value={userSubject}
                                     />
 
-                                    <ReactQuill
-                                        ref={(el) => {
-                                            quillObj = el;
-                                        }}
-                                        modules={{
-                                            imageResize: {
-                                                parchment: Quill.import('parchment'),
-                                                modules: ['Resize', 'DisplaySize']
-                                            },
-                                            toolbar: {
-                                                container: [
-                                                    [{'header': [1, 2, false]}],
-                                                    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                                    [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-                                                    ['link', 'image', 'video'],
-                                                    [{'color': []}]
-                                                ],
-                                                handlers: {
-                                                    image: imageHandler
-                                                }
-                                            }
-                                        }}
-                                        theme="snow" value={userMessage} onChange={(html) => {
+                                    <Editor
+                                        userMessage={userMessage}
+                                        onChange={(html) => {
                                             setError("");
                                             setUserMessage(html);
                                         }} />

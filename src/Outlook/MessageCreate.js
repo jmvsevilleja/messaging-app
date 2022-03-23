@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import Editor from "../components/Editor"
 
 import {loginRequest} from "./authConfig";
 import {
@@ -177,16 +176,9 @@ function MessageCreate() {
                                         value={userSubject}
                                     />
 
-                                    <ReactQuill
-                                        modules={{
-                                            toolbar: [
-                                                [{'header': [1, 2, false]}],
-                                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-                                                ['link']
-                                            ],
-                                        }}
-                                        theme="snow" value={userMessage} onChange={(html) => {
+                                    <Editor
+                                        userMessage={userMessage}
+                                        onChange={(html) => {
                                             setError("");
                                             setUserMessage(html);
                                         }} />
