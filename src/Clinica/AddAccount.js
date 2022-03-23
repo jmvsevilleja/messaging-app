@@ -37,7 +37,6 @@ function AddAccount({handleClinicaSignIn}) {
         const encrypted = encrypt({username: userEmail, password: userPassword});
         //console.log('Encrypted', encrypted);
         localStorage.setItem("clinica", encrypted);
-        localStorage.setItem("clinica-user", userEmail);
         handleClinicaSignIn();
     }
 

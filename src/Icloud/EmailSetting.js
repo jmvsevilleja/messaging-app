@@ -14,7 +14,7 @@ function MessageCreate() {
 
     useEffect(() => {
 
-        const user = localStorage.getItem("clinica");
+        const user = localStorage.getItem("icloud");
         const user_email = decrypt(user).username;
         if (user) {
             getEmailSignatureById(user_email).then((result) => {
@@ -37,7 +37,7 @@ function MessageCreate() {
             setError("Enter a signature");
             return;
         }
-        const user = localStorage.getItem("clinica");
+        const user = localStorage.getItem("icloud");
         const user_email = decrypt(user).username;
         if (user) {
             setLoading(true);
