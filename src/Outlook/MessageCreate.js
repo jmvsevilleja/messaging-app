@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
 import Editor from "../components/Editor"
+import {getEmailSignatureById} from "../api/queries";
 
 import {loginRequest} from "./authConfig";
 import {
@@ -20,10 +21,17 @@ function MessageCreate() {
     const [userSubject, setUserSubject] = useState("");
     const [userMessage, setUserMessage] = useState("");
 
-    useEffect(() => {
 
+    useEffect(() => {
+        if (accounts) {
+            getEmailSignatureById(accounts[0].username).then((result) => {
+                if (result) {
+                    setUserMessage(result.signature);
+                }
+            });
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isOpen]);
 
     const handleMessageCreate = async (event) => {
         event.preventDefault();

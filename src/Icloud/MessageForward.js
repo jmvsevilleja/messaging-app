@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {forwardMessage} from "./api/api";
 import Editor from "../components/Editor"
+import {getEmailSignatureById} from "../api/queries";
+import {decrypt} from "../utilities/icloud";
 
 function MessageReply({message, messageForward, closeMessageForward}) {
 
@@ -19,15 +21,22 @@ function MessageReply({message, messageForward, closeMessageForward}) {
         const date = new Date(message.date);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
-        let email = "";
-        email += `<br />---------- Forwarded message ---------<br />`;
-        email += `From: ${from} <br />`;
-        email += `Date: ${date_value} <br />`;
-        email += `Subject: ${subject} <br />`;
-        const message_body = message ? message.snippet.replace(/=09/g, "").replace(/=\s\s/g, "").replace(/=E2=80=99/g, "'") : '';
-        email += `${message_body}`;
-
-        setUserMessage(email);
+        const user = localStorage.getItem("icloud");
+        if (user) {
+            const user_email = decrypt(user).username;
+            getEmailSignatureById(user_email).then((result) => {
+                if (result) {
+                    let email = `${result.signature}`;
+                    email += `<br />---------- Forwarded message ---------<br />`;
+                    email += `From: ${from} <br />`;
+                    email += `Date: ${date_value} <br />`;
+                    email += `Subject: ${subject} <br />`;
+                    const message_body = message ? message.snippet.replace(/=09/g, "").replace(/=\s\s/g, "").replace(/=E2=80=99/g, "'") : '';
+                    email += `${message_body}`;
+                    setUserMessage(email);
+                }
+            });
+        }
         setUserSubject(fwd_subject);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message, messageForward]);

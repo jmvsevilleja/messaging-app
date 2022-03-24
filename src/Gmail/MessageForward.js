@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
 import Editor from "../components/Editor"
+import {getProfile} from "./api/api";
+import {getEmailSignatureById} from "../api/queries";
 
 function MessageReply({message, messageForward, closeMessageForward}) {
 
@@ -20,14 +22,21 @@ function MessageReply({message, messageForward, closeMessageForward}) {
         const date = new Date(message.result.messageHeaders.find((item) => item.name === 'Date').value);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
-        let email = "";
-        email += `<br />---------- Forwarded message ---------<br />`;
-        email += `From: ${from} <br />`;
-        email += `Date: ${date_value} <br />`;
-        email += `Subject: ${subject} <br />`;
-        email += `${message.body}`;
+        getProfile().then((user) => {
+            const user_email = user.result.emailAddress;
+            getEmailSignatureById(user_email).then((result) => {
+                if (result) {
+                    let email = `${result.signature}`;
+                    email += `<br />---------- Forwarded message ---------<br />`;
+                    email += `From: ${from} <br />`;
+                    email += `Date: ${date_value} <br />`;
+                    email += `Subject: ${subject} <br />`;
+                    email += `${message.body}`;
+                    setUserMessage(email);
+                }
+            });
+        });
 
-        setUserMessage(email);
         setUserSubject(fwd_subject);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message, messageForward]);

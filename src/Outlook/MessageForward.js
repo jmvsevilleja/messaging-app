@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
 import Editor from "../components/Editor"
+import {getEmailSignatureById} from "../api/queries";
 
 import {loginRequest} from "./authConfig";
 import {
@@ -26,13 +27,21 @@ function MessageReply({message, messageForward, closeMessageForward}) {
         const date = new Date(message.sentDateTime);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
-        let email = "";
-        email += `<br />---------- Forwarded message ---------<br />`;
-        email += `From: ${from} <br />`;
-        email += `Date: ${date_value} <br />`;
-        email += `Subject: ${subject} <br />`;
-        email += `${message.body.content}`;
-        setUserMessage(email);
+        if (accounts) {
+            getEmailSignatureById(accounts[0].username).then((result) => {
+                if (result) {
+                    let email = `${result.signature}`;
+                    email += `<br />---------- Forwarded message ---------<br />`;
+                    email += `From: ${from} <br />`;
+                    email += `Date: ${date_value} <br />`;
+                    email += `Subject: ${subject} <br />`;
+                    email += `${message.body.content}`;
+                    setUserMessage(email);
+                }
+            });
+        }
+
+
         setUserSubject(fwd_subject);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message, messageForward]);

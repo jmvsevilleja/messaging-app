@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {replyMessage} from "./api/api";
 import Editor from "../components/Editor"
+import {getEmailSignatureById} from "../api/queries";
+import {decrypt} from "../utilities/icloud";
 
 function MessageReply({message, messageReply, closeMessageReply}) {
 
@@ -11,6 +13,19 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     const [userEmail, setUserEmail] = useState("");
     const [userSubject, setUserSubject] = useState("");
     const [userMessage, setUserMessage] = useState("");
+
+    useEffect(() => {
+        const user = localStorage.getItem("clinica");
+        const user_email = decrypt(user).username;
+        if (user) {
+            getEmailSignatureById(user_email).then((result) => {
+                if (result) {
+                    setUserMessage(result.signature);
+                }
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [messageReply]);
 
     useEffect(() => {
         const subject = message.subject;
@@ -34,8 +49,8 @@ function MessageReply({message, messageReply, closeMessageReply}) {
         const from = message.from;
         const date = new Date(message.date);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
-        let email = "";
-        email += `<br /> ${userMessage} <br />------------------------------<br />`;
+        let email = `${userMessage}`;
+        email += `<br />---------- Replied message ---------<br />`;
         email += `From: ${from} <br />`;
         email += `Date: ${date_value} <br />`;
         email += `Subject: ${userSubject} <br />`;

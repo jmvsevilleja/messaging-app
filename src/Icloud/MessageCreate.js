@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
 import Editor from "../components/Editor"
+import {getEmailSignatureById} from "../api/queries";
+import {decrypt} from "../utilities/icloud";
 
 function MessageCreate() {
     //console.log(message.result.messageHeaders);
@@ -15,9 +17,17 @@ function MessageCreate() {
     const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
-
+        const user = localStorage.getItem("icloud");
+        const user_email = decrypt(user).username;
+        if (user) {
+            getEmailSignatureById(user_email).then((result) => {
+                if (result) {
+                    setUserMessage(result.signature);
+                }
+            });
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isOpen]);
 
     const handleMessageCreate = async (event) => {
         event.preventDefault();
