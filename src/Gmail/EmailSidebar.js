@@ -4,6 +4,7 @@ import GoogleButton from 'react-google-button'
 import Nav from "../components/Nav";
 import ConvoLogo from '../logo.svg';
 import MessageCreate from './MessageCreate';
+import EmailSetting from './EmailSetting';
 
 function EmailSidebar({
     isSigned,
@@ -22,9 +23,10 @@ function EmailSidebar({
                 + (!openMessage ? " translate-x-0" : " -translate-x-full")}
         >
             <div className="flex justify-between item-center p-5 py-5">
-                <div className="flex items-center" >
+                <div className="flex items-center w-full" >
                     <div className=" font-bold text-gray-600 dark:text-white">Gmail</div>
                 </div>
+                {isSigned && <EmailSetting />}
                 {isSigned && <button type="button"
                     onClick={handleGoogleSignOut}
                     title="Sign Out"

@@ -1,78 +1,80 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import {replyMessage} from "./api/api";
 import Editor from "../components/Editor"
 import {getEmailSignatureById} from "../api/queries";
-import {decrypt} from "../utilities/icloud";
+import {addSignature, editSignature} from "../api/mutations";
+import {getProfile} from "./api/api";
 
-function MessageReply({message, messageReply, closeMessageReply}) {
-
+function MessageCreate() {
+    const [isOpen, setIsOpen] = useState(false);
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [userEmail, setUserEmail] = useState("");
-    const [userSubject, setUserSubject] = useState("");
-    const [userMessage, setUserMessage] = useState("");
+    const [userSignature, setUserSignature] = useState("");
 
     useEffect(() => {
-        const user = localStorage.getItem("clinica");
-        const user_email = decrypt(user).username;
-        if (user) {
+        getProfile().then((user) => {
+            const user_email = user.result.emailAddress;
             getEmailSignatureById(user_email).then((result) => {
                 if (result) {
-                    setUserMessage(result.signature);
+                    setUserSignature(result.signature);
                 }
             });
-        }
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [messageReply]);
+    }, [isOpen]);
 
-    useEffect(() => {
-        const subject = message.subject;
-        const from = message.from;
 
-        setUserEmail(from);
-        setUserSubject(subject);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [message]);
-
-    const handleMessageReply = async (event) => {
+    const handleMessageCreate = async (event) => {
         event.preventDefault();
-        console.log('handleMessageReply', message);
+        console.log('handleMessageCreate');
         // prevent double submit
         if (loading || error) return;
 
-        if (userMessage === "") {
-            setError("Enter a message");
+        if (userSignature === "") {
+            setError("Enter a signature");
             return;
         }
-        const from = message.from;
-        const date = new Date(message.date);
-        const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
-        let email = `${userMessage}`;
-        email += `<br />---------- Replied message ---------<br />`;
-        email += `From: ${from} <br />`;
-        email += `Date: ${date_value} <br />`;
-        email += `Subject: ${userSubject} <br />`;
-        const message_body = message ? message.snippet.replace(/=09/g, "").replace(/=\s\s/g, "").replace(/=E2=80=99/g, "'") : '';
-        email += `${message_body}`;
-        //const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
-
-        setLoading(true);
-        const secret = localStorage.getItem("clinica");
-        replyMessage(secret, message.id, email, () => {
-            console.log('replyMessage done');
-            setSent(true);
-            setLoading(false);
+        getProfile().then((user) => {
+            const user_email = user.result.emailAddress;
+            setLoading(true);
+            getEmailSignatureById(user_email).then((result) => {
+                if (result) {
+                    editSignature(user_email, userSignature).then(() => {
+                        setLoading(false);
+                        setIsOpen(false);
+                    })
+                } else {
+                    addSignature(user_email, userSignature).then(() => {
+                        setLoading(false);
+                        setIsOpen(false);
+                    });
+                };
+            });
         });
+
+
     }
+
 
     return (
         <>
+            <button type="button"
+                onClick={() => {
+                    setIsOpen(true);
+                }}
+                className="text-gray-400 hover:text-gray-500 mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
             {
-                messageReply && <Dialog
-                    open={messageReply}
-                    onClose={closeMessageReply}
+                isOpen && <Dialog
+                    open={isOpen}
+                    onClose={() => {
+                        setIsOpen(false);
+                    }}
                     className="fixed z-30 inset-0 overflow-y-auto"
                 >
                     <div className="flex items-center justify-center min-h-screen">
@@ -82,7 +84,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                             <Dialog.Title
                                 as="h3"
                                 className="mb-3 text-lg font-medium leading-6 text-gray-600"
-                            >Reply
+                            >Settings
                             </Dialog.Title>
                             {error &&
                                 <div className="px-4 py-2 rounded-sm text-sm bg-red-100 border border-red-200 text-red-600">
@@ -111,7 +113,11 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                 <div className="flex self-end">
                                     <button type="button"
                                         className="bg-primary hover:bg-secondary text-white font-base w-30 px-4 py-2 rounded"
-                                        onClick={closeMessageReply}>
+                                        onClick={() => {
+                                            setUserSignature("");
+                                            setSent(false);
+                                            setIsOpen(false)
+                                        }}>
                                         Ok
                                     </button>
 
@@ -119,50 +125,28 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                             </div>}
                             {!sent && <form
                                 onSubmit={(e) => {
-                                    handleMessageReply(e);
+                                    handleMessageCreate(e);
                                 }}
                             >
                                 {<div className="relative text-gray-600">
-                                    <input
-                                        aria-placeholder="Email"
-                                        placeholder="Email"
-                                        type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-200 border-none focus:text-gray-700 ring-0 outline-none"
-                                        // onChange={(e) => {
-                                        //     setError("");
-                                        //     setUserEmail(e.target.value);
-                                        // }}
-                                        readOnly
-                                        disabled
-                                        value={userEmail}
-                                    />
-                                    <input
-                                        aria-placeholder="Subject"
-                                        placeholder="Subject"
-                                        type="text"
-                                        className="my-3 p-2 block w-full rounded bg-gray-200 border-none focus:text-gray-700 ring-0 outline-none"
-                                        // onChange={(e) => {
-                                        //     setError("");
-                                        //     setUserSubject(e.target.value);
-                                        // }}
-                                        readOnly
-                                        disabled
-                                        value={userSubject}
-                                    />
+                                    <div className="">Signature</div>
+
                                     <Editor
-                                        userMessage={userMessage}
+                                        userMessage={userSignature}
                                         onChange={(html) => {
                                             setError("");
-                                            setUserMessage(html);
+                                            setUserSignature(html);
                                         }} />
-
                                 </div>
                                 }
 
                                 {<div className="mt-4 flex flex-col">
                                     <div className="flex self-end">
                                         <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
-                                            onClick={closeMessageReply}>
+                                            onClick={() => {
+                                                setUserSignature("");
+                                                setIsOpen(false);
+                                            }}>
                                             Cancel
                                         </button>
                                         <button
@@ -174,7 +158,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                                     d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
                                                     fill='currentColor' fillRule='evenodd' />
                                             </svg>}
-                                            {!loading && <span className="py-2">Send</span>}
+                                            {!loading && <span className="py-2">Save</span>}
                                         </button>
 
                                     </div>
@@ -188,4 +172,4 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     )
 }
 
-export default MessageReply
+export default MessageCreate

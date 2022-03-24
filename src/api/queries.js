@@ -1,5 +1,5 @@
 import {API, graphqlOperation} from 'aws-amplify'
-import {getUserAccount, queryUserAccountsByEmailIndex} from "../graphql/queries";
+import {getUserAccount, queryUserAccountsByEmailIndex, getEmailSetting} from "../graphql/queries";
 import {
     getUser,
     messageByChatRoomMessagesId,
@@ -43,6 +43,21 @@ export const getUserById = async (user_id) => {
         ).then(({data: {getUser}}) => {
             console.log('GET USER BY ID', getUser);
             return getUser;
+        });
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+
+export const getEmailSignatureById = async (user_email) => {
+    if (!user_email) return;
+    try {
+        return await API.graphql(
+            graphqlOperation(getEmailSetting, {id: user_email})
+        ).then(({data: {getEmailSetting}}) => {
+            console.log('GET EMAIL SETTING BY ID', getEmailSetting);
+            return getEmailSetting;
         });
     } catch (e) {
         console.log(e);

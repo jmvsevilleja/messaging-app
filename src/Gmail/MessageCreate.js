@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import {getEmailSignatureById} from "../api/queries";
+import Editor from "../components/Editor"
+import {getProfile} from "./api/api";
 
 function MessageCreate() {
-    //console.log(message.result.messageHeaders);
-
     const [isOpen, setIsOpen] = useState(false);
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -16,9 +15,16 @@ function MessageCreate() {
     const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
-
+        getProfile().then((user) => {
+            const user_email = user.result.emailAddress;
+            getEmailSignatureById(user_email).then((result) => {
+                if (result) {
+                    setUserMessage(result.signature);
+                }
+            });
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isOpen]);
 
     const handleMessageCreate = async (event) => {
         event.preventDefault();
@@ -129,8 +135,8 @@ function MessageCreate() {
                             >
                                 {<div className="relative text-gray-600">
                                     <input
-                                        aria-placeholder="Email"
-                                        placeholder="Email"
+                                        aria-placeholder="To"
+                                        placeholder="To"
                                         type="text"
                                         className="my-3 p-2 block w-full rounded bg-gray-100 border-none focus:text-gray-700 ring-0 outline-none"
                                         onChange={(e) => {
@@ -151,20 +157,12 @@ function MessageCreate() {
                                         value={userSubject}
                                     />
 
-                                    <ReactQuill
-                                        modules={{
-                                            toolbar: [
-                                                [{'header': [1, 2, false]}],
-                                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-                                                ['link']
-                                            ],
-                                        }}
-                                        theme="snow" value={userMessage} onChange={(html) => {
+                                    <Editor
+                                        userMessage={userMessage}
+                                        onChange={(html) => {
                                             setError("");
                                             setUserMessage(html);
                                         }} />
-
                                 </div>
                                 }
 

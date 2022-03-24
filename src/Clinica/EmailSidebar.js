@@ -4,6 +4,7 @@ import Nav from "../components/Nav";
 import ConvoLogo from '../logo.svg';
 import AddAccount from './AddAccount';
 import MessageCreate from './MessageCreate';
+import EmailSetting from './EmailSetting';
 
 function EmailSidebar({
     isSigned,
@@ -13,8 +14,13 @@ function EmailSidebar({
     handleMessage,
     handleClinicaSignIn,
     handleClinicaSignOut,
-    refreshMessages
+    refreshMessages,
 }) {
+
+    const handleSetting = () => {
+        console.log('handle Setting');
+    }
+
     return (
         <div
             id="messages-sidebar"
@@ -22,9 +28,10 @@ function EmailSidebar({
                 + (!openMessage ? " translate-x-0" : " -translate-x-full")}
         >
             <div className="flex justify-between item-center p-5 py-5">
-                <div className="flex items-center" >
-                    <div className=" font-bold text-gray-600 dark:text-white">Clinica</div>
+                <div className="flex items-center w-full" >
+                    <div className="font-bold text-gray-600 dark:text-white">Clinica</div>
                 </div>
+                {isSigned && <EmailSetting />}
                 {isSigned && <button type="button"
                     onClick={handleClinicaSignOut}
                     className="text-gray-400 hover:text-gray-500">
@@ -32,6 +39,7 @@ function EmailSidebar({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                 </button>}
+
             </div>
             < div className="px-5"><Nav /></div>
             {!isSigned && <div className="flex flex-col items-center justify-center h-[calc(100vh-130px)]">

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'
+import Editor from "../components/Editor"
 import {loginRequest} from "./authConfig";
+import {getEmailSignatureById} from "../api/queries";
 import {
     useMsal,
 } from "@azure/msal-react";
@@ -18,6 +18,17 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     const [userEmail, setUserEmail] = useState("");
     const [userSubject, setUserSubject] = useState("");
     const [userMessage, setUserMessage] = useState("");
+
+    useEffect(() => {
+        if (accounts) {
+            getEmailSignatureById(accounts[0].username).then((result) => {
+                if (result) {
+                    setUserMessage(result.signature);
+                }
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [messageReply]);
 
     useEffect(() => {
         //console.log('Message', message);
@@ -43,8 +54,8 @@ function MessageReply({message, messageReply, closeMessageReply}) {
         const date = new Date(message.sentDateTime);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 
-        let email = "";
-        email += `<br /> ${userMessage} <br />------------------------------<br />`;
+        let email = `${userMessage}`;
+        email += `<br />---------- Replied message ---------<br />`;
         email += `From: ${from} <br />`;
         email += `Date: ${date_value} <br />`;
         email += `Subject: ${subject} <br />`;
@@ -165,16 +176,9 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                         disabled
                                         value={userSubject}
                                     />
-                                    <ReactQuill
-                                        modules={{
-                                            toolbar: [
-                                                [{'header': [1, 2, false]}],
-                                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-                                                ['link']
-                                            ],
-                                        }}
-                                        theme="snow" value={userMessage} onChange={(html) => {
+                                    <Editor
+                                        userMessage={userMessage}
+                                        onChange={(html) => {
                                             setError("");
                                             setUserMessage(html);
                                         }} />

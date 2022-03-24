@@ -1225,6 +1225,45 @@ export const deleteChatRoomUser = /* GraphQL */ `
     }
   }
 `;
+export const createEmailSetting = /* GraphQL */ `
+  mutation CreateEmailSetting(
+    $input: CreateEmailSettingInput!
+    $condition: ModelEmailSettingConditionInput
+  ) {
+    createEmailSetting(input: $input, condition: $condition) {
+      id
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateEmailSetting = /* GraphQL */ `
+  mutation UpdateEmailSetting(
+    $input: UpdateEmailSettingInput!
+    $condition: ModelEmailSettingConditionInput
+  ) {
+    updateEmailSetting(input: $input, condition: $condition) {
+      id
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteEmailSetting = /* GraphQL */ `
+  mutation DeleteEmailSetting(
+    $input: DeleteEmailSettingInput!
+    $condition: ModelEmailSettingConditionInput
+  ) {
+    deleteEmailSetting(input: $input, condition: $condition) {
+      id
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createUserAccount = /* GraphQL */ `
   mutation CreateUserAccount($input: CreateUserAccountInput!) {
     createUserAccount(input: $input) {
