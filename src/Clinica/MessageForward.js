@@ -50,8 +50,7 @@ function MessageReply({message, messageForward, closeMessageForward}) {
         //const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
         //console.log(filteredSubject);
         setLoading(true);
-        const secret = localStorage.getItem("clinica");
-        forwardMessage(secret, message.id, userEmail, userMessage, () => {
+        forwardMessage(message.id, userEmail, userMessage, () => {
             console.log('forwardMessage done');
             setSent(true);
             setLoading(false);

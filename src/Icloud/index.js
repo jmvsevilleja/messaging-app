@@ -23,7 +23,7 @@ const Email = () => {
     });
     const [darkMode, setDarkMode] = useState(false);
 
-    const onSignInSuccess = (secret) => {
+    const onSignInSuccess = () => {
         //console.log('user', user);
         setUser({
             signInStatus: 'AUTH_SUCCESS',
@@ -32,7 +32,7 @@ const Email = () => {
 
         setIsSigned(true);
         setIsLoading(true);
-        getMessages(secret).then((result) => {
+        getMessages().then((result) => {
             //console.log('getMessages', result);
             setMessageList(result);
             setIsLoading(false);
@@ -44,7 +44,7 @@ const Email = () => {
     useEffect(() => {
         const secret = localStorage.getItem("icloud");
         if (secret) {
-            onSignInSuccess(secret);
+            onSignInSuccess();
         }
         setDarkMode(localStorage.getItem("dark_mode") === "true");
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,7 +54,7 @@ const Email = () => {
     const handleIcloudSignIn = () => {
         const secret = localStorage.getItem("icloud");
         if (secret) {
-            onSignInSuccess(secret);
+            onSignInSuccess();
         }
     };
 
@@ -85,16 +85,14 @@ const Email = () => {
         setIsLoadingBody(true);
     }
     const refreshMessages = () => {
-        const secret = localStorage.getItem("icloud");
-        onSignInSuccess(secret);
+        onSignInSuccess();
     }
 
     const onDeleteSuccess = () => {
-        const secret = localStorage.getItem("icloud");
         setOpenMessage(false);
         setMessage(null);
         setIsLoadingBody(false);
-        onSignInSuccess(secret);
+        onSignInSuccess();
     }
     return (
         <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>

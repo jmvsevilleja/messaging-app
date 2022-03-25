@@ -33,7 +33,7 @@ function CreateAccount({createAccount, setCreateAccount}) {
             if (result) {
                 setUserCreated(true);
             } else {
-                setError("Something went wrong creating your account. Please try again.");
+                setError("Failed to sign up. Please check your credentials and try again.");
             }
             setLoading(false);
         });

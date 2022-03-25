@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import {signOut, signIn} from "./api/api";
 import {encrypt} from "../utilities/icloud";
+import {checkAccount} from "./api/api";
 
-function AddAccount({handleIcloudSignIn}) {
+function AddAccount({handleIcloudSignIn, handleIcloudSignOut}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -29,16 +29,23 @@ function AddAccount({handleIcloudSignIn}) {
                 return;
             }
         }
-        //console.log(userEmail && userPassword);
-        if (userEmail === 'asdf@asdf.com' && userPassword === 'asdf') {
-            setError("Authentication Error. Check your email and password");
-            return;
-        }
 
+        //console.log(userEmail && userPassword);
+        setLoading(true);
         const encrypted = encrypt({username: userEmail, password: userPassword});
         //console.log('Encrypted', encrypted);
         localStorage.setItem("icloud", encrypted);
-        handleIcloudSignIn();
+
+        checkAccount((result) => {
+            if (result) {
+                handleIcloudSignIn();
+            } else {
+                handleIcloudSignOut();
+                setError("Failed to sign in. Please check your credentials and try again.");
+            }
+            setLoading(false);
+        });
+
     }
 
     return (

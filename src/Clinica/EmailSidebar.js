@@ -58,7 +58,8 @@ function EmailSidebar({
                 </div>
                 <AddAccount
                     handleClinicaSignIn={handleClinicaSignIn}
-                    handleCreateAccount={handleCreateAccount} />
+                    handleCreateAccount={handleCreateAccount}
+                    handleClinicaSignOut={handleClinicaSignOut} />
                 <CreateAccount
                     setCreateAccount={setCreateAccount}
                     createAccount={createAccount} />

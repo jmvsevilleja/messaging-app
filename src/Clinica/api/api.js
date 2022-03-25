@@ -33,8 +33,9 @@ export const isHTML = str => {
     return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
 }
 
-export const getMessages = async (secret) => {
+export const getMessages = async () => {
     try {
+        const secret = localStorage.getItem("clinica");
         return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages`, {
             "client": 'aws',
             "secret": secret
@@ -50,8 +51,8 @@ export const getMessages = async (secret) => {
     }
 };
 
-export const getMessage = async (secret, message_id) => {
-
+export const getMessage = async (message_id) => {
+    const secret = localStorage.getItem("clinica");
     return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages/${message_id}`, {
         "client": 'aws',
         "secret": secret,
@@ -64,7 +65,8 @@ export const getMessage = async (secret, message_id) => {
     });
 };
 
-export const sendMessage = async (secret, to, subject, body, callback) => {
+export const sendMessage = async (to, subject, body, callback) => {
+    const secret = localStorage.getItem("clinica");
     let email = "";
     email += `\r\n<html><body>${body}</body></html>`;
     const encodedEmail = unescape(encodeURIComponent(email));
@@ -83,7 +85,8 @@ export const sendMessage = async (secret, to, subject, body, callback) => {
     });
 };
 
-export const replyMessage = async (secret, message_id, body, callback) => {
+export const replyMessage = async (message_id, body, callback) => {
+    const secret = localStorage.getItem("clinica");
     let email = "";
     email += `\r\n<html><body>${body}</body></html>`;
     const encodedEmail = unescape(encodeURIComponent(email));
@@ -100,7 +103,8 @@ export const replyMessage = async (secret, message_id, body, callback) => {
     });
 };
 
-export const forwardMessage = async (secret, message_id, to, body, callback) => {
+export const forwardMessage = async (message_id, to, body, callback) => {
+    const secret = localStorage.getItem("clinica");
     let email = "";
     email += `\r\n<html><body>${body}</body></html>`;
     const encodedEmail = unescape(encodeURIComponent(email));
@@ -118,8 +122,9 @@ export const forwardMessage = async (secret, message_id, to, body, callback) => 
     });
 };
 
-export const deleteMessage = async (secret, message_id, callback) => {
+export const deleteMessage = async (message_id, callback) => {
     try {
+        const secret = localStorage.getItem("clinica");
         return axios.delete(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/messages/${message_id}`, {
             data: {
                 "client": 'aws',
@@ -146,6 +151,26 @@ export const createWorkMail = async (username, password, callback) => {
         }).then(({status, data: {message}}) => {
             if (status === 200) {
                 console.log('CREATE ACCOUNT', message);
+                callback(true);
+            }
+        }).catch(function (error) {
+            console.log(error);
+            callback(false);
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const checkAccount = async (callback) => {
+    try {
+        const secret = localStorage.getItem("clinica");
+        return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/login-email`, {
+            "secret": secret,
+            "client": "aws"
+        }).then(({status, data: {message}}) => {
+            if (status === 200) {
+                console.log('CHECK ACCOUNT', message);
                 callback(true);
             }
         }).catch(function (error) {
