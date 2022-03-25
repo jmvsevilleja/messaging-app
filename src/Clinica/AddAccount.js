@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {encrypt} from "../utilities/icloud";
+import {checkAccount} from "./api/api";
 
-function AddAccount({handleClinicaSignIn, handleCreateAccount}) {
+function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSignOut}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -34,16 +35,21 @@ function AddAccount({handleClinicaSignIn, handleCreateAccount}) {
             }
         }
         //console.log(userEmail && userPassword);
-        if (userEmail === 'asdf@asdf.com' && userPassword === 'asdf') {
-            setError("Authentication Error. Check your email and password");
-            return;
-        }
         setLoading(true);
         const encrypted = encrypt({username: userEmail, password: userPassword});
         //console.log('Encrypted', encrypted);
         localStorage.setItem("clinica", encrypted);
-        setLoading(false);
-        handleClinicaSignIn();
+
+        checkAccount((result) => {
+            if (result) {
+                handleClinicaSignIn();
+            } else {
+                handleClinicaSignOut();
+                setError("Failed to sign in. Please check your credentials and try again.");
+            }
+            setLoading(false);
+        });
+
     }
 
     return (
