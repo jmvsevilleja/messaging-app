@@ -32,8 +32,7 @@ function EmailBody({
     const handleMessageDelete = () => {
         //console.log('message delete', message.result.id);
         handleBodyLoading();
-        const secret = localStorage.getItem("clinica");
-        deleteMessage(secret, message.id, () => {
+        deleteMessage(message.id, () => {
             onDeleteSuccess();
         });
 

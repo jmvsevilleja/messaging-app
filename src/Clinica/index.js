@@ -20,10 +20,10 @@ const Email = () => {
     const [user, setUser] = useState(null);
     const [darkMode, setDarkMode] = useState(false);
 
-    const onSignInSuccess = (secret) => {
+    const onSignInSuccess = () => {
         setIsSigned(true);
         setIsLoading(true);
-        getMessages(secret).then((result) => {
+        getMessages().then((result) => {
             //console.log('getMessages', result);
             setMessageList(result);
             setIsLoading(false);
@@ -35,7 +35,7 @@ const Email = () => {
     useEffect(() => {
         const secret = localStorage.getItem("clinica");
         if (secret) {
-            onSignInSuccess(secret);
+            onSignInSuccess();
         }
         setDarkMode(localStorage.getItem("dark_mode") === "true");
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,7 +46,7 @@ const Email = () => {
         const secret = localStorage.getItem("clinica");
         if (secret) {
             setUser(email);
-            onSignInSuccess(secret);
+            onSignInSuccess();
         }
     };
 
@@ -62,8 +62,7 @@ const Email = () => {
         setOpenMessage(true);
         if (messageID !== message_id) {
             setIsLoadingBody(true);
-            const secret = localStorage.getItem("clinica");
-            getMessage(secret, message_id).then((result) => {
+            getMessage(message_id).then((result) => {
                 setIsLoadingBody(false);
                 setMessage(result);
             });
@@ -77,16 +76,14 @@ const Email = () => {
         setIsLoadingBody(true);
     }
     const refreshMessages = () => {
-        const secret = localStorage.getItem("clinica");
-        onSignInSuccess(secret);
+        onSignInSuccess();
     }
 
     const onDeleteSuccess = () => {
-        const secret = localStorage.getItem("clinica");
         setOpenMessage(false);
         setMessage(null);
         setIsLoadingBody(false);
-        onSignInSuccess(secret);
+        onSignInSuccess();
     }
     return (
         <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>

@@ -51,8 +51,7 @@ function MessageCreate() {
             return;
         }
         setLoading(true);
-        const secret = localStorage.getItem("clinica");
-        sendMessage(secret, userEmail, userSubject, userMessage, () => {
+        sendMessage(userEmail, userSubject, userMessage, () => {
             console.log('sendMessage done');
             setSent(true);
             setLoading(false);

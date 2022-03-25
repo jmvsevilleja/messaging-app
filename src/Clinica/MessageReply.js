@@ -59,8 +59,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
         //const filteredSubject = userSubject.replace(/[\u1000-\uFFFF]/gm, "");
 
         setLoading(true);
-        const secret = localStorage.getItem("clinica");
-        replyMessage(secret, message.id, email, () => {
+        replyMessage(message.id, email, () => {
             console.log('replyMessage done');
             setSent(true);
             setLoading(false);
