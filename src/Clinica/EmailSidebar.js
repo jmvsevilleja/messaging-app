@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import Messages from "./Messages";
 import Nav from "../components/Nav";
 import ConvoLogo from '../logo.svg';
 import AddAccount from './AddAccount';
+import CreateAccount from './CreateAccount';
 import MessageCreate from './MessageCreate';
 import EmailSetting from './EmailSetting';
 
@@ -17,8 +18,10 @@ function EmailSidebar({
     refreshMessages,
 }) {
 
-    const handleSetting = () => {
-        console.log('handle Setting');
+    const [createAccount, setCreateAccount] = useState(false);
+    const handleCreateAccount = () => {
+        console.log('handleCreateAccount')
+        setCreateAccount(true);
     }
 
     return (
@@ -53,7 +56,12 @@ function EmailSidebar({
                     Access your accounts anytime, anywhere! Monitor your emails by reading, replying, and communicate with multimedia content.
                     <br /><br />With convenience and efficiency, experience the latest features of managing your emails on the go.
                 </div>
-                <AddAccount handleClinicaSignIn={handleClinicaSignIn} />
+                <AddAccount
+                    handleClinicaSignIn={handleClinicaSignIn}
+                    handleCreateAccount={handleCreateAccount} />
+                <CreateAccount
+                    setCreateAccount={setCreateAccount}
+                    createAccount={createAccount} />
                 <div className="m-5 text-sm font-base text-black dark:text-slate-400">
                     Read our&nbsp;
                     <a className="mt-5 text-primary hover:text-secondary" href="/privacy-policy">Privacy policy</a>

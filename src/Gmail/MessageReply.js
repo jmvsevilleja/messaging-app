@@ -51,7 +51,7 @@ function MessageReply({message, messageReply, closeMessageReply}) {
         const date = new Date(message.result.messageHeaders.find((item) => item.name === 'Date').value);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
         let email = `${userMessage}`;
-        email += `<br />---------- Replied message ---------<br />`;
+        email += `<br />---------- Original message ---------<br />`;
         email += `From: ${from} <br />`;
         email += `Date: ${date_value} <br />`;
         email += `Subject: ${userSubject} <br />`;

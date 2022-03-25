@@ -136,3 +136,23 @@ export const deleteMessage = async (secret, message_id, callback) => {
         console.error(err);
     }
 };
+
+export const createWorkMail = async (username, password, callback) => {
+    try {
+        return axios.post(`https://wcbv7e9z4d.execute-api.ap-southeast-2.amazonaws.com/api/workmail-account`, {
+            "name": username,
+            "displayName": username,
+            "password": password,
+        }).then(({status, data: {message}}) => {
+            if (status === 200) {
+                console.log('CREATE ACCOUNT', message);
+                callback(true);
+            }
+        }).catch(function (error) {
+            console.log(error);
+            callback(false);
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
