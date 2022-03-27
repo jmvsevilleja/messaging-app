@@ -120,3 +120,8 @@ type Subscription {
         chatRoomChatRoomUsersId: ID
     ): ChatRoomUser @aws_subscribe(mutations: ["updateChatRoomUser"])
 }
+
+type EmailSetting @model @auth(rules: [{ allow: public }]) {
+    id: ID!
+    signature: String
+}

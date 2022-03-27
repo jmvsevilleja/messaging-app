@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {sendMessage} from "./api/api";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'
+import Editor from "../components/Editor"
+import {getProfile} from "./api/api";
+import {getEmailSignatureById} from "../api/queries";
 
 function MessageReply({message, messageReply, closeMessageReply}) {
 
@@ -13,6 +14,18 @@ function MessageReply({message, messageReply, closeMessageReply}) {
     const [userSubject, setUserSubject] = useState("");
     const [userMessage, setUserMessage] = useState("");
     const [replyMsgId, setReplyMsgId] = useState(null);
+
+    useEffect(() => {
+        getProfile().then((user) => {
+            const user_email = user.result.emailAddress;
+            getEmailSignatureById(user_email).then((result) => {
+                if (result) {
+                    setUserMessage(result.signature);
+                }
+            });
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [messageReply]);
 
     useEffect(() => {
         const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
@@ -37,8 +50,8 @@ function MessageReply({message, messageReply, closeMessageReply}) {
         const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
         const date = new Date(message.result.messageHeaders.find((item) => item.name === 'Date').value);
         const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
-        let email = "";
-        email += `<br /> ${userMessage} <br />------------------------------<br />`;
+        let email = `${userMessage}`;
+        email += `<br />---------- Original message ---------<br />`;
         email += `From: ${from} <br />`;
         email += `Date: ${date_value} <br />`;
         email += `Subject: ${userSubject} <br />`;
@@ -139,16 +152,9 @@ function MessageReply({message, messageReply, closeMessageReply}) {
                                         disabled
                                         value={userSubject}
                                     />
-                                    <ReactQuill
-                                        modules={{
-                                            toolbar: [
-                                                [{'header': [1, 2, false]}],
-                                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-                                                ['link']
-                                            ],
-                                        }}
-                                        theme="snow" value={userMessage} onChange={(html) => {
+                                    <Editor
+                                        userMessage={userMessage}
+                                        onChange={(html) => {
                                             setError("");
                                             setUserMessage(html);
                                         }} />

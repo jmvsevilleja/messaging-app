@@ -1,9 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import Messages from "./Messages";
 import Nav from "../components/Nav";
 import ConvoLogo from '../logo.svg';
 import AddAccount from './AddAccount';
+import CreateAccount from './CreateAccount';
 import MessageCreate from './MessageCreate';
+import EmailSetting from './EmailSetting';
 
 function EmailSidebar({
     isSigned,
@@ -13,8 +15,15 @@ function EmailSidebar({
     handleMessage,
     handleClinicaSignIn,
     handleClinicaSignOut,
-    refreshMessages
+    refreshMessages,
 }) {
+
+    const [createAccount, setCreateAccount] = useState(false);
+    const handleCreateAccount = () => {
+        console.log('handleCreateAccount')
+        setCreateAccount(true);
+    }
+
     return (
         <div
             id="messages-sidebar"
@@ -22,9 +31,10 @@ function EmailSidebar({
                 + (!openMessage ? " translate-x-0" : " -translate-x-full")}
         >
             <div className="flex justify-between item-center p-5 py-5">
-                <div className="flex items-center" >
-                    <div className=" font-bold text-gray-600 dark:text-white">Clinica</div>
+                <div className="flex items-center w-full" >
+                    <div className="font-bold text-gray-600 dark:text-white">Clinica</div>
                 </div>
+                {isSigned && <EmailSetting />}
                 {isSigned && <button type="button"
                     onClick={handleClinicaSignOut}
                     className="text-gray-400 hover:text-gray-500">
@@ -32,6 +42,7 @@ function EmailSidebar({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                 </button>}
+
             </div>
             < div className="px-5"><Nav /></div>
             {!isSigned && <div className="flex flex-col items-center justify-center h-[calc(100vh-130px)]">
@@ -45,7 +56,13 @@ function EmailSidebar({
                     Access your accounts anytime, anywhere! Monitor your emails by reading, replying, and communicate with multimedia content.
                     <br /><br />With convenience and efficiency, experience the latest features of managing your emails on the go.
                 </div>
-                <AddAccount handleClinicaSignIn={handleClinicaSignIn} />
+                <AddAccount
+                    handleClinicaSignIn={handleClinicaSignIn}
+                    handleCreateAccount={handleCreateAccount}
+                    handleClinicaSignOut={handleClinicaSignOut} />
+                <CreateAccount
+                    setCreateAccount={setCreateAccount}
+                    createAccount={createAccount} />
                 <div className="m-5 text-sm font-base text-black dark:text-slate-400">
                     Read our&nbsp;
                     <a className="mt-5 text-primary hover:text-secondary" href="/privacy-policy">Privacy policy</a>

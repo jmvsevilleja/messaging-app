@@ -1,5 +1,6 @@
 import React from "react";
 import Picture from "./Picture";
+import {useNavigate} from "react-router-dom";
 
 function ChatSetting({
     user,
@@ -9,7 +10,16 @@ function ChatSetting({
     toggleDarkMode,
     darkMode
 }) {
-
+    let navigate = useNavigate();
+    const handlePrivacy = () => {
+        navigate(`/privacy-policy`);
+    }
+    const handleTerms = () => {
+        navigate(`/terms-and-condition`);
+    }
+    const handleDisclaimer = () => {
+        navigate(`/disclaimer`);
+    }
     // const [userStatus, setUserStatus] = useState(user.status);
     return (
         <div>
@@ -105,9 +115,12 @@ function ChatSetting({
                         </div>
                     </div>
                     <div className="p-2">
-
                         <div className="flex text-gray-400 hover:text-gray-500">
-                            <button className="flex w-full justify-between items-center outline-none focus:outline-none" >
+                            <button className="flex w-full justify-between items-center outline-none focus:outline-none"
+                                onClick={() => {
+                                    handlePrivacy();
+                                }}
+                            >
                                 <div className="text-md font-medium text-base text-gray-600 dark:text-slate-400">Privacy and security</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -118,15 +131,30 @@ function ChatSetting({
                     </div>
                     <div className=" p-2">
                         <div className="flex text-gray-400 hover:text-gray-500">
-                            <button className="flex w-full justify-between items-center outline-none focus:outline-none" >
-                                <div className="text-md font-medium text-base text-gray-600 dark:text-slate-400">About</div>
+                            <button className="flex w-full justify-between items-center outline-none focus:outline-none"
+                                onClick={() => {
+                                    handleTerms();
+                                }}>
+                                <div className="text-md font-medium text-base text-gray-600 dark:text-slate-400">Terms and Conditions</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                                 </svg>
                             </button>
                         </div>
                     </div>
-
+                    <div className=" p-2">
+                        <div className="flex text-gray-400 hover:text-gray-500">
+                            <button className="flex w-full justify-between items-center outline-none focus:outline-none"
+                                onClick={() => {
+                                    handleDisclaimer();
+                                }}>
+                                <div className="text-md font-medium text-base text-gray-600 dark:text-slate-400">Disclaimer</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -48,7 +48,8 @@ function EmailBody({
             body.style.lineHeight = "1.2";
             body.style.fontFamily = "Arial, Helvetica, sans-serif";
             body.style.fontSize = "14px";
-            body.innerHTML = message.body.content + '<base target="_blank">';;
+            const style = `<style>p{margin:0}</style>`;
+            body.innerHTML = style + message.body.content + '<base target="_blank">';;
             const subject = message.subject;
             const from = message.from ? message.from.emailAddress.name + ' <' + message.from.emailAddress.address + '>' : '';
             const date = new Date(message.sentDateTime);

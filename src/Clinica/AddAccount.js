@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {encrypt} from "../utilities/icloud";
+import {checkAccount} from "./api/api";
 
-function AddAccount({handleClinicaSignIn}) {
+function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSignOut}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -21,6 +22,11 @@ function AddAccount({handleClinicaSignIn}) {
         // prevent double submit
         if (loading || error) return;
 
+        if (!(userEmail && userPassword)) {
+            setError("Please enter your email and password");
+            return;
+        }
+
         if ((userEmail)) {
             var re = /\S+@\S+\.\S+/;
             if (!re.test(userEmail)) {
@@ -29,15 +35,21 @@ function AddAccount({handleClinicaSignIn}) {
             }
         }
         //console.log(userEmail && userPassword);
-        if (userEmail === 'asdf@asdf.com' && userPassword === 'asdf') {
-            setError("Authentication Error. Check your email and password");
-            return;
-        }
-
+        setLoading(true);
         const encrypted = encrypt({username: userEmail, password: userPassword});
         //console.log('Encrypted', encrypted);
         localStorage.setItem("clinica", encrypted);
-        handleClinicaSignIn();
+
+        checkAccount((result) => {
+            if (result) {
+                handleClinicaSignIn();
+            } else {
+                handleClinicaSignOut();
+                setError("Failed to sign in. Please check your credentials and try again.");
+            }
+            setLoading(false);
+        });
+
     }
 
     return (
@@ -116,7 +128,13 @@ function AddAccount({handleClinicaSignIn}) {
                                         value={userPassword}
                                     />
                                     <div className="text-sm text-center my-2">
-                                        <a className="text-primary" href="#">Create an account</a>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsOpen(false);
+                                                handleCreateAccount();
+                                            }}
+                                            className="text-primary">Create an account</button>
                                     </div>
                                 </div>
                                 }
@@ -138,7 +156,7 @@ function AddAccount({handleClinicaSignIn}) {
                                                     d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
                                                     fill='currentColor' fillRule='evenodd' />
                                             </svg>}
-                                            {!loading && <span className="py-2">Add Account</span>}
+                                            {!loading && <span className="py-2">Sign In</span>}
                                         </button>
 
                                     </div>

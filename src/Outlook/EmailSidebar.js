@@ -3,8 +3,10 @@ import Messages from "./Messages";
 import Nav from "../components/Nav";
 import ConvoLogo from '../logo.svg';
 import MessageCreate from './MessageCreate';
+import EmailSetting from './EmailSetting';
 
 function EmailSidebar({
+    user,
     isSigned,
     isLoading,
     openMessage,
@@ -23,9 +25,10 @@ function EmailSidebar({
                 + (!openMessage ? " translate-x-0" : " -translate-x-full")}
         >
             <div className="flex justify-between item-center p-5 py-5">
-                <div className="flex items-center" >
+                <div className="flex items-center w-full" >
                     <div className=" font-bold text-gray-600 dark:text-white">Outlook</div>
                 </div>
+                {isSigned && <EmailSetting user={user} />}
                 {isSigned && <button type="button"
                     onClick={handleOutlookSignOut}
                     className="text-gray-400 hover:text-gray-500">
