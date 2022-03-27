@@ -124,7 +124,7 @@ function AddAccount({handleIcloudSignIn, handleIcloudSignOut}) {
                                         value={userPassword}
                                     />
                                     <div className="text-sm text-center my-2">
-                                        <b>Important:</b> iCloud requires that you create a unique app password for Conva. Follow <a className="text-primary" target="_blank" href="https://support.apple.com/en-us/HT204397">these instructions</a> to create one.
+                                        <b>Important:</b> iCloud requires that you create a unique app password for Conva. Follow <a className="text-primary" rel="noreferrer" target="_blank" href="https://support.apple.com/en-us/HT204397">these instructions</a> to create one.
                                     </div>
                                 </div>
                                 }
