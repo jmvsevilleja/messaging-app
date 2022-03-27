@@ -5,7 +5,7 @@ import {addUser, addChatRoom, addChatRoomUser} from "../api/mutations";
 import QrReader from 'react-qr-reader'
 import {checkSubscription, sendInvitation} from "../api/api";
 
-function AddContact({user, handleChatRoomID}) {
+function AddContact({user, handleChatRoomID, handleLogout}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [userEmail, setUserEmail] = useState("");
@@ -17,6 +17,7 @@ function AddContact({user, handleChatRoomID}) {
     const [showSub, setShowSub] = useState(false);
     const [inviting, setInviting] = useState(false);
     const [invited, setInvited] = useState(null);
+    const [relogin, setRelogin] = useState(null);
 
 
     const handleScan = data => {
@@ -39,6 +40,7 @@ function AddContact({user, handleChatRoomID}) {
         setCountryCode("");
         setUserPhone("");
         setInvited(false);
+        setRelogin(false);
     }
 
     const handleCreateChat = async (selected_user) => {
@@ -110,7 +112,11 @@ function AddContact({user, handleChatRoomID}) {
                         setLoading(false);
                         return;
                     }
-                    const ignoreNote = await checkSubscription(account_found.id).then((apps) => {
+                    const ignoreNote = await checkSubscription(account_found.id, (result) => {
+                        if (!result) {
+                            setRelogin(true);
+                        }
+                    }).then((apps) => {
                         if (apps) {
                             const conva = apps.find((item) => (item.application.id === "2f7a4695-6ccb-467a-b1eb-d9f0394529bf"));
                             console.log('CONVA', conva);
@@ -477,7 +483,22 @@ function AddContact({user, handleChatRoomID}) {
                                 handleAddUserSubmit(e);
                             }}
                         >
-                            {!invited && showSub && <div className="flex flex-col justify-center">
+                            {relogin && <div className="flex flex-col justify-center">
+                                <div className="pt-5 pb-10 text-center">
+                                    Your session is expired. Please relogin to continue.
+                                </div>
+                                <div className="flex self-end">
+                                    <button
+                                        type="button"
+                                        className="bg-primary hover:bg-secondary text-white font-base w-30 py-2 px-4 rounded"
+                                        onClick={() => {
+                                            handleLogout();
+                                        }}>
+                                        <span className="py-2">Relogin</span>
+                                    </button>
+                                </div>
+                            </div>}
+                            {!invited && !relogin && showSub && <div className="flex flex-col justify-center">
                                 <div className="pt-5 pb-10 text-center">
                                     {userEmail && <>The email address <b>{userEmail}</b> is not yet subscribed to our Conva Messaging App.</>}
                                     {userPhone && <>The phone number <b>+{countryCode} {userPhone}</b> is not yet subscribed to our Conva Messaging App.</>}
