@@ -21,6 +21,7 @@ import "./index.css";
 let subscriptions = {};
 
 const Chat = () => {
+    const [render, setRender] = useState(false);
     const [messageList, setMessageList] = useState([]);
     const [chatRoomList, setChatRoomList] = useState([]);
     const [user, setUser] = useState(null);
@@ -330,10 +331,22 @@ const Chat = () => {
         });
 
         // SUBSCRIPTIONS
+        // when adding chatroom user
         subscriptions.sub1 = subOnCreateChatRoomUser(((value) => {
-            //console.log('subOnCreateChatRoomUser VALUE', value)
+            //console.log('subOnCreateChatRoomUser VALUE', value);
+            // getChatRooms(user.id).then((result) => {
+            //     updateChatRoomList(result);
+            // });
+            setChatRoom((item) => {
+                if (item && item.id === value.chatRoomChatRoomUsersId) {
+                    item.users = [...item.users, value];
+                }
+                return item;
+            });
+            setRender(new Date().getTime());
         }));
 
+        // when creting chatroom
         subscriptions.sub2 = subOnCreateChatRoomUserByChatRoomUserUserId(user.id, ((value) => {
             getChatRooms(user.id).then((result) => {
                 updateChatRoomList(result);
@@ -343,6 +356,7 @@ const Chat = () => {
             });
         }));
 
+        // when updating user profile
         subscriptions.sub3 = subOnUpdateUser(((value) => {
             setUser((item) => {
                 if (item.id === value.id) {
@@ -399,7 +413,7 @@ const Chat = () => {
                 }
             });
         }));
-
+        // when chatroom is updated
         subscriptions.sub4 = subOnUpdateChatRoom(((value) => {
             // when chatroom is deleted
             if (value.deleted === true) {
@@ -511,7 +525,6 @@ const Chat = () => {
         <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>
             {/* Content area */}
             <div className="relative flex flex-col flex-1 overflow-hidden">
-
                 <main>
                     <div className="relative flex">
                         {/* Messages sidebar */}

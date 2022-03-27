@@ -306,7 +306,7 @@ function ChatBody({
                                         Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                                     </span>}
                             </div>
-                            {chatRoom && chatRoom.users && <Connect
+                            {chatRoom && chatRoom.users && !chatRoom.group && <Connect
                                 user={user} chatRoom={chatRoom}
                                 handleLogout={handleLogout}
                             />}
