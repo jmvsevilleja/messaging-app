@@ -18,6 +18,7 @@ function EmailBody({
     const iframeRef = React.useRef(null);
     const [messageTitle, setMessageTitle] = useState("");
     const [messageSubTitle, setMessageSubTitle] = useState("");
+    const [messageDate, setMessageDate] = useState("");
 
     const [messageReply, setMessageReply] = useState(false);
     const [messageForward, setMessageForward] = useState(false);
@@ -31,8 +32,7 @@ function EmailBody({
     const handleMessageDelete = () => {
         //console.log('message delete', message.result.id);
         handleBodyLoading();
-        const secret = localStorage.getItem("clinica");
-        deleteMessage(secret, message.id, () => {
+        deleteMessage(message.id, () => {
             onDeleteSuccess();
         });
 
@@ -53,14 +53,19 @@ function EmailBody({
             body.style.lineHeight = "1.2";
             body.style.fontFamily = "Arial, Helvetica, sans-serif";
             body.style.fontSize = "14px";
-            const message_body = message ? message.snippet.replace(/=09/g, "").replace(/=\s\s/g, "").replace(/=E2=80=99/g, "'") : '';
-            body.innerHTML = message_body + '<base target="_blank">';
+            const style = `<style>p{margin:0}</style>`;
+            //const message_body = message ? message.snippet : '';
+            const message_body = message ? message.snippet.replace(/=09/g, "").replace(/=\s\s/g, "").replace(/=E2=80=99/g, "'").replace(/=C2=A0/g, " ").replace(/3D"/g, "") : '';
+            body.innerHTML = style + message_body + '<base target="_blank">';
 
             const subject = message.subject;
             const from = message.from
+            const date = new Date(message.date);
+            const date_value = date.toLocaleString("en-US", {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
             //console.log(message);
             setMessageTitle(subject)
             setMessageSubTitle(from)
+            setMessageDate(date_value)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [message]);
@@ -110,7 +115,7 @@ function EmailBody({
                                 </span>
                             </div>
                             <span className="block ml-2 text-sm text-gray-600 dark:text-slate-400 truncate overflow-hidden">
-                                {messageSubTitle}
+                                {messageSubTitle} {messageDate}
                             </span>
                         </div>
                         <MessageReply

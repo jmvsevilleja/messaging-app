@@ -805,6 +805,33 @@ export const chatRoomUserByChatRoomUserUserId = /* GraphQL */ `
     }
   }
 `;
+export const getEmailSetting = /* GraphQL */ `
+  query GetEmailSetting($id: ID!) {
+    getEmailSetting(id: $id) {
+      id
+      signature
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listEmailSettings = /* GraphQL */ `
+  query ListEmailSettings(
+    $filter: ModelEmailSettingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listEmailSettings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        signature
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getUserAccount = /* GraphQL */ `
   query GetUserAccount($id: String!) {
     getUserAccount(id: $id) {

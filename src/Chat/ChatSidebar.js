@@ -103,6 +103,7 @@ function ChatSidebar({
                             {user && <AddContact
                                 user={user}
                                 handleChatRoomID={handleChatRoomID}
+                                handleLogout={handleLogout}
                             />}
                         </div>
 

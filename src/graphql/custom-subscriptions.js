@@ -147,8 +147,20 @@ export const onCreateChatRoomUser = /* GraphQL */ `
   subscription OnCreateChatRoomUser {
     onCreateChatRoomUser {
       id
+      chatRoomChatRoomUsersId
       chatRoomUserUserId
       updatedAt
+      deleted
+      notification
+      typing
+      user{
+        id
+        imageUri
+        name
+        online
+        publicKey
+        status
+      }
     }
   }
 `;

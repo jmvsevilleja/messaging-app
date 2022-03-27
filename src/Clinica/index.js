@@ -17,22 +17,13 @@ const Email = () => {
     const [isLoadingBody, setIsLoadingBody] = useState(null);
     const [messageID, setMessageID] = useState(null);
     const [openMessage, setOpenMessage] = useState(null);
-    const [user, setUser] = useState({
-        signInStatus: 'SIGNED_OUT',
-        user: null
-    });
+    const [user, setUser] = useState(null);
     const [darkMode, setDarkMode] = useState(false);
 
-    const onSignInSuccess = (secret) => {
-        //console.log('user', user);
-        setUser({
-            signInStatus: 'AUTH_SUCCESS',
-            user: user
-        });
-
+    const onSignInSuccess = () => {
         setIsSigned(true);
         setIsLoading(true);
-        getMessages(secret).then((result) => {
+        getMessages().then((result) => {
             //console.log('getMessages', result);
             setMessageList(result);
             setIsLoading(false);
@@ -44,17 +35,18 @@ const Email = () => {
     useEffect(() => {
         const secret = localStorage.getItem("clinica");
         if (secret) {
-            onSignInSuccess(secret);
+            onSignInSuccess();
         }
         setDarkMode(localStorage.getItem("dark_mode") === "true");
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
-    const handleClinicaSignIn = () => {
+    const handleClinicaSignIn = (email) => {
         const secret = localStorage.getItem("clinica");
         if (secret) {
-            onSignInSuccess(secret);
+            setUser(email);
+            onSignInSuccess();
         }
     };
 
@@ -70,8 +62,7 @@ const Email = () => {
         setOpenMessage(true);
         if (messageID !== message_id) {
             setIsLoadingBody(true);
-            const secret = localStorage.getItem("clinica");
-            getMessage(secret, message_id).then((result) => {
+            getMessage(message_id).then((result) => {
                 setIsLoadingBody(false);
                 setMessage(result);
             });
@@ -85,16 +76,14 @@ const Email = () => {
         setIsLoadingBody(true);
     }
     const refreshMessages = () => {
-        const secret = localStorage.getItem("clinica");
-        onSignInSuccess(secret);
+        onSignInSuccess();
     }
 
     const onDeleteSuccess = () => {
-        const secret = localStorage.getItem("clinica");
         setOpenMessage(false);
         setMessage(null);
         setIsLoadingBody(false);
-        onSignInSuccess(secret);
+        onSignInSuccess();
     }
     return (
         <div className={"flex h-screen overflow-hidden" + ((darkMode) ? " dark" : "")}>

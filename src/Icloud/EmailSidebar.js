@@ -4,6 +4,7 @@ import Nav from "../components/Nav";
 import ConvoLogo from '../logo.svg';
 import AddAccount from './AddAccount';
 import MessageCreate from './MessageCreate';
+import EmailSetting from './EmailSetting';
 
 function EmailSidebar({
     isSigned,
@@ -22,9 +23,10 @@ function EmailSidebar({
                 + (!openMessage ? " translate-x-0" : " -translate-x-full")}
         >
             <div className="flex justify-between item-center p-5 py-5">
-                <div className="flex items-center" >
+                <div className="flex items-center w-full" >
                     <div className=" font-bold text-gray-600 dark:text-white">iCloud</div>
                 </div>
+                {isSigned && <EmailSetting />}
                 {isSigned && <button type="button"
                     onClick={handleIcloudSignOut}
                     className="text-gray-400 hover:text-gray-500">
@@ -45,7 +47,9 @@ function EmailSidebar({
                     Access your accounts anytime, anywhere! Monitor your emails by reading, replying, and communicate with multimedia content.
                     <br /><br />With convenience and efficiency, experience the latest features of managing your emails on the go.
                 </div>
-                <AddAccount handleIcloudSignIn={handleIcloudSignIn} />
+                <AddAccount
+                    handleIcloudSignIn={handleIcloudSignIn}
+                    handleIcloudSignOut={handleIcloudSignOut} />
                 <div className="m-5 text-sm font-base text-black dark:text-slate-400">
                     Read our&nbsp;
                     <a className="mt-5 text-primary hover:text-secondary" href="/privacy-policy">Privacy policy</a>

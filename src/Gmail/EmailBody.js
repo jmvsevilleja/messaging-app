@@ -47,19 +47,12 @@ function EmailBody({
 
     useEffect(() => {
         if (message) {
-            const {body, head} = iframeRef.current.contentWindow.document;
-            const style = document.createElement('style');
-            style.setAttribute('my-style', '');
-            style.innerHTML = `
-                @media print {
-                    body {background: #000}
-                }
-            `;
-            head.append(style);
+            const {body} = iframeRef.current.contentWindow.document;
+            const style = `<style>p{margin:0}</style>`;
             body.style.lineHeight = "1.2";
             body.style.fontFamily = "Arial, Helvetica, sans-serif";
             body.style.fontSize = "14px";
-            body.innerHTML = message.body + '<base target="_blank">';
+            body.innerHTML = style + message.body + '<base target="_blank">';
             const subject = message.result.messageHeaders.find((item) => item.name === 'Subject').value;
             const from = message.result.messageHeaders.find((item) => item.name === 'From').value;
             const date = new Date(message.result.messageHeaders.find((item) => item.name === 'Date').value);

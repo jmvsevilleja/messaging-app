@@ -3,14 +3,16 @@ import {API, graphqlOperation} from "aws-amplify";
 import {
     createUser,
     createChatRoom,
-    createChatRoomUser
+    createChatRoomUser,
+    createEmailSetting,
+    updateEmailSetting
 } from "../graphql/mutations";
 import {
     updateUser,
     createMessage,
     updateMessage,
     updateChatRoom,
-    updateChatRoomUser
+    updateChatRoomUser,
 } from "../graphql/custom-mutations";
 import {generateKeyPair} from "../utilities/encryption";
 
@@ -146,6 +148,43 @@ export const editChatRoomUser = async (input) => {
         ).then(({data: {updateChatRoomUser}}) => {
             console.log('EDIT CHATROOMUSER', updateChatRoomUser);
             return updateChatRoomUser;
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const addSignature = async (user_email, user_signature) => {
+    if (!user_email || !user_signature) return;
+    try {
+        return await API.graphql(
+            graphqlOperation(createEmailSetting, {
+                input: {
+                    id: user_email,
+                    signature: user_signature,
+                }
+            })
+        ).then(({data: {createEmailSetting}}) => {
+            console.log('ADD SETTING', createEmailSetting);
+            return createEmailSetting;
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+export const editSignature = async (user_email, user_signature) => {
+    try {
+        return await API.graphql(
+            graphqlOperation(updateEmailSetting, {
+                input: {
+                    id: user_email,
+                    signature: user_signature
+                }
+            })
+        ).then(({data: {updateEmailSetting}}) => {
+            console.log('EDIT SETTING', updateEmailSetting);
+            return updateEmailSetting;
         });
     } catch (err) {
         console.error(err);

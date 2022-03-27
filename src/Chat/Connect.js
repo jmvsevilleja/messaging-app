@@ -3,16 +3,21 @@ import {Dialog} from "@headlessui/react";
 import Iframe from 'react-iframe'
 import {checkSubscription} from "../api/api";
 
-function Connect({user, chatRoom}) {
+function Connect({user, chatRoom, handleLogout}) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [isSub, setIsSub] = useState(false);
     const [checking, setChecking] = useState(false);
+    const [relogin, setRelogin] = useState(null);
 
     const handleOpenConnect = async (e) => {
         setChecking(true);
         setIsSub(true);
-        checkSubscription(user.id).then((apps) => {
+        checkSubscription(user.id, (result) => {
+            if (!result) {
+                setRelogin(true);
+            }
+        }).then((apps) => {
             if (apps) {
                 // find Connect App subscription
                 const connect = apps.find((item) => (item.application.id === "893ae9d6-27c7-446d-9ac0-c49c38cc63e7"));
@@ -42,8 +47,6 @@ function Connect({user, chatRoom}) {
     };
     const transaction_id = to.user.id;
 
-    // Date.now().toString().substring(0, 4) +
-    // Date.now().toString().substring(9);
     const iframe_url = `https://develop.d9jtdzsj058zk.amplifyapp.com/login/true/${user_id}/${ip}/${code}/null/null?to=${to.user.id}&to_name=${to.user.name}&from=${from.user.id}&from_name=${from.user.name}&transaction_id=${transaction_id}&app=conva`;
 
     return (
@@ -67,7 +70,8 @@ function Connect({user, chatRoom}) {
             <Dialog
                 open={isSub}
                 onClose={() => {
-                    setIsSub(false)
+                    setIsSub(false);
+                    setRelogin(false);
                 }}
                 className="fixed z-30 inset-0 overflow-y-auto"
             >
@@ -80,6 +84,7 @@ function Connect({user, chatRoom}) {
                                 type="button"
                                 onClick={() => {
                                     setIsSub(false);
+                                    setRelogin(false);
                                 }}
                                 className="absolute -right-2 -top-2"
                             >
@@ -99,7 +104,7 @@ function Connect({user, chatRoom}) {
                             </div>
 
                         </div>}
-                        {!checking && <div className="flex flex-col justify-center">
+                        {!checking && !relogin && <div className="flex flex-col justify-center">
                             <div className="py-10 flex justify-center text-center">
                                 Sorry, you are not currently subscribed. <br /> To continue using audio and video calls, <br />please subscribe to our Clinica Connect App.
                             </div>
@@ -111,6 +116,21 @@ function Connect({user, chatRoom}) {
                                 className="bg-primary hover:bg-secondary text-white font-base p-2 px-4 rounded">
                                 <span className="py-2">Get Subscription</span>
                             </button>
+                        </div>}
+                        {relogin && <div className="flex flex-col justify-center">
+                            <div className="pt-5 pb-10 text-center">
+                                Your session is expired. Please relogin to continue.
+                            </div>
+                            <div className="flex self-end">
+                                <button
+                                    type="button"
+                                    className="bg-primary hover:bg-secondary text-white font-base w-30 py-2 px-4 rounded"
+                                    onClick={() => {
+                                        handleLogout();
+                                    }}>
+                                    <span className="py-2">Relogin</span>
+                                </button>
+                            </div>
                         </div>}
                     </div>
                 </div>
