@@ -537,6 +537,7 @@ const Chat = () => {
                             messageList={messageList}
                             handleCloseChat={handleCloseChat}
                             handleOpenInfo={handleOpenInfo}
+                            handleLogout={handleLogout}
                         />
                     </div>
                 </main>

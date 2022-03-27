@@ -36,7 +36,8 @@ function ChatBody({
     openChat,
     messageList,
     handleCloseChat,
-    handleOpenInfo
+    handleOpenInfo,
+    handleLogout
 }) {
 
     const [messageText, setMessageText] = useState("");
@@ -305,7 +306,10 @@ function ChatBody({
                                         Online, from {chatRoom.users.filter((item) => !item.deleted).length} People
                                     </span>}
                             </div>
-                            {chatRoom && chatRoom.users && <Connect user={user} chatRoom={chatRoom} />}
+                            {chatRoom && chatRoom.users && <Connect
+                                user={user} chatRoom={chatRoom}
+                                handleLogout={handleLogout}
+                            />}
                             <div className="flex"
                                 onClick={handleOpenInfo}>
                                 <button className="text-gray-400 hover:text-gray-500">
