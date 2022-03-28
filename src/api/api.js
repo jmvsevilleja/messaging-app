@@ -24,7 +24,7 @@ export const uploadFile = async (file) => {
     }
 };
 
-export const checkSubscription = async (user_id) => {
+export const checkSubscription = async (user_id, callback) => {
     try {
         const auth_token = localStorage.getItem("auth_token");
         const refresh_token = localStorage.getItem("refresh_token");
@@ -42,10 +42,14 @@ export const checkSubscription = async (user_id) => {
                 console.log('GET INSTALLED APPS', listInstalledApps);
                 return listInstalledApps.items;
             }
+        }).catch(function (error) {
+            console.log(error);
+            callback(false);
         });
 
     } catch (err) {
         console.error(err);
+        callback(false);
     }
 };
 export const sendInvitation = async (name, email, phone) => {
