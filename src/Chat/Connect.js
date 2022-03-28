@@ -47,7 +47,7 @@ function Connect({user, chatRoom, handleLogout}) {
     };
     const transaction_id = to.user.id;
 
-    const iframe_url = `https://develop.d9jtdzsj058zk.amplifyapp.com/login/true/${user_id}/${ip}/${code}/null/null?to=${to.user.id}&to_name=${to.user.name}&from=${from.user.id}&from_name=${from.user.name}&transaction_id=${transaction_id}&app=conva`;
+    const iframe_url = `https://www.clinicaconnect.com/login/true/${user_id}/${ip}/${code}/null/null?to=${to.user.id}&to_name=${to.user.name}&from=${from.user.id}&from_name=${from.user.name}&transaction_id=${transaction_id}&app=conva`;
 
     return (
         <>
