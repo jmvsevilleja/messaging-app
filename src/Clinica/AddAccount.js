@@ -25,7 +25,7 @@ function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSign
     }, []);
 
     const handleLogout = () => {
-        navigate(`/chat`);
+        navigate(`/login`);
     }
     const handleSubscription = async () => {
         const user_id = localStorage.getItem("user_id");
