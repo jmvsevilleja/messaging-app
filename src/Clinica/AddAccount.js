@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import {encrypt} from "../utilities/icloud";
 import {checkAccount} from "./api/api";
+import {checkSubscription} from "../api/api";
+import {useNavigate} from "react-router-dom";
 
 function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSignOut}) {
 
@@ -10,12 +12,56 @@ function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSign
     const [error, setError] = useState("");
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
+    const [isSub, setIsSub] = useState(false);
+    const [checking, setChecking] = useState(false);
+    const [relogin, setRelogin] = useState(null);
+
+    let navigate = useNavigate();
 
     useEffect(() => {
+
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleLogout = () => {
+        navigate(`/login`);
+    }
+    const handleSubscription = async () => {
+        const user_id = localStorage.getItem("user_id");
+        const code = localStorage.getItem("code");
+        const ip = localStorage.getItem("ip");
+        window.open(`https://www.clinicapay.com/pricing?product=prod_L84vb6dsVu8iu2&code=${code}&ip_address=${ip}&user_id=${user_id}`, "_blank");
+
+    };
+
+    const handleCheckSubscription = () => {
+        // check subscription before signin
+        setChecking(true);
+        const user_id = localStorage.getItem("user_id");
+        console.log(user_id);
+        if (!user_id) {
+            setRelogin(true);
+        }
+        if (user_id) {
+            checkSubscription(user_id, (result) => {
+                if (!result) {
+                    setRelogin(true);
+                }
+            }).then((apps) => {
+                if (apps) {
+                    // find Email Service subscription
+                    const conva = apps.find((item) => (item.application.id === "2f7a4695-6ccb-467a-b1eb-d9f0394529bf"));
+                    if (conva) {
+                        setChecking(false);
+                        setIsSub(true);
+                        return;
+                    }
+                }
+                setChecking(false);
+            });
+        }
+    }
     const handleAddAccount = async (event) => {
         event.preventDefault();
         console.log('handleAddAccount', userEmail);
@@ -51,12 +97,19 @@ function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSign
         });
 
     }
-
+    const handleReset = () => {
+        setLoading(false);
+        setIsOpen(false);
+        setUserEmail("");
+        setRelogin(false);
+        setError("");
+    }
     return (
         <>
             <button
                 type="button"
                 onClick={() => {
+                    handleCheckSubscription();
                     setIsOpen(true);
                 }}
                 className="outline-none bg-white text-gray-600 font-base rounded font-base py-2 px-4 border shadow-md text-base"
@@ -66,7 +119,7 @@ function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSign
                 isOpen && <Dialog
                     open={isOpen}
                     onClose={() => {
-                        setIsOpen(false);
+                        handleReset();
                     }}
                     className="fixed z-30 inset-0 overflow-y-auto"
                 >
@@ -105,7 +158,33 @@ function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSign
                                     handleAddAccount(e);
                                 }}
                             >
-                                {<div className="relative text-gray-600">
+                                {relogin && <div className="flex flex-col justify-center">
+                                    <div className="pt-5 pb-10 text-center">
+                                        Your session is expired. Please relogin to continue.
+                                    </div>
+                                    <div className="flex self-end">
+                                        <button
+                                            type="button"
+                                            className="bg-primary hover:bg-secondary text-white font-base w-30 py-2 px-4 rounded"
+                                            onClick={() => {
+                                                handleLogout();
+                                            }}>
+                                            <span className="py-2">Relogin</span>
+                                        </button>
+                                    </div>
+                                </div>}
+                                {checking && !relogin && <div className="flex flex-col justify-center">
+                                    <div className="text-primary mt-5"><svg fill='none' className="w-28 animate-spin m-auto" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                                        <path clipRule='evenodd'
+                                            d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
+                                            fill='currentColor' fillRule='evenodd' />
+                                    </svg></div>
+                                    <div className="py-5 flex justify-center text-center">
+                                        Checking Clinica Email Service Subscription
+                                    </div>
+
+                                </div>}
+                                {!checking && isSub && < div className="relative text-gray-600">
                                     <input
                                         aria-placeholder="Email"
                                         placeholder="Email"
@@ -139,11 +218,11 @@ function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSign
                                 </div>
                                 }
 
-                                {<div className="mt-4 flex flex-col">
+                                {!checking && isSub && <div className="mt-4 flex flex-col">
                                     <div className="flex self-end">
                                         <button type="button" className="hover:text-gray-600 text-gray-500 font-base py-2 px-4"
                                             onClick={() => {
-                                                setIsOpen(false);
+                                                handleReset();
                                             }}>
                                             Cancel
                                         </button>
@@ -160,6 +239,20 @@ function AddAccount({handleClinicaSignIn, handleCreateAccount, handleClinicaSign
                                         </button>
 
                                     </div>
+                                </div>}
+
+                                {!checking && !relogin && !isSub && <div className="flex flex-col justify-center">
+                                    <div className="py-10 flex justify-center text-center">
+                                        Sorry, you are not currently subscribed. <br /> To continue using email services, <br />please subscribe to our Clinica Email Service App.
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            handleSubscription();
+                                        }}
+                                        className="bg-primary hover:bg-secondary text-white font-base p-2 px-4 rounded">
+                                        <span className="py-2">Get Subscription</span>
+                                    </button>
                                 </div>}
                             </form>
                         </div>
