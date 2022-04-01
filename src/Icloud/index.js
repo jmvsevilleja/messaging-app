@@ -70,8 +70,7 @@ const Email = () => {
         setOpenMessage(true);
         if (messageID !== message_id) {
             setIsLoadingBody(true);
-            const secret = localStorage.getItem("icloud");
-            getMessage(secret, message_id).then((result) => {
+            getMessage(message_id).then((result) => {
                 setIsLoadingBody(false);
                 setMessage(result);
             });
