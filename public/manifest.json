@@ -28,6 +28,6 @@
     "scope": "/",
     "display": "standalone",
     "display_modifiers": ["window-controls-overlay"],
-    "theme_color": "#5d1ea5",
+    "theme_color": "#213766",
     "background_color": "#ffffff"
 }
