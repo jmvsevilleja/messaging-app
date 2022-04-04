@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "com.clinicatechnologies.conva",
+                     "sha256_cert_fingerprints": ["FF:79:12:11:C9:8B:75:8C:76:E3:36:5C:CB:25:72:4A:A9:4E:D6:8B:6F:F1:37:8F:FF:88:54:8B:31:17:8E:54"] }
+      }
+]
