@@ -56,6 +56,7 @@ const Chat = () => {
         document.cookie = "auth_login=; Max-Age=-99999999;";
         document.cookie = "token=; Max-Age=-99999999;";
         // unsubscribe
+        delete subscriptions.interval;
         for (const item in subscriptions) {
             if (subscriptions[item]) {
                 subscriptions[item].unsubscribe();
@@ -322,7 +323,7 @@ const Chat = () => {
 
         // update online status every 15 min
         handleUserOnline(true);
-        setInterval(function () {
+        subscriptions.interval = setInterval(function () {
             handleUserOnline(true);
         }, 900000);
 
@@ -509,8 +510,13 @@ const Chat = () => {
         // });
         // TODO: offline when on browser close
         return () => {
+
             console.log('UNMOUNTED');
             //unsubscribe
+            if (subscriptions.interval) {
+                clearInterval(subscriptions.interval);
+            }
+            delete subscriptions.interval;
             for (const item in subscriptions) {
                 if (subscriptions[item]) {
                     subscriptions[item].unsubscribe();
