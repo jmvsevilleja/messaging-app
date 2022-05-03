@@ -16,9 +16,10 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-const BUILD_LOGS = process.env.BUILD_LOGS || "yes";
+const BUILD_ENV = process.env.REACT_APP_BUILD_ENV || "dev";
 // replace console.* for disable log on production
-if (BUILD_LOGS === 'no') {
+console.log(BUILD_ENV)
+if (BUILD_ENV === 'production') {
   console.log = () => {}
   console.error = () => {}
   console.debug = () => {}
