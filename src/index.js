@@ -16,6 +16,14 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
+const BUILD_LOGS = process.env.BUILD_LOGS || "yes";
+// replace console.* for disable log on production
+if (BUILD_LOGS === 'no') {
+  console.log = () => {}
+  console.error = () => {}
+  console.debug = () => {}
+}
+
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
