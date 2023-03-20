@@ -10,7 +10,7 @@ import ChatSettingQR from "./ChatSettingQR";
 import AvatarWithText from "./loader/AvatarWithText";
 import ListingWithThumbnail from "./loader/ListingWithThumbnail";
 import ChatSidebarProfile from "./ChatSidebarProfile";
-import Nav from "../components/Nav";
+// import Nav from "../components/Nav";
 
 function ChatSidebar({
     user,
@@ -45,6 +45,7 @@ function ChatSidebar({
     }
 
     useEffect(() => {
+        console.log('chatRoomList', chatRoomList);
         //setSearchUserList(userList);
         setSearchChatRoomList(chatRoomList);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,7 +117,7 @@ function ChatSidebar({
                         </div>
 
                     </div>}
-                <Nav />
+                {/* <Nav /> */}
                 <div className="relative text-gray-600 focus-within:text-gray-400">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-2">
                         <svg
@@ -151,18 +152,16 @@ function ChatSidebar({
                 <ul>
                     {user && searchChatRoomList.length !== 0 &&
                         searchChatRoomList
-                            .sort((a, b) =>
-                                b.chatroom.updatedAt.localeCompare(a.chatroom.updatedAt)
-                            )
                             .map((item) => (
-                                <ChatRoom
+                                <>{item.name} <ChatRoom
                                     user={user}
                                     room={item.chatroom}
                                     chatRoomID={chatRoomID}
                                     handleChatRoom={handleChatRoom}
                                     handleChatRoomID={handleChatRoomID}
                                     key={item.id}
-                                />
+                                /></>
+
                             ))}
                 </ul>
             </div>

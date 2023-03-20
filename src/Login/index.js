@@ -24,7 +24,7 @@ const Login = () => {
                     </div>
                     <form>
                         <div className="mt-10">
-                            <Link to="/login"><button className="w-full inline-flex items-center justify-center px-4 py-2 bg-primary border border-transparent font-semibold capitalize text-white hover:bg-secondary active:bg-secondary focus:outline-none focus:border-secondary focus:ring  disabled:opacity-25 transition rounded-md">Login</button></Link>
+                            <Link to="/chat"><button className="w-full inline-flex items-center justify-center px-4 py-2 bg-primary border border-transparent font-semibold capitalize text-white hover:bg-secondary active:bg-secondary focus:outline-none focus:border-secondary focus:ring  disabled:opacity-25 transition rounded-md">Login</button></Link>
                         </div>
                     </form>
                 </div>

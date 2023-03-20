@@ -2,7 +2,6 @@ import React from "react";
 import Image from "./image";
 import File from "./file";
 import MessageDropdown from "./messageDropdown"
-import {decryptMessage} from "../utilities/encryption";
 
 function handleDownloadFile(url, name) {
     fetch(url)
@@ -25,11 +24,12 @@ function Message({user, message, chatroom}) {
 
     const message_user = chatroom.users.find(item => (item.user.id === message.userMessageId));
     const name = message_user ? message_user.user.name : "";
-    const public_key = message_user ? message_user.user.publicKey : "";
+    //const public_key = message_user ? message_user.user.publicKey : "";
     const isme = user.id === message.userMessageId;
     var dateobj = new Date(message.createdAt);
     const created = dateobj.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true});
-    const message_content = decryptMessage(message.content, public_key);
+    // const message_content = (message.content);
+    const message_content = (message.content);
     return (
         <div
             className={
@@ -41,7 +41,7 @@ function Message({user, message, chatroom}) {
 
             {message.type === 'AUDIO' && message.audio &&
                 <div className={"flex w-full relative " + (isme ? "justify-end items-end" : "justify-start items-start")}>
-                    <audio className="my-2 inline-flex mr-8" src={decryptMessage(message.audio.path, public_key)} controls controlsList="nodownload noplaybackrate" />
+                    <audio className="my-2 inline-flex mr-8" src={(message.audio.path)} controls controlsList="nodownload noplaybackrate" />
                     <MessageDropdown isme={isme} message={message} />
                 </div>
             }
@@ -49,7 +49,7 @@ function Message({user, message, chatroom}) {
                 <div className="relative">
                     <div>
                         {message.image.map((file, index) => {
-                            const file_path = file ? decryptMessage(file.path, public_key) : "";
+                            const file_path = file ? (file.path) : "";
                             return (file && file.name && file_path &&
                                 <div className="flex items-center w-48 m-2 mx-0" key={file.name}>
                                     <Image file={file} src={file_path} />
@@ -75,7 +75,7 @@ function Message({user, message, chatroom}) {
             {message.type === 'FILE' && message.file &&
                 <div>
                     {message.file.map((file, index) => {
-                        const file_path = file ? decryptMessage(file.path, public_key) : "";
+                        const file_path = file ? (file.path) : "";
                         return (file && file.name && file_path &&
                             <div className="flex items-center m-2 mx-0 relative" key={file.name}>
                                 <File

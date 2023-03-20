@@ -52,13 +52,13 @@ function ChatInfo({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [notification]);
 
-    useEffect(() => {
-        if (chatRoom.users) {
-            const user_notif = chatRoom.users.find((selected) => (selected.user.id === user.id));
-            setNotification(user_notif.notification);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [chatRoom]);
+    // useEffect(() => {
+    //     if (chatRoom.users) {
+    //         const user_notif = chatRoom.users.find((selected) => (selected.user.id === user.id));
+    //         setNotification(user_notif.notification);
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [chatRoom]);
 
     return (
         <div
@@ -252,11 +252,11 @@ function ChatInfo({
                         <div className="scrollable p-2 overflow-x-hidden overflow-y-auto shrink-0 h-[calc(100vh-560px)]">
                             <ul className=" pt-2">
                                 {chatRoom.users && chatRoom.users.length !== 0 &&
-                                    chatRoom.users.filter((item) => !item.deleted)
+                                    chatRoom.users
                                         // sort user by name
-                                        .sort((a, b) =>
-                                            a.user.name.localeCompare(b.user.name)
-                                        )
+                                        // .sort((a, b) =>
+                                        //     a.user.name.localeCompare(b.user.name)
+                                        // )
                                         .map((item) => (
                                             <UserChatInfo
                                                 user={item.user}
